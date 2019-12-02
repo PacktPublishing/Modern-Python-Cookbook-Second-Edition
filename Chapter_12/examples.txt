@@ -1,0 +1,54 @@
+"""Python Cookbook
+
+Chapter 12, Examples from the text.
+"""
+
+# Lines 121 to 127
+>>> from Chapter_12.ch12_r01 import Deck
+>>> import random
+>>> random.seed(2)
+>>> deck = Deck()
+>>> cards = deck.deal(5)
+>>> cards  
+[Card(rank=4, suit='♣'), Card(rank=8, suit='♡'), Card(rank=3, suit='♡'), Card(rank=6, suit='♡'), Card(rank=2, suit='♠')]
+
+>>> import json
+
+# Lines 133 to 134
+>>> json_cards = list(card.to_json() for card in deck.deal(5))
+>>> print(json.dumps(json_cards, indent=2, sort_keys=True))
+[
+  {
+    "__class__": "Card",
+    "rank": 2,
+    "suit": "\u2662"
+  },
+  {
+    "__class__": "Card",
+    "rank": 13,
+    "suit": "\u2663"
+  },
+  {
+    "__class__": "Card",
+    "rank": 7,
+    "suit": "\u2662"
+  },
+  {
+    "__class__": "Card",
+    "rank": 6,
+    "suit": "\u2662"
+  },
+  {
+    "__class__": "Card",
+    "rank": 7,
+    "suit": "\u2660"
+  }
+]
+
+# Lines 565 to 568
+>>> from urllib.parse import urlencode
+>>> urlencode( {'n':355,'d':113} )
+'n=355&d=113'
+>>> urlencode( {'n':355,'d':113,'note':'this&that'} )
+'n=355&d=113&note=this%26that'
+

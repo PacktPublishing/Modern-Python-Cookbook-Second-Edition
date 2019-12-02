@@ -1,0 +1,180 @@
+"""Python Cookbook
+
+Chapter 3, Examples from the text.
+"""
+
+# Lines 31 to 34
+>>> import random
+>>> def die():
+...    return random.randint(1,6)
+>>> def craps():
+...    return (die(), die())
+
+
+# Lines 38 to 39
+>>> random.seed(113)
+>>> die(), die()
+(1, 6)
+
+# Lines 43 to 45
+>>> craps()
+(6, 3)
+>>> craps()
+(1, 4)
+
+# Lines 49 to 49
+>>> def zonk():
+...    return tuple(die() for x in range(6))
+
+
+# Lines 54 to 54
+>>> zonk()
+(5, 3, 2, 4, 1, 1)
+
+# Lines 59 to 59
+>>> def craps():
+...     return tuple(die() for x in range(2))
+
+
+# Lines 63 to 63
+>>> def dice(n):
+...     return tuple(die() for x in range(n))
+
+
+# Lines 66 to 68
+>>> dice(2)
+(3, 2)
+>>> dice(6)
+(5, 3, 4, 3, 3, 4)
+
+# Lines 71 to 71
+>>> def dice(n=2):
+...     return tuple(die() for x in range(n))
+
+# Lines 88 to 88
+>>> def dice(n):
+...    return (die() for x in range(n))
+
+# Lines 93 to 93
+>>> def dice(n=2):
+...     return tuple(die() for x in range(n))
+
+
+# Lines 110 to 112
+>>> def craps():
+...     return dice(2)
+>>> def zonk():
+...     return dice(6)
+
+
+# Lines 118 to 118
+>>> def die(sides=6):
+...     return random.randint(1,6)
+
+
+# Lines 121 to 121
+>>> def dice(n=2, sides=6):
+...     return tuple(die(sides) for x in range(n))
+
+
+# Lines 143 to 143
+>>> import warnings
+
+
+# Lines 174 to 174
+>>> def rtd(distance=None, rate=None, time=None):
+...     if distance is None:
+...         distance = rate * time
+...     elif rate is None:
+...         rate = distance / time
+...     elif time is None:
+...         time = distance / rate
+...     else:
+...         warnings.warning( "Nothing to solve for" )
+...     return dict(distance=distance, rate=rate, time=time)
+
+# Lines 184 to 184
+>>> rtd(distance=31.2, rate=6) 
+{'distance': 31.2, 'rate': 6, 'time': 5.2}
+
+# Lines 188 to 189
+>>> result = rtd(distance=31.2, rate=6)
+>>> ('At {rate}kt, it takes '
+... '{time}hrs to cover {distance}nm').format_map(result)
+'At 6kt, it takes 5.2hrs to cover 31.2nm'
+
+
+>>> import csv
+>>> def Twc(T, V):
+...     return 13.12 + 0.6215*T - 11.37*V**0.16 + 0.3965*T*V**0.16
+>>> def wind_chill(*, start_T, stop_T, step_T,
+...     start_V, stop_V, step_V, path):
+...     """Wind Chill Table."""
+...     with path.open('w', newline='') as target:
+...         writer= csv.writer(target)
+...         heading = [None]+list(range(start_T, stop_T, step_T))
+...         writer.writerow(heading)
+...         for V in range(start_V, stop_V, step_V):
+...             row = [V] + [Twc(T, V)
+...                 for T in range(start_T, stop_T, step_T)]
+...             writer.writerow(row)
+
+# Lines 266 to 266
+>>> import pathlib
+>>> p = pathlib.Path('data/wc1.csv')
+>>> wind_chill(0,-45,-5,0,20,2,p)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: wind_chill() takes 0 positional arguments but 7 were given
+
+>>> from math import sin, cos, asin, sqrt, radians
+>>> MI = 3959
+>>> NM = 3440
+>>> KM = 6372
+
+>>> def haversine(lat_1: float, lon_1: float,
+...     lat_2: float, lon_2: float, R: float) -> float:
+...     """Distance between points.
+...
+...     R is Earth's radius.
+...     R=MI computes in miles. Default is nautical miles.
+...
+...     >>> round(haversine(36.12, -86.67, 33.94, -118.40, R=6372.8), 5)
+...     2887.25995
+...     """
+...     Δ_lat = radians(lat_2) - radians(lat_1)
+...     Δ_lon = radians(lon_2) - radians(lon_1)
+...     lat_1 = radians(lat_1)
+...     lat_2 = radians(lat_2)
+...
+...     a = sin(Δ_lat/2)**2 + cos(lat_1)*cos(lat_2)*sin(Δ_lon/2)**2
+...     c = 2*asin(sqrt(a))
+...
+...     return R * c
+
+# Lines 437 to 437
+>>> round(haversine(36.12, -86.67, 33.94, -118.40, R=6372.8), 5)
+2887.25995
+
+>>> def nm_haversine(*args):
+...     return haversine(*args, R=NM)
+
+# Lines 483 to 483
+>>> round(nm_haversine(36.12, -86.67, 33.94, -118.40), 2)
+1558.53
+
+# Lines 498 to 498
+>>> round(nm_haversine(36.12, -86.67, 33.94, -118.40), 2)
+1558.53
+
+# Lines 522 to 522
+>>> def Twc(T, V):
+...     """Wind Chill Temperature."""
+...     if V < 4.8 or T > 10.0:
+...         raise ValueError("V must be over 4.8 kph, T must be below 10°C")
+...     return 13.12 + 0.6215*T - 11.37*V**0.16 + 0.3965*T*V**0.16
+
+# Lines 604 to 604
+>>> round(Twc(-10, 25), 1)
+-18.8
+

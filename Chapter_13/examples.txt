@@ -1,0 +1,98 @@
+"""Python Cookbook
+
+Chapter 13, Examples from the text.
+"""
+
+# Lines 118 to 119
+>>> from collections import ChainMap
+>>> config = ChainMap(
+...     {'another_setting': 2},
+...     {'some_setting': 1},
+...     {'some_setting': 'Default Value',
+...      'another_setting': 'Another Default',
+...      'some_option': 'Built-In Choice'})
+
+
+# Lines 127 to 131
+>>> config['another_setting']
+2
+>>> config['some_setting']
+1
+>>> config['some_option']
+'Built-In Choice'
+
+# Lines 354 to 355
+>>> import yaml
+>>> yaml_text = '''
+... ---
+... id: 1
+... text: "Some Words."
+... ---
+... id: 2
+... text: "Different Words."
+... '''
+
+# Lines 363 to 368
+>>> document_iterator = iter(yaml.load_all(yaml_text, Loader=yaml.SafeLoader))
+>>> document_1 = next(document_iterator)
+>>> document_1['id']
+1
+>>> document_2 = next(document_iterator)
+>>> document_2['text']
+'Different Words.'
+
+# Lines 375 to 375
+>>> yaml.load('''
+... ? !!python/tuple ["a", "b"]
+... : "value"
+... ''', Loader=yaml.UnsafeLoader)
+{('a', 'b'): 'value'}
+
+# Lines 385 to 386
+>>> import yaml
+>>> yaml_text = '''
+... document:
+...     id: 3
+...     data_values:
+...       !!set
+...       ? some
+...       ? more
+...       ? words
+... '''
+
+# Lines 395 to 398
+>>> some_document = yaml.load(yaml_text, Loader=yaml.SafeLoader)
+>>> some_document['document']['id']
+3
+>>> some_document['document']['data_values'] == {'some', 'more', 'words'}
+True
+
+# Lines 405 to 406
+>>> import yaml
+>>> yaml_text = '''
+... !!omap
+... - key1: string value
+... - numerator: 355
+... - denominator: 113
+... '''
+
+# Lines 412 to 412
+>>> yaml.load(yaml_text, Loader=yaml.SafeLoader)
+[('key1', 'string value'), ('numerator', 355), ('denominator', 113)]
+
+
+>>> from Chapter_13.ch13_r04 import load_config_module
+
+# Lines 615 to 620
+>>> configuration = load_config_module('Chapter_13.settings.Chesapeake')
+>>> configuration.__doc__.strip()
+'Weather for Cheaspeake Bay'
+>>> configuration.query
+{'mz': ['ANZ532']}
+>>> configuration.url['netloc']
+'forecast.weather.gov'
+
+# Lines 625 to 625
+>>> print(configuration)
+<class 'Chapter_13.settings.Chesapeake'>
+

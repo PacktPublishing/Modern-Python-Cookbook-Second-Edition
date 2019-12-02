@@ -1,0 +1,147 @@
+"""Python Cookbook
+
+Chapter 2, Examples from the text.
+"""
+# Lines 18 to 18
+>>> print("hello world")
+hello world
+
+# Lines 99 to 104
+>>> import math
+>>> example_value = (63/25) * (17+15*math.sqrt(5)) / (7+15*math.sqrt(5))
+>>> mantissa_fraction, exponent = math.frexp(example_value)
+>>> mantissa_whole = int(mantissa_fraction*2**53)
+>>> message_text = f'the internal representation is {mantissa_whole:d}/2**53*2**{exponent:d}'
+>>> print(message_text)
+the internal representation is 7074237752514592/2**53*2**2
+
+# Lines 118 to 121
+>>> import math
+>>> example_value = (63/25) * (17+15*math.sqrt(5)) / (7+15*math.sqrt(5))
+>>> mantissa_fraction, exponent = math.frexp(example_value)
+>>> mantissa_whole = int(mantissa_fraction*2**53)
+
+# Lines 124 to 126
+>>> message_text = f'the internal representation is {mantissa_whole:d}/2**53*2**{exponent:d}'
+>>> message_text = 'the internal representation is \
+... {mantissa:d}/2**53*2**{exponent:d}'.\
+... format(mantissa=mantissa_whole, exponent=exponent)
+
+# Lines 129 to 129
+>>> message_text
+'the internal representation is 7074237752514592/2**53*2**2'
+
+# Lines 135 to 139
+>>> import math
+>>> example_value1 = (63/25) * (17+15*math.sqrt(5)) / (7+15*math.sqrt(5))
+>>> example_value2 = (63/25) * ( (17+15*math.sqrt(5)) / (7+15*math.sqrt(5)) )
+>>> example_value2 == example_value1
+True
+
+# Lines 142 to 142
+>>> example_value3 = (63/25) * (
+...      (17+15*math.sqrt(5))
+...    / ( 7+15*math.sqrt(5))
+... )
+
+# Lines 146 to 146
+>>> example_value3 == example_value1
+True
+
+# Lines 154 to 154
+>>> message_text = (
+... f'the internal representation '
+... f'is {mantissa_whole:d}/2**53*2**{exponent:d}'
+... )
+>>> message_text
+'the internal representation is 7074237752514592/2**53*2**2'
+
+# Lines 164 to 165
+>>> import math
+>>> example_value = (63/25) * (17+15*math.sqrt(5)) / (7+15*math.sqrt(5))
+
+# Lines 168 to 170
+>>> a = (63/25)
+>>> b = (17+15*math.sqrt(5))
+>>> c = (7+15*math.sqrt(5))
+
+# Lines 173 to 173
+>>> example_value = a * b / c
+
+# Lines 180 to 180
+>>> print(
+...    'several values including',
+...    'mantissa =', mantissa_fraction,
+...    'exponent =', exponent
+... )
+several values including mantissa = 0.785398163451422 exponent = 2
+
+# Lines 189 to 189
+>>> from math import (sin, cos, tan,
+...    sqrt, log, frexp)
+
+# Lines 601 to 602
+>>> sample_1 = "some_name = the_value"
+>>> for position in range(len(sample_1)):
+...    if sample_1[position] in '=:':
+...        break
+
+# Lines 605 to 605
+>>> print('name=', sample_1[:position],
+...     'value=', sample_1[position+1:])
+name= some_name  value=  the_value
+
+# Lines 609 to 610
+>>> sample_2 = "name_only"
+>>> for position in range(len(sample_2)):
+...    if sample_2[position] in '=:':
+...        break
+
+# Lines 613 to 613
+>>> print('name=', sample_2[:position],
+...     'value=', sample_2[position+1:])  # doctest: +NORMALIZE_WHITESPACE
+name= name_onl value=
+
+# Lines 630 to 631
+>>> position = -1 # If it's zero length
+>>> for position in range(len(sample_2)):
+...    if sample_2[position] in '=:':
+...        break
+
+# Lines 635 to 635
+>>> if position == -1:  
+...     print("name=", None, "value=", None)
+... elif not(sample_2[position] == ':' or sample_2[position] == '='):
+...     print("name=", sample_2, "value=", None)
+... else:
+...    print('name=', sample_2[:position],
+...     'value=', sample_2[position+1:])
+name= name_only value= None
+
+# Lines 819 to 821
+>>> class Error(Exception):
+...     pass
+>>> try:
+...     'hello world'[99]
+... except (IndexError, NameError) as exception:
+...     raise Error("index problem") from exception
+Traceback (most recent call last):
+   ...
+Error: index problem
+
+
+Full output...
+
+Traceback (most recent call last):
+  File "<doctest examples.txt[40]>", line 2, in <module>
+    'hello world'[99]
+IndexError: string index out of range
+<BLANKLINE>
+The above exception was the direct cause of the following exception:
+<BLANKLINE>
+Traceback (most recent call last):
+  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
+    compileflags, 1), test.globs)
+  File "<doctest examples.txt[40]>", line 4, in <module>
+    raise Error("index problem") from exception
+Error: index problem

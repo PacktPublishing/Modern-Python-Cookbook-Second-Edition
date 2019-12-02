@@ -1,0 +1,9 @@
+# Chapter 9. Example YAML file 2
+name:
+  "data/ch09_file2.yaml"
+purpose:
+  "A second parameter file"
+param:
+  42
+finn:
+  FN-2187

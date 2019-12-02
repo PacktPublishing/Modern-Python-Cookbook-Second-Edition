@@ -1,0 +1,3 @@
+[2019-11-12 18:59:30,026] INFO in ch09_r10: Sample Message One
+[2019-11-12 18:59:30,026] DEBUG in ch09_r10: Debugging
+[2019-11-12 18:59:30,026] WARNING in ch09_r10: Something might have gone wrong

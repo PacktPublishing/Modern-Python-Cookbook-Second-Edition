@@ -1,0 +1,5 @@
+# Chapter 9. Example YAML file 1
+name:
+  "data/ch09_file1.yaml"
+purpose:
+  "An example parameter file"
