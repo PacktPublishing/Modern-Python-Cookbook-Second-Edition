@@ -1,2 +1,5 @@
 
 *.pyc
+.idea/*
+.mypy_cache/*
+.tox/*

@@ -2,6 +2,8 @@
 Modern Python Cookbook, 2nd ed
 ###############################
 
+Modern-Python-Cookbook-Second-Edition, published by Packt
+
 Installation and Setup
 ======================
 
@@ -12,6 +14,9 @@ Installation and Setup
     ::
 
         conda create -n cookbook python=3.8
+
+    Note that python 3.8 is required. A few of the examples will not
+    work with Python 3.7.
 
 3.  Activate the environment.
 
