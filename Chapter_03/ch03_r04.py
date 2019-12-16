@@ -1,48 +1,74 @@
 """Python Cookbook 2nd ed.
 
-Chapter 3, recipe 4
+Chapter 3, recipe 4, Using super flexible keyword parameters
 """
-from typing import *
 
-# from fractions import Fraction
-from decimal import Decimal
-
-Number = Union[int, float, complex, Decimal]
+from typing import Optional, Dict
+import warnings
 
 
-def temperature(
-    *, f_temp: Optional[Number] = None, c_temp: Optional[Number] = None
-) -> Mapping[str, Number]:
-
-    if f_temp is not None:
-        c_temp = 5 * (f_temp - 32) / 9
-    elif c_temp is not None:
-        f_temp = 32 + 9 * c_temp / 5
+def rtd(
+    distance: Optional[float] = None,
+    rate: Optional[float] = None,
+    time: Optional[float] = None,
+) -> Dict[str, Optional[float]]:
+    if distance is None and rate is not None and time is not None:
+        distance = rate * time
+    elif rate is None and distance is not None and time is not None:
+        rate = distance / time
+    elif time is None and distance is not None and rate is not None:
+        time = distance / rate
     else:
-        raise Exception("Logic Design Problem")
-    result: Dict[str, Number] = {"c_temp": c_temp, "f_temp": f_temp}
-    return result
+        warnings.warn("Nothing to solve for")
+    return dict(distance=distance, rate=rate, time=time)
 
 
-def temperature_bad(
-    *, f_temp: Optional[Number] = None, c_temp: Optional[Number] = None
-) -> Number:
+test_rtd = """
+>>> rtd(distance=31.2, rate=6) 
+{'distance': 31.2, 'rate': 6, 'time': 5.2}
 
-    if f_temp is not None:
-        c_temp = 5 * (f_temp - 32) / 9
-    elif f_temp is not None:
-        f_temp = 32 + 9 * c_temp / 5
+>>> result = rtd(distance=31.2, rate=6)
+>>> ('At {rate}kt, it takes '
+... '{time}hrs to cover {distance}nm').format_map(result)
+'At 6kt, it takes 5.2hrs to cover 31.2nm'
+"""
+
+
+def rtd2(**keywords):
+    rate = keywords.get('rate', None)
+    time = keywords.get('time', None)
+    distance = keywords.get('distance', None)
+    if distance is None and rate is not None and time is not None:
+        distance = rate * time
+    elif rate is None and distance is not None and time is not None:
+        rate = distance / time
+    elif time is None and distance is not None and rate is not None:
+        time = distance / rate
     else:
-        raise Exception("Logic Design Problem")
-    result = {"c_temp": c_temp, "f_temp": f_temp}  # type: Dict[str, Number]
-    return result  # type: ignore
+        warnings.warn("Nothing to solve for")
+    return dict(distance=distance, rate=rate, time=time)
 
+test_rtd2 = """
+>>> rtd2(distance=31.2, rate=6) 
+{'distance': 31.2, 'rate': 6, 'time': 5.2}
 
-# Chapter_03/ch03_r04.py:40: error: Incompatible return value type (got "Dict[str, Union[int, float, complex, Decimal]]", expected "Union[int, float, complex, Decimal]")
+>>> result = rtd2(distance=31.2, rate=6)
+>>> ('At {rate}kt, it takes '
+... '{time}hrs to cover {distance}nm').format_map(result)
+'At 6kt, it takes 5.2hrs to cover 31.2nm'
 
-from pytest import approx  # type: ignore
+>>> rtd2(distnace=31.2, rate=6) 
+{'distance': None, 'rate': 6, 'time': None}
 
+>>> warnings.simplefilter("error")
+>>> rtd2(distnace=31.2, rate=6) 
+Traceback (most recent call last):
+  File "/Applications/PyCharm CE.app/Contents/helpers/pycharm/docrunner.py", line 139, in __run
+    exec(compile(example.source, filename, "single",
+  File "<doctest ch03_r04.__test__.test_rtd2[5]>", line 1, in <module>
+    rtd2(distnace=31.2, rate=6)
+  File "Chapter_03/ch03_r04.py", line 48, in rtd2
+    warnings.warn("Nothing to solve for")
+UserWarning: Nothing to solve for"""
 
-def test_temperature():
-    assert temperature(f_temp=72) == {"c_temp": approx(22.22222), "f_temp": 72}
-    assert temperature(c_temp=22.2) == {"c_temp": 22.2, "f_temp": approx(71.96)}
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

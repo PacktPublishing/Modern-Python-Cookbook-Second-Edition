@@ -3,6 +3,8 @@
 Chapter 10, recipe 5.
 
 Raw data source: ftp://ftp.cmdl.noaa.gov/ccg/co2/trends/co2_mm_mlo.txt
+
+Note: Output from this is used in Chapter 4 examples.
 """
 
 from pathlib import Path

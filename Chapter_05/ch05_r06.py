@@ -7,7 +7,7 @@ import os
 import sys
 from typing import List
 
-from Chapter_03.ch03_r05 import haversine, MI, NM, KM
+from Chapter_03.ch03_r08 import haversine, MI, NM, KM
 from Chapter_05.ch05_r04 import point_type, display
 
 

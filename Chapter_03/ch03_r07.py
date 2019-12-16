@@ -1,163 +1,84 @@
 """Python Cookbook 2nd ed.
 
-Chapter 3, Recipe 7
+Chapter 3, recipe 7, Writing hints for more complex types
 """
 
-import timeit
-import doctest
+from typing import Optional, Union, Dict
+from decimal import Decimal
 
+def temperature(
+    *, f_temp: Optional[float] = None, c_temp: Optional[float] = None
+) -> Dict[str, float]:
+    """Convert between Fahrenheit temperature and
+    Celsius temperature.
 
-def prod(int_iter):
-    p = 1
-    for i in int_iter:
-        p *= i
-    return p
-
-
-def fact_s(n):
+    :key f_temp: Temperature in °F.
+    :key c_temp: Temperature in °C.
+    :returns: dictionary with two keys:
+        :f_temp: Temperature in °F.
+        :c_temp: Temperature in °C.
     """
-    >>> fact_s(5)
-    120
-    """
-    return prod(range(1, n + 1))
 
-
-def fact_o(n):
-    """
-    >>> fact_o(5)
-    120
-    """
-    p = 1
-    for i in range(2, n + 1):
-        p *= i
-    return p
-
-
-def fact_w(n):
-    """
-    >>> fact_w(5)
-    120
-    """
-    p = n
-    while n != 1:
-        n = n - 1
-        p *= n
-    return p
-
-
-from functools import lru_cache
-
-
-@lru_cache(128)
-def fibo_r(n):
-    """
-    >>> fibo_r(0)
-    1
-    >>> fibo_r(1)
-    1
-    >>> fibo_r(2)
-    2
-    >>> fibo_r(3)
-    3
-    >>> fibo_r(4)
-    5
-    >>> fibo_r(7)
-    21
-    """
-    if n < 2:
-        return 1
+    if f_temp is not None:
+        c_temp = 5 * (f_temp - 32) / 9
+    elif c_temp is not None:
+        f_temp = 32 + 9 * c_temp / 5
     else:
-        return fibo_r(n - 1) + fibo_r(n - 2)
+        raise Exception("Logic Design Problem")
+    result: Dict[str, float] = {"c_temp": c_temp, "f_temp": f_temp}
+    return result
 
 
-def fibo_iter():
-    a = 1
-    b = 1
-    yield a
-    while True:
-        yield b
-        a, b = b, a + b
+def temperature_bad(
+    *, f_temp: Optional[float] = None, c_temp: Optional[float] = None
+) -> float:
 
+    if f_temp is not None:
+        c_temp = 5 * (f_temp - 32) / 9
+    elif f_temp is not None:
+        f_temp = 32 + 9 * c_temp / 5
+    else:
+        raise Exception("Logic Design Problem")
+    result = {"c_temp": c_temp, "f_temp": f_temp}
+    return result  # type: ignore
 
-def fibo_i(n):
+# Without the type: ignore, we'll get mypy errors.
+# Chapter_03/ch03_r07.py:43: error: Incompatible return value type (got "Dict[str, float]", expected "float")
+
+from pytest import approx  # type: ignore
+
+def test_temperature():
+    assert temperature(f_temp=72) == {"c_temp": approx(22.22222), "f_temp": 72}
+    assert temperature(c_temp=22.2) == {"c_temp": 22.2, "f_temp": approx(71.96)}
+
+from mypy_extensions import TypedDict
+
+TempDict = TypedDict(
+    "TempDict",
+    {
+        "c_temp": float,
+        "f_temp": float,
+    }
+)
+
+def temperature_d(
+    *, f_temp: Optional[float] = None, c_temp: Optional[float] = None
+) -> TempDict:
+    """Convert between Fahrenheit temperature and
+    Celsius temperature.
+
+    :key f_temp: Temperature in °F.
+    :key c_temp: Temperature in °C.
+    :returns: dictionary with two keys:
+        :f_temp: Temperature in °F.
+        :c_temp: Temperature in °C.
     """
-    >>> fibo_i(0)
-    1
-    >>> fibo_i(1)
-    1
-    >>> fibo_i(2)
-    2
-    >>> fibo_i(3)
-    3
-    >>> fibo_i(4)
-    5
-    >>> fibo_i(7)
-    21
-    """
-    for i, f_i in enumerate(fibo_iter()):
-        if i == n:
-            break
-    return f_i
 
-
-def test_fact():
-    assert prod(range(2, 6)) == 120
-    assert fact_s(5) == 120
-    assert fact_o(5) == 120
-    assert fact_w(5) == 120
-
-
-def test_fibo():
-    assert fibo_r(7) == 21
-    assert fibo_i(7) == 21
-
-
-def timing_factorial():
-    simple = timeit.timeit(
-        "fact_s(52)",
-        """
-from ch03_r07 import fact_s
-""",
-    )
-
-    optimized = timeit.timeit(
-        "fact_o(52)",
-        """
-from ch03_r07 import fact_o
-""",
-    )
-
-    while_statement = timeit.timeit(
-        "fact_w(52)",
-        """
-from ch03_r07 import fact_w
-""",
-    )
-
-    print(f"Simple    {simple:.4f}")
-    print(f"Optimized {optimized:.4f}")
-    print(f"While     {while_statement:.4f}")
-
-
-def timing_fibonacci():
-    cached = timeit.timeit(
-        "fibo_r(20)",
-        """
-from ch03_r07 import fibo_r
-""",
-    )
-
-    iterative = timeit.timeit(
-        "fibo_i(20)",
-        """
-from ch03_r07 import fibo_i
-""",
-    )
-
-    print(f"Cached     {cached:.4f}")
-    print(f"Interative {iterative:.4f}")
-
-
-if __name__ == "__main__":
-    timing_factorial()
-    timing_fibonacci()
+    if f_temp is not None:
+        c_temp = 5 * (f_temp - 32) / 9
+    elif c_temp is not None:
+        f_temp = 32 + 9 * c_temp / 5
+    else:
+        raise Exception("Logic Design Problem")
+    result: TempDict = {"c_temp": c_temp, "f_temp": f_temp}
+    return result

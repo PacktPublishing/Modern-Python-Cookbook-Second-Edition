@@ -6,7 +6,7 @@ Chapter 5, recipe 4
 import argparse
 import sys
 from typing import Tuple, List
-from Chapter_03.ch03_r05 import haversine, MI, NM, KM
+from Chapter_03.ch03_r08 import haversine, MI, NM, KM
 
 
 def point_type(text: str) -> Tuple[float, float]:

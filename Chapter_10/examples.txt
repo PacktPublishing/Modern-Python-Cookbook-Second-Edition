@@ -258,7 +258,7 @@ Counter({8: 10, 19: 1})
 398.61
 
 # Lines 779 to 782
->>> from Chapter_03.ch03_r07 import fact_s
+>>> from Chapter_03.ch03_r10 import fact_s
 >>> def binom(n, k):
 ...     return fact_s(n)//(fact_s(k)*fact_s(n-k))
 >>> binom(24, 12)

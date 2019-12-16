@@ -1,6 +1,8 @@
 """Python Cookbook
 
 Chapter 8, Examples from the text.
+
+Note: Output from this is used in Chapter 4 examples.
 """
 
 # Lines 40 to 40

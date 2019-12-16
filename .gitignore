@@ -3,3 +3,4 @@
 .idea/*
 .mypy_cache/*
 .tox/*
+backup/*

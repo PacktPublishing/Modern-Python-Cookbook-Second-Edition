@@ -1,6 +1,8 @@
 """Python Cookbook 2nd ed.
 
 Chapter 9, recipe 8.
+
+Note: Output from this is used in Chapter 4 examples.
 """
 
 from pathlib import Path

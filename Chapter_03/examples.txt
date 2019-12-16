@@ -1,132 +1,45 @@
 """Python Cookbook
 
 Chapter 3, Examples from the text.
+
+Note: Output from these examples is used in Chapter 4 examples.
+
+•	Function parameters and type hints
+•	Designing functions with optional parameters
+•	Type hints for optional parameters
+•	Using super flexible keyword parameters
+•	Forcing keyword-only arguments with the * separator
+•	Defining position-only parameters with the / separator
+•	Writing more complex types of function parameters
+•	Picking an order for parameters based on partial functions
+•	Writing clear documentation strings with RST markup
+•	Designing recursive functions around Python's stack limits
+•	Writing reusable scripts with the script library switch
+
 """
 
-# Lines 31 to 34
->>> import random
->>> def die():
-...    return random.randint(1,6)
->>> def craps():
-...    return (die(), die())
 
 
-# Lines 38 to 39
->>> random.seed(113)
->>> die(), die()
-(1, 6)
+# Function parameters and type hints
+>>> def fibo(n: int) -> int:
+...     if n <= 1: return 1
+...     return fibo(n-1)+fibo(n-2)
+>>> fibo(6)
+13
 
-# Lines 43 to 45
->>> craps()
-(6, 3)
->>> craps()
-(1, 4)
-
-# Lines 49 to 49
->>> def zonk():
-...    return tuple(die() for x in range(6))
+# Designing functions with optional parameters
 
 
-# Lines 54 to 54
->>> zonk()
-(5, 3, 2, 4, 1, 1)
+# Defining position-only parameters with the / separator
 
-# Lines 59 to 59
->>> def craps():
-...     return tuple(die() for x in range(2))
-
-
-# Lines 63 to 63
->>> def dice(n):
-...     return tuple(die() for x in range(n))
-
-
-# Lines 66 to 68
->>> dice(2)
-(3, 2)
->>> dice(6)
-(5, 3, 4, 3, 3, 4)
-
-# Lines 71 to 71
->>> def dice(n=2):
-...     return tuple(die() for x in range(n))
-
-# Lines 88 to 88
->>> def dice(n):
-...    return (die() for x in range(n))
-
-# Lines 93 to 93
->>> def dice(n=2):
-...     return tuple(die() for x in range(n))
-
-
-# Lines 110 to 112
->>> def craps():
-...     return dice(2)
->>> def zonk():
-...     return dice(6)
-
-
-# Lines 118 to 118
->>> def die(sides=6):
-...     return random.randint(1,6)
-
-
-# Lines 121 to 121
->>> def dice(n=2, sides=6):
-...     return tuple(die(sides) for x in range(n))
-
-
-# Lines 143 to 143
->>> import warnings
-
-
-# Lines 174 to 174
->>> def rtd(distance=None, rate=None, time=None):
-...     if distance is None:
-...         distance = rate * time
-...     elif rate is None:
-...         rate = distance / time
-...     elif time is None:
-...         time = distance / rate
-...     else:
-...         warnings.warning( "Nothing to solve for" )
-...     return dict(distance=distance, rate=rate, time=time)
-
-# Lines 184 to 184
->>> rtd(distance=31.2, rate=6) 
-{'distance': 31.2, 'rate': 6, 'time': 5.2}
-
-# Lines 188 to 189
->>> result = rtd(distance=31.2, rate=6)
->>> ('At {rate}kt, it takes '
-... '{time}hrs to cover {distance}nm').format_map(result)
-'At 6kt, it takes 5.2hrs to cover 31.2nm'
-
-
->>> import csv
->>> def Twc(T, V):
-...     return 13.12 + 0.6215*T - 11.37*V**0.16 + 0.3965*T*V**0.16
->>> def wind_chill(*, start_T, stop_T, step_T,
-...     start_V, stop_V, step_V, path):
-...     """Wind Chill Table."""
-...     with path.open('w', newline='') as target:
-...         writer= csv.writer(target)
-...         heading = [None]+list(range(start_T, stop_T, step_T))
-...         writer.writerow(heading)
-...         for V in range(start_V, stop_V, step_V):
-...             row = [V] + [Twc(T, V)
-...                 for T in range(start_T, stop_T, step_T)]
-...             writer.writerow(row)
-
-# Lines 266 to 266
->>> import pathlib
->>> p = pathlib.Path('data/wc1.csv')
->>> wind_chill(0,-45,-5,0,20,2,p)
+>>> import math
+>>> math.sin(x=0.5)
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-TypeError: wind_chill() takes 0 positional arguments but 7 were given
+TypeError: sin() takes no keyword arguments
 
+
+# Recipe 9
 >>> from math import sin, cos, asin, sqrt, radians
 >>> MI = 3959
 >>> NM = 3440

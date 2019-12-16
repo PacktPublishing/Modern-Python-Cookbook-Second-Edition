@@ -1,0 +1,56 @@
+"""Python Cookbook 2nd ed.
+
+Chapter 2, recipe 9
+
+This has rather complex scenarios.
+"""
+
+>>> from pathlib import Path
+>>> import shutil
+>>> import os
+
+# Prepare for the demo by removing the target directory.
+>>> shutil.rmtree(Path.cwd()/"backup")
+
+>>> source_dir = Path.cwd()/"data"
+>>> target_dir = Path.cwd()/"backup"
+>>> for source_path in source_dir.glob('**/*.csv'):
+...     source_name = source_path.relative_to(source_dir)
+...     target_path = target_dir/source_name
+...     shutil.copy(source_path, target_path)
+Traceback (most recent call last):
+  File "/Applications/PyCharm CE.app/Contents/helpers/pycharm/docrunner.py", line 139, in __run
+    exec(compile(example.source, filename, "single",
+  File "<doctest ch02_r09.txt[5]>", line 4, in <module>
+    shutil.copy(source_path, target_path)
+  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/shutil.py", line 409, in copy
+    copyfile(src, dst, follow_symlinks=follow_symlinks)
+  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/shutil.py", line 259, in copyfile
+    with open(src, 'rb') as fsrc, open(dst, 'wb') as fdst:
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Modern-Python-Cookbook-Second-Edition/backup/wc1.csv'
+
+>>> for source_path in source_dir.glob('**/*.csv'):
+...     source_name = source_path.relative_to(source_dir)
+...     target_path = target_dir/source_name
+...     try:
+...         target = shutil.copy(source_path, target_path)
+...     except FileNotFoundError:
+...         target_path.parent.mkdir(exist_ok=True, parents=True)
+...         target = shutil.copy(source_path, target_path)
+...     except OSError as ex:
+...         print(f"Copy {source_path} to {target_path} error {ex}")
+
+>>> for source_path in source_dir.glob('**/*.csv'):
+...     source_name = source_path.relative_to(source_dir)
+...     target_path = target_dir/source_name
+...     try:
+...         target = shutil.copy(source_path, target_path)
+...     except FileNotFoundError:
+...         try:
+...             target_path.parent.mkdir(exist_ok=True, parents=True)
+...             target = shutil.copy(source_path, target_path)
+...         except OSError as ex2:
+...             print(f"{target_path.parent} problem: {ex2}")
+...     except OSError as ex:
+...         print(f"Copy {source_path} to {target_path} error {ex}")
+

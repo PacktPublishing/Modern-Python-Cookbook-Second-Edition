@@ -1,6 +1,8 @@
 """Python Cookbook 2nd ed.
 
 Chapter 9, recipe 3.
+
+Note: Output from this is used in Chapter 4 examples.
 """
 
 import re

@@ -1,6 +1,20 @@
 """Python Cookbook
 
 Chapter 1, Examples from the text.
+
+•	Working with large and small integers
+•	Choosing between float, decimal, and fraction
+•	Choosing between true division and floor division
+•	Rewriting an immutable string
+•	String parsing with regular expressions
+•	Building complex strings with f"strings"
+•	Building complex strings from lists of characters
+•	Using the Unicode characters that aren't on our keyboards
+•	Encoding strings – creating ASCII and UTF-8 bytes
+•	Decoding bytes – how to get proper characters from some bytes
+•	Using tuples of items
+•	Using NamedTuples to simplify item access in tuples
+
 """
 
 

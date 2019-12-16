@@ -1,6 +1,8 @@
 """Python Cookbook
 
 Chapter 4, Examples from the text.
+
+Note: This depends on output from other examples.
 """
 
 # Lines 36 to 38
@@ -29,14 +31,18 @@ True
 >>> scheme['Crimson']
 (220, 14, 60)
 
+The following depend in other examples producing files
+of known sizes. Changes to other examples will lead to
+changes here.
+
 # Lines 103 to 105
 >>> import pathlib
 >>> home = pathlib.Path.cwd()
 >>> for path in home.glob('data/*.csv'):
 ...     print(path.stat().st_size, path.name)
-1790 wc1.csv
+1810 wc1.csv
+28 ex2_r12.csv
 1790 wc.csv
-29 test.csv
 215 sample.csv
 45 craps.csv
 28 output.csv
@@ -53,62 +59,62 @@ True
 >>> for path in home.glob('data/*.csv'):
 ...     file_sizes.append(path.stat().st_size)
 >>> print(file_sizes)
-[1790, 1790, 29, 215, 45, 28, 225, 166, 412, 156]
+[1810, 28, 1790, 215, 45, 28, 225, 166, 412, 156]
 >>> print(sum(file_sizes))
-4856
+4875
 
 # Lines 164 to 164
 >>> [path.stat().st_size
 ...    for path in home.glob('data/*.csv')]
-[1790, 1790, 29, 215, 45, 28, 225, 166, 412, 156]
+[1810, 28, 1790, 215, 45, 28, 225, 166, 412, 156]
 
 
 # Lines 176 to 176
 >>> list(path.stat().st_size
 ...    for path in home.glob('data/*.csv'))
-[1790, 1790, 29, 215, 45, 28, 225, 166, 412, 156]
+[1810, 28, 1790, 215, 45, 28, 225, 166, 412, 156]
 
 
 # Lines 187 to 196
 >>> sizes = list(path.stat().st_size
 ...    for path in home.glob('data/*.csv'))
 >>> sum(sizes)
-4856
+4875
 >>> max(sizes)
-1790
+1810
 >>> min(sizes)
 28
 >>> from statistics import mean
 >>> round(mean(sizes), 3)
-485.6
+487.5
 
 # Lines 199 to 199
 >>> sizes.index(min(sizes))
-5
+1
 
 # Lines 204 to 215
->>> ch1 = list(path.stat().st_size
-...    for path in home.glob('Chapter_01/*.py'))
->>> ch2 = list(path.stat().st_size
-...    for path in home.glob('Chapter_02/*.py'))
->>> len(ch1)
-1
->>> len(ch2)
-2
->>> final = ch1 + ch2
+>>> ch3 = list(path.stat().st_size
+...    for path in home.glob('Chapter_03/*.py'))
+>>> ch4 = list(path.stat().st_size
+...    for path in home.glob('Chapter_04/*.py'))
+>>> len(ch3)
+12
+>>> len(ch4)
+5
+>>> final = ch3 + ch4
 >>> len(final)
-3
+17
 >>> sum(final)
-1119
+30464
 
 # Lines 219 to 224
 >>> final_ex = []
->>> final_ex.extend(ch1)
->>> final_ex.extend(ch2)
+>>> final_ex.extend(ch3)
+>>> final_ex.extend(ch4)
 >>> len(final_ex)
-3
+17
 >>> sum(final_ex)
-1119
+30464
 
 # Lines 228 to 233
 >>> p = [3, 5, 11, 13]

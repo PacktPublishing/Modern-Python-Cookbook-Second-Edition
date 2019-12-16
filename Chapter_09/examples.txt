@@ -1,6 +1,8 @@
 """Python Cookbook
 
 Chapter 9, Examples from the text.
+
+Note: Output from this is used in Chapter 4 examples.
 """
 
 # Lines 51 to 51
@@ -97,7 +99,7 @@ PosixPath('data')
 
 # Lines 169 to 169
 >>> list(directory_path.glob("*.csv"))
-[PosixPath('data/wc1.csv'), PosixPath('data/wc.csv'), PosixPath('data/test.csv'), PosixPath('data/sample.csv'), PosixPath('data/craps.csv'), PosixPath('data/output.csv'), PosixPath('data/fuel.csv'), PosixPath('data/waypoints.csv'), PosixPath('data/summary_log.csv'), PosixPath('data/fuel2.csv')]
+[PosixPath('data/wc1.csv'), PosixPath('data/ex2_r12.csv'), PosixPath('data/wc.csv'), PosixPath('data/sample.csv'), PosixPath('data/craps.csv'), PosixPath('data/output.csv'), PosixPath('data/fuel.csv'), PosixPath('data/waypoints.csv'), PosixPath('data/summary_log.csv'), PosixPath('data/fuel2.csv')]
 
 # Lines 192 to 197
 >>> from pathlib import PureWindowsPath

@@ -1,12 +1,28 @@
 """Python Cookbook
 
 Chapter 2, Examples from the text.
+
+Note: Output from this is used in Chapter 4 examples.
+
+•	Writing python script and module files
+•	Writing long lines of code
+•	Including descriptions and documentation
+•	Better RST markup in docstrings
+•	Designing complex if...elif chains
+•	Saving intermediate results with the := “walrus”
+•	Avoiding a potential problem with break statements
+•	Leveraging the exception matching rules
+•	Avoiding a potential problem with an except: clause
+•	Concealing exception root cause
+•	Managing a context using the with statement
+
 """
-# Lines 18 to 18
+
+# Writing python script and module files
 >>> print("hello world")
 hello world
 
-# Lines 99 to 104
+# Writing long lines of code
 >>> import math
 >>> example_value = (63/25) * (17+15*math.sqrt(5)) / (7+15*math.sqrt(5))
 >>> mantissa_fraction, exponent = math.frexp(example_value)
@@ -15,40 +31,31 @@ hello world
 >>> print(message_text)
 the internal representation is 7074237752514592/2**53*2**2
 
-# Lines 118 to 121
 >>> import math
 >>> example_value = (63/25) * (17+15*math.sqrt(5)) / (7+15*math.sqrt(5))
 >>> mantissa_fraction, exponent = math.frexp(example_value)
 >>> mantissa_whole = int(mantissa_fraction*2**53)
 
-# Lines 124 to 126
 >>> message_text = f'the internal representation is {mantissa_whole:d}/2**53*2**{exponent:d}'
->>> message_text = 'the internal representation is \
-... {mantissa:d}/2**53*2**{exponent:d}'.\
-... format(mantissa=mantissa_whole, exponent=exponent)
+>>> message_text = f'the internal representation is \
+... {mantissa_whole:d}/2**53*2**{exponent:d}'
 
-# Lines 129 to 129
 >>> message_text
 'the internal representation is 7074237752514592/2**53*2**2'
 
-# Lines 135 to 139
 >>> import math
 >>> example_value1 = (63/25) * (17+15*math.sqrt(5)) / (7+15*math.sqrt(5))
 >>> example_value2 = (63/25) * ( (17+15*math.sqrt(5)) / (7+15*math.sqrt(5)) )
 >>> example_value2 == example_value1
 True
 
-# Lines 142 to 142
 >>> example_value3 = (63/25) * (
 ...      (17+15*math.sqrt(5))
 ...    / ( 7+15*math.sqrt(5))
 ... )
-
-# Lines 146 to 146
 >>> example_value3 == example_value1
 True
 
-# Lines 154 to 154
 >>> message_text = (
 ... f'the internal representation '
 ... f'is {mantissa_whole:d}/2**53*2**{exponent:d}'
@@ -56,19 +63,14 @@ True
 >>> message_text
 'the internal representation is 7074237752514592/2**53*2**2'
 
-# Lines 164 to 165
 >>> import math
 >>> example_value = (63/25) * (17+15*math.sqrt(5)) / (7+15*math.sqrt(5))
 
-# Lines 168 to 170
 >>> a = (63/25)
 >>> b = (17+15*math.sqrt(5))
 >>> c = (7+15*math.sqrt(5))
-
-# Lines 173 to 173
 >>> example_value = a * b / c
 
-# Lines 180 to 180
 >>> print(
 ...    'several values including',
 ...    'mantissa =', mantissa_fraction,
@@ -76,40 +78,81 @@ True
 ... )
 several values including mantissa = 0.785398163451422 exponent = 2
 
-# Lines 189 to 189
 >>> from math import (sin, cos, tan,
 ...    sqrt, log, frexp)
 
-# Lines 601 to 602
+# The named expression ("walrus") Operator
+
+>>> s = sum((1/(2*n+1))**2 for n in range(0, 20_000))
+>>> round(math.sqrt(8*s), 4)
+3.1416
+
+>>> b = 0
+>>> for n in range(0, 20_000):
+...     if (1/(2*n+1))**2 >= 0.000_000_001:
+...         b = b + (1/(2*n+1))**2
+>>> round(math.sqrt(8*b), 4)
+3.1416
+
+>>> p = 0
+>>> for n in range(0, 20_000):
+...     term = (1/(2*n+1))**2
+...     if term >= 0.000_000_001:
+...         p = p + term
+>>> round(math.sqrt(8*p), 4)
+3.1416
+
+>>> q = 0
+>>> for n in range(0, 20_000):
+...     if (term := (1/(2*n+1))**2) >= 0.000_000_001:
+...         q = q + term
+...     else:
+...         break
+>>> round(math.sqrt(8*q), 4)
+3.1416
+
+>>> r = 0
+>>> n = 0
+>>> while (term := (1/(2*n+1))**2) >= 0.000_000_001:
+...     r += term
+...     n += 1
+>>> round(math.sqrt(8*r), 4)
+3.1416
+>>> n
+15811
+
+>>> data = [11, 13, 17, 19, 23, 29]
+>>> total = 0
+>>> running_sum = [(total := total + d) for d in data]
+>>> total
+112
+>>> running_sum
+[11, 24, 41, 60, 83, 112]
+
+
+# Avoiding a potential problem with break statements
+
 >>> sample_1 = "some_name = the_value"
 >>> for position in range(len(sample_1)):
 ...    if sample_1[position] in '=:':
 ...        break
-
-# Lines 605 to 605
 >>> print('name=', sample_1[:position],
 ...     'value=', sample_1[position+1:])
 name= some_name  value=  the_value
 
-# Lines 609 to 610
 >>> sample_2 = "name_only"
 >>> for position in range(len(sample_2)):
 ...    if sample_2[position] in '=:':
 ...        break
-
-# Lines 613 to 613
 >>> print('name=', sample_2[:position],
 ...     'value=', sample_2[position+1:])  # doctest: +NORMALIZE_WHITESPACE
 name= name_onl value=
 
-# Lines 630 to 631
->>> position = -1 # If it's zero length
+>>> position = -1  # If it's zero length
 >>> for position in range(len(sample_2)):
 ...    if sample_2[position] in '=:':
 ...        break
-
-# Lines 635 to 635
->>> if position == -1:  
+>>> if position == -1:
 ...     print("name=", None, "value=", None)
 ... elif not(sample_2[position] == ':' or sample_2[position] == '='):
 ...     print("name=", sample_2, "value=", None)
@@ -118,30 +161,118 @@ name= name_onl value=
 ...     'value=', sample_2[position+1:])
 name= name_only value= None
 
-# Lines 819 to 821
->>> class Error(Exception):
+>>> if len(sample_2) > 0:
+...     name, value = sample_2, None
+... else:
+...     name, value = None, None
+>>> for position in range(len(sample_2)):
+...     if sample_2[position] in '=:':
+...         name, value = sample_2[:position], sample2[position:]
+...         break
+>>> print('name=', name, 'value=', value)
+name= name_only value= None
+
+
+>>> for position in range(len(sample_2)):
+...     if sample_2[position] in '=:':
+...         name, value = sample_2[:position], sample_2[position+1:]
+...         break
+... else:
+...     if len(sample_2) > 0:
+...         name, value = sample_2, None
+...     else:
+...         name, value = None, None
+>>> print('name=', name, 'value=', value)
+name= name_only value= None
+
+
+# Concealing exception root cause
+>>> class MyAppError(Exception):
 ...     pass
+
 >>> try:
-...     'hello world'[99]
-... except (IndexError, NameError) as exception:
-...     raise Error("index problem") from exception
+...     None.some_method(42)
+... except AttributeError as exception:
+...     raise MyAppError("Some Known Problem")  # doctest: +ELLIPSIS
 Traceback (most recent call last):
-   ...
-Error: index problem
+...
+MyAppError: Some Known Problem
 
-
-Full output...
-
+Actual: show's root cause.
 Traceback (most recent call last):
-  File "<doctest examples.txt[40]>", line 2, in <module>
-    'hello world'[99]
-IndexError: string index out of range
+  File "<doctest examples.txt[66]>", line 2, in <module>
+    None.some_method(42)
+AttributeError: 'NoneType' object has no attribute 'some_method'
 <BLANKLINE>
-The above exception was the direct cause of the following exception:
+During handling of the above exception, another exception occurred:
 <BLANKLINE>
 Traceback (most recent call last):
-  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
-    compileflags, 1), test.globs)
-  File "<doctest examples.txt[40]>", line 4, in <module>
-    raise Error("index problem") from exception
-Error: index problem
+  File "/Applications/PyCharm CE.app/Contents/helpers/pycharm/docrunner.py", line 139, in __run
+    exec(compile(example.source, filename, "single",
+  File "<doctest examples.txt[66]>", line 4, in <module>
+    raise MyAppError("Some Known Problem")  # doctest: +IGNORE_EXCEPTION_DETAIL,+NORMALIZE_WHITESPACE
+MyAppError: Some Known Problem
+
+
+>>> try:
+...     None.some_method(42)
+... except AttributeError as exception:
+...     raise MyAppError("Some Known Problem") from None
+Traceback (most recent call last):
+  File "/Applications/PyCharm CE.app/Contents/helpers/pycharm/docrunner.py", line 139, in __run
+    exec(compile(example.source, filename, "single",
+  File "<doctest examples.txt[67]>", line 4, in <module>
+    raise MyAppError("Some Known Problem") from None
+MyAppError: Some Known Problem
+
+>>> try:
+...     None.some_method(42)
+... except AttributeError as exception:
+...     try:
+...         raise MyAppError("details")
+...     except MyAppError as ex:
+...         print(ex.__context__)
+...         print(ex.__cause__)
+'NoneType' object has no attribute 'some_method'
+None
+
+# Managing a context using the with statement
+
+>>> import csv
+>>> from pathlib import Path
+>>> some_source = [[2,3,5], [7,11,13], [17,19,23]]
+
+>>> target_path = Path.cwd()/"data"/"ex2_r12.csv"
+>>> with target_path.open('w', newline='') as target_file:
+...     writer = csv.writer(target_file)
+...     writer.writerow(['column', 'data', 'heading'])
+...     writer.writerows(some_source)
+21
+>>> print(f'finished writing {target_path.name}')
+finished writing ex2_r12.csv
+
+>>> source_path = Path.cwd()/"data"/"ex2_r12.csv"
+>>> with source_path.open() as source_file:
+...     reader = csv.reader(source_file)
+...     data = list(reader)
+>>> data
+[['column', 'data', 'heading'], ['2', '3', '5'], ['7', '11', '13'], ['17', '19', '23']]
+
+>>> target_path = Path.cwd()/"data"/"ex2_r12.csv"
+>>> target_path.unlink()  # Be sure it's gone.
+
+>>> try:
+...     with target_path.open('w', newline='') as target_file:
+...         writer = csv.writer(target_file)
+...         wrote = writer.writerow(['column', 'data', 'heading'])
+...         wrote = writer.writerow(some_source[0])
+...         raise Exception("Testing")
+... except Exception as exc:
+...     print(f"{target_file.closed=}")
+...     print(f"{exc=}")
+target_file.closed=True
+exc=Exception('Testing')
+>>> print(f"Finished Writing {target_path.name}")
+Finished Writing ex2_r12.csv
+
+Note: Output from this is used in Chapter 4 examples.

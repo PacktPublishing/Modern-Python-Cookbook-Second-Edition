@@ -1,30 +1,37 @@
 """Python Cookbook 2nd ed.
 
-Chapter 3, Recipe 6
+Chapter 3, recipe 6, Defining position-only parameters with the / separator
+
+"""
+def F(c, /) -> float:
+    return 32 + c*(9/5)
+
+def C(f, /, truncate=False) -> float:
+    c = 5*(f-32) / 9
+    if truncate:
+        return round(c, 0)
+    return c
+
+test_f = """
+>>> F(0)
+32.0
+>>> F(25)
+77.0
 """
 
+test_c = """
+>>> C(32)
+0.0
+>>> C(77)
+25.0
+>>> round(C(72), 3)
+22.222
+>>> C(72)  # doctest: +ELLIPSIS
+22.22222222222222...
+>>> C(72, truncate=True)
+22.0
+>>> C(72, True)
+22.0
+"""
 
-def Twc(T: float, V: float) -> float:
-    """Computes the wind chill temperature
-
-    The wind-chill, :math:`T_{wc}`, is based on
-    air temperature, T, and wind speed, V.
-
-    :param T: Temperature in °C
-    :param V: Wind Speed in kph
-    :returns: Wind-Chill temperature in °C
-    :raises ValueError: for wind speeds under over 4.8 kph or T above 10°C
-
-    >>> round(Twc(-10, 25), 1)
-    -18.8
-    """
-    if V < 4.8 or T > 10.0:
-        raise ValueError("V must be over 4.8 kph, T must be below 10°C")
-    return 13.12 + 0.6215 * T - 11.37 * V ** 0.16 + 0.3965 * T * V ** 0.16
-
-
-from pytest import approx  # type: ignore
-
-
-def test_Twc():
-    assert Twc(-10, 25) == approx(-18.76076)
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

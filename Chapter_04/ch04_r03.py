@@ -3,6 +3,8 @@
 Chapter 4, recipe 3
 
 This repeats some parts of examples.txt.
+
+Note: Output from this is used in Chapter 4 examples.
 """
 
 from pathlib import Path
