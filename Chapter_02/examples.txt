@@ -16,6 +16,9 @@ Note: Output from this is used in Chapter 4 examples.
 •	Concealing exception root cause
 •	Managing a context using the with statement
 
+Since these are all interactive, it's difficult to create separate
+modules for each recipe.
+
 """
 
 # Writing python script and module files

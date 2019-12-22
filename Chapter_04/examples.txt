@@ -2,291 +2,45 @@
 
 Chapter 4, Examples from the text.
 
+•	Choosing a data structure
+•	Building lists – literals, appending, and comprehensions
+•	Slicing and dicing a list
+•	Deleting from a list – deleting, removing, popping, and filtering
+•	Writing list-related type hints
+•	Reversing a copy of a list
+•	Using set methods and operators
+•	Removing items from a set – remove(), pop(), and difference
+•	Writing set-related type hints
+•	Creating dictionaries – inserting and updating
+•	Removing from dictionaries – the pop() method and the del statement
+•	The order of dict keys
+•	Writing dictionary-related type hints
+•	Working with complex data structures
+•	Understanding variables, references, and assignment
+•	Making shallow and deep copies of objects
+•	Avoiding mutable default values for function parameters
+
 Note: This depends on output from other examples.
 """
-
-# Lines 36 to 38
->>> valid_inputs = {"yes", "y", "no", "n"}
->>> valid_inputs.add("y")
->>> valid_inputs == {'yes', 'no', 'n', 'y'}
-True
-
-# Lines 44 to 44
->>> month_name_list = ["Jan", "Feb", "Mar", "Apr",
-...    "May", "Jun", "Jul", "Aug",
-...    "Sep", "Oct", "Nov", "Dec"]
-
-# Lines 47 to 49
->>> month_name_list[8]
-'Sep'
->>> month_name_list.index("Feb")
-1
-
-# Lines 56 to 56
->>> scheme = {"Crimson": (220, 14, 60),
-... "DarkCyan": (0, 139, 139),
-... "Yellow": (255, 255, 00)}
-
-# Lines 59 to 59
->>> scheme['Crimson']
-(220, 14, 60)
 
 The following depend in other examples producing files
 of known sizes. Changes to other examples will lead to
 changes here.
 
-# Lines 103 to 105
->>> import pathlib
->>> home = pathlib.Path.cwd()
->>> for path in home.glob('data/*.csv'):
-...     print(path.stat().st_size, path.name)
-1810 wc1.csv
-28 ex2_r12.csv
-1790 wc.csv
-215 sample.csv
-45 craps.csv
-28 output.csv
-225 fuel.csv
-166 waypoints.csv
-412 summary_log.csv
-156 fuel2.csv
+# Chapter 4, Recipe 2.
+
+>>> sieve = [True for i in range(100)]
+>>> sieve[0] = sieve[1] = False
+>>> for p in range(100):
+...     if sieve[p]:
+...         for n in range(p*2, 100, p):
+...             sieve[n] = False
+>>> prime = [p for p in range(100) if sieve[p]]
+>>> prime
+[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
 
 
-# Lines 134 to 141
->>> file_sizes = []
-
->>> home = pathlib.Path.cwd()
->>> for path in home.glob('data/*.csv'):
-...     file_sizes.append(path.stat().st_size)
->>> print(file_sizes)
-[1810, 28, 1790, 215, 45, 28, 225, 166, 412, 156]
->>> print(sum(file_sizes))
-4875
-
-# Lines 164 to 164
->>> [path.stat().st_size
-...    for path in home.glob('data/*.csv')]
-[1810, 28, 1790, 215, 45, 28, 225, 166, 412, 156]
-
-
-# Lines 176 to 176
->>> list(path.stat().st_size
-...    for path in home.glob('data/*.csv'))
-[1810, 28, 1790, 215, 45, 28, 225, 166, 412, 156]
-
-
-# Lines 187 to 196
->>> sizes = list(path.stat().st_size
-...    for path in home.glob('data/*.csv'))
->>> sum(sizes)
-4875
->>> max(sizes)
-1810
->>> min(sizes)
-28
->>> from statistics import mean
->>> round(mean(sizes), 3)
-487.5
-
-# Lines 199 to 199
->>> sizes.index(min(sizes))
-1
-
-# Lines 204 to 215
->>> ch3 = list(path.stat().st_size
-...    for path in home.glob('Chapter_03/*.py'))
->>> ch4 = list(path.stat().st_size
-...    for path in home.glob('Chapter_04/*.py'))
->>> len(ch3)
-12
->>> len(ch4)
-5
->>> final = ch3 + ch4
->>> len(final)
-17
->>> sum(final)
-30464
-
-# Lines 219 to 224
->>> final_ex = []
->>> final_ex.extend(ch3)
->>> final_ex.extend(ch4)
->>> len(final_ex)
-17
->>> sum(final_ex)
-30464
-
-# Lines 228 to 233
->>> p = [3, 5, 11, 13]
->>> p.insert(0, 2)
->>> p
-[2, 3, 5, 11, 13]
->>> p.insert(3, 7)
->>> p
-[2, 3, 5, 7, 11, 13]
-
-# Chapter 4, Recipe 3.
-
-# Lines 281 to 283
->>> from pathlib import Path
->>> import csv
->>> with Path('data/fuel.csv').open() as source_file:
-...    reader = csv.reader(source_file)
-...    log_rows = list(reader)
-
-# Lines 286 to 288
->>> log_rows[0]
-['date', 'engine on', 'fuel height']
->>> log_rows[-1]
-['', "choppy -- anchor in jackson's creek", '']
-
-# Lines 296 to 303
->>> head, tail = log_rows[:4], log_rows[4:]
->>> head[0]
-['date', 'engine on', 'fuel height']
->>> head[-1]
-['', '', '']
->>> tail[0]
-['10/25/13', '08:24:00 AM', '29']
->>> tail[-1]
-['', "choppy -- anchor in jackson's creek", '']
-
-# Lines 308 to 308
->>> tail[0::3]
-[['10/25/13', '08:24:00 AM', '29'], ['10/26/13', '09:12:00 AM', '27']]
-
-# Lines 311 to 311
->>> tail[1::3]
-[['', '01:15:00 PM', '27'], ['', '06:25:00 PM', '22']]
-
-# Lines 314 to 314
->>> list( zip(tail[0::3], tail[1::3]) ) 
-[(['10/25/13', '08:24:00 AM', '29'], ['', '01:15:00 PM', '27']), (['10/26/13', '09:12:00 AM', '27'], ['', '06:25:00 PM', '22'])]
-
-# Lines 322 to 323
->>> paired_rows = list( zip(tail[0::3], tail[1::3]) )
->>> [a+b for a,b in paired_rows] 
-[['10/25/13', '08:24:00 AM', '29', '', '01:15:00 PM', '27'], ['10/26/13', '09:12:00 AM', '27', '', '06:25:00 PM', '22']]
-
-# Lines 386 to 388
->>> from pathlib import Path
->>> import csv
->>> with Path('data/fuel.csv').open() as source_file:
-...    reader = csv.reader(source_file)
-...    log_rows = list(reader)
-
-# Lines 391 to 393
->>> log_rows[0]
-['date', 'engine on', 'fuel height']
->>> log_rows[-1]
-['', "choppy -- anchor in jackson's creek", '']
-
-# Lines 406 to 411
->>> tail = log_rows.copy()
->>> del tail[:4]
->>> tail[0]
-['10/25/13', '08:24:00 AM', '29']
->>> tail[-1]
-['', "choppy -- anchor in jackson's creek", '']
-
-# Lines 417 to 420
->>> row = ['10/25/13', '08:24:00 AM', '29', '', '01:15:00 PM', '27']
->>> row.remove('')
->>> row
-['10/25/13', '08:24:00 AM', '29', '01:15:00 PM', '27']
-
-# Lines 433 to 440
->>> row = ['10/25/13', '08:24:00 AM', '29', '', '01:15:00 PM', '27']
->>> target_position = row.index('')
->>> target_position
-3
->>> row.pop(target_position)
-''
->>> row
-['10/25/13', '08:24:00 AM', '29', '01:15:00 PM', '27']
-
-# Lines 450 to 450
->>> def number_column(row, column=2):
-...    try:
-...        float(row[column])
-...        return True
-...    except ValueError:
-...        return False
-
-# Lines 458 to 463
->>> tail_rows = list(filter(number_column, log_rows))
->>> len(tail_rows)
-4
->>> tail_rows[0]
-['10/25/13', '08:24:00 AM', '29']
->>> tail_rows[-1]
-['', '06:25:00 PM', '22']
-
-# Lines 471 to 472
->>> row = ['', '06:25:00 PM', '22']
->>> del row[3]
-Traceback (most recent call last):
-  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
-    compileflags, 1), test.globs)
-  File "<doctest examples.txt[80]>", line 1, in <module>
-    del row[3]
-IndexError: list assignment index out of range
-
-# Lines 480 to 484
->>> data_items = [1, 1, 2, 3, 5, 8, 10,
-...    13, 21, 34, 36, 55]
->>> for f in data_items:
-...    if f%2 == 0: data_items.remove(f)
->>> data_items
-[1, 1, 3, 5, 10, 13, 21, 36, 55]
-
-# Lines 494 to 497
->>> data_items = [1, 1, 2, 3, 5, 8, 10,
-...    13, 21, 34, 36, 55]
->>> position = 0
->>> while position != len(data_items):
-...    f = data_items[position]
-...    if f%2 == 0:
-...        data_items.remove(f)
-...    else:
-...        position += 1
-
-# Lines 503 to 503
->>> data_items
-[1, 1, 3, 5, 13, 21, 55]
-
-# Lines 528 to 534
->>> week = 13
->>> day = 2
->>> hour = 7
->>> minute = 53
->>> second = 19
->>> t_s = (((week*7+day)*24+hour)*60+minute)*60+second
->>> t_s
-8063599
-
-# Lines 541 to 543
->>> t_s = 8063599
->>> fields = []
->>> for b in 60, 60, 24, 7:
-...    t_s, f = divmod(t_s, b)
-...    fields.append(f)
-
-# Lines 546 to 547
->>> fields.append(t_s)
->>> fields
-[19, 53, 7, 2, 13]
-
-# Lines 553 to 555
->>> fields_copy1 = fields.copy()
->>> fields_copy1.reverse()
->>> fields_copy1
-[13, 2, 7, 53, 19]
-
-# Lines 560 to 561
->>> fields_copy2 = fields[::-1]
->>> fields_copy2
-[13, 2, 7, 53, 19]
+# Recipe 7...
 
 # Lines 589 to 590
 >>> import random
@@ -411,7 +165,7 @@ True
 
 # Lines 780 to 783
 >>> import random
->>> from Chapter_04.ch04_r06 import samples, arrival2
+>>> from Chapter_04.ch04_r07 import samples, arrival2
 >>> random.seed(1)
 >>> list( samples(10, arrival2(8)) )
 [1, 0, 1, 1, 2, 2, 2, 2, 1, 1]

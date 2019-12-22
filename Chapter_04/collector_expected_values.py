@@ -1,6 +1,8 @@
 """Python Cookbook 2nd ed.
 
-Chapter 4, Recipe 6, expected values.
+Chapter 4, Recipe 7, Using set methods and operators
+
+This computes the expected values for the simulation.
 
 See
 

@@ -2,7 +2,7 @@
 
 Chapter 6, recipe 7
 """
-from Chapter_04.ch04_r06 import *
+from Chapter_04.ch04_r07 import *
 import collections
 import math
 import statistics

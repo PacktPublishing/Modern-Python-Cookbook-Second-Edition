@@ -16,6 +16,7 @@ Note: Output from these examples is used in Chapter 4 examples.
 •	Designing recursive functions around Python's stack limits
 •	Writing reusable scripts with the script library switch
 
+This includes a few interactive examples
 """
 
 

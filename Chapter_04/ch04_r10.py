@@ -1,8 +1,8 @@
 """Python Cookbook 2nd ed.
 
-Chapter 4, recipe 8
+Chapter 4, recipe 10, Creating dictionaries – inserting and updating
 """
-from Chapter_04.ch04_r06 import *
+from Chapter_04.ch04_r07 import *
 import collections
 from typing import Dict, Iterable, DefaultDict, Counter
 

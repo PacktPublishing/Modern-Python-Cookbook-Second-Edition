@@ -30,7 +30,7 @@ False
 7
 
 # Lines 179 to 181
->>> from Chapter_04.ch04_r06 import *
+>>> from Chapter_04.ch04_r07 import *
 >>> from collections import Counter
 >>> def raw_data(n=8, limit=1000, arrival_function=arrival1):
 ...    expected_time = float(expected(n))
@@ -125,7 +125,7 @@ AttributeError: 'Hand' object has no attribute 'some_other_attribute'
 9
 
 # Lines 629 to 631
->>> from Chapter_04.ch04_r06 import *
+>>> from Chapter_04.ch04_r07 import *
 >>> from collections import Counter
 >>> def raw_data(n=8, limit=1000, arrival_function=arrival1):
 ...    expected_time = float(expected(n))

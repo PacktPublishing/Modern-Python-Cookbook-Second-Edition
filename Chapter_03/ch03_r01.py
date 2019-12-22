@@ -57,20 +57,32 @@ def hex2rgb(hx_int: Union[int, str]) -> Tuple[int, int, int]:
     return r, g, b
 
 
+def hsl2rgb(hsl: Tuple[float, float, float]) -> Tuple[float, float, float]:
+    hue, saturation, lightness = hsl
+    c = saturation * (1-abs(2*lightness-1))
+    c2 = c * (1-abs(int(hue*360)/60 % 2 - 1))
+    if hue < 1/6:
+        r, g, b = c, c2, 0.0
+    elif hue < 1/3:
+        r, g, b = c2, c, 0.0
+    elif hue < 1/2:
+        r, g, b = 0.0, c, c2
+    elif hue < 2/3:
+        r, g, b = 0.0, c2, c
+    elif hue < 5/6:
+        r, g, b = c2, 0.0, c
+    else:
+        r, g, b = c, 0.0, c2
+    m = lightness - c/2
+    return (r+m)*255, (g+m)*255, (b+m)*255
+
+
 # Examples from https://www.easyrgb.com/en/convert.php#inputFORM
 # Brick Red: #C62D42 == HSL    0-1.0 =  0.97712  0.62963  0.47647   351.76°
 # Sea Green: #93DFB8 == HSL    0-1.0 =  0.41447  0.54286  0.72549   149.21°
 # Wisteria: #C9A0DC == HSL    0-1.0 =  0.78056  0.46153  0.74510   281.00°
 
-test_first_version = """
->>> def hex2rgb(hx_int):
-...    if isinstance(hx_int, str):
-...        if hx_int[0] == "#":
-...            hx_int = int(hx_int[1:], 16)
-...        else:
-...            hx_int = int(hx_int, 16)
-...    r, g, b = (hx_int >> 16)&0xff, (hx_int >> 8)&0xff, hx_int&0xff
-...    return r, g, b
+test_hex2rgb = """
 >>> hex2rgb("#C62D42")
 (198, 45, 66)
 """
@@ -81,6 +93,9 @@ test_Brick_Red = """
 >>> h, s, l = rgb2hsl(hex2rgb("#C62D42"))
 >>> f"{h:0.5f}  {s:0.5f}  {l:0.5f}"
 '0.97712  0.62963  0.47647'
+>>> r, g, b = hsl2rgb((h, s, l))
+>>> int(r), int(g), int(b)
+(198, 45, 67)
 """
 
 test_Sea_Green = """
@@ -89,6 +104,9 @@ test_Sea_Green = """
 >>> h, s, l = rgb2hsl(hex2rgb("93DFB8"))
 >>> f"{h:0.5f}  {s:0.5f}  {l:0.5f}"
 '0.41447  0.54286  0.72549'
+>>> r, g, b = hsl2rgb((h, s, l))
+>>> int(r), int(g), int(b)
+(147, 223, 183)
 """
 
 test_Wisteria = """
@@ -97,6 +115,29 @@ test_Wisteria = """
 >>> h, s, l = rgb2hsl(hex2rgb(0xC9A0DC))
 >>> f"{h:0.5f}  {s:0.5f}  {l:0.5f}"
 '0.78056  0.46154  0.74510'
+>>> r, g, b = hsl2rgb((h, s, l))
+>>> int(r), int(g), int(b)
+(200, 160, 220)
+"""
+
+test_color_set_Brick_Red = """
+>>> hex2rgb("#C62D42")
+(198, 45, 66)
+>>> h, s, l = rgb2hsl(hex2rgb("#C62D42"))
+>>> f"{h:0.5f}  {s:0.5f}  {l:0.5f}"
+'0.97712  0.62963  0.47647'
+>>> h1 = h + 1/12
+>>> if h1 > 1: 
+...     h1 -= 1
+>>> h2 = h - 1/12
+>>> if h2 < 0:
+...     h2 += 1
+>>> r, g, b = hsl2rgb((h1, s, l))
+>>> f'({r=:.2f}, {g=:.2f}, {b=:.2f})'
+'(r=198.00, g=98.55, b=45.00)'
+>>> r, g, b = hsl2rgb((h2, s, l))
+>>> f'({r=:.2f}, {g=:.2f}, {b=:.2f})'
+'(r=198.00, g=45.00, b=144.45)'
 """
 
 
