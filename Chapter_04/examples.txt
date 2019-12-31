@@ -13,9 +13,8 @@ Chapter 4, Examples from the text.
 •	Writing set-related type hints
 •	Creating dictionaries – inserting and updating
 •	Removing from dictionaries – the pop() method and the del statement
-•	The order of dict keys
+•	Controlling the order of dict keys
 •	Writing dictionary-related type hints
-•	Working with complex data structures
 •	Understanding variables, references, and assignment
 •	Making shallow and deep copies of objects
 •	Avoiding mutable default values for function parameters
@@ -27,7 +26,7 @@ The following depend in other examples producing files
 of known sizes. Changes to other examples will lead to
 changes here.
 
-# Chapter 4, Recipe 2.
+# Building lists – literals, appending, and comprehensions
 
 >>> sieve = [True for i in range(100)]
 >>> sieve[0] = sieve[1] = False
@@ -40,266 +39,109 @@ changes here.
 [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
 
 
-# Recipe 7...
+# Using set methods and operators
 
-# Lines 589 to 590
->>> import random
->>> def arrival1(n=8):
-...     while True:
-...         yield random.randrange(n)
+>>> collection = {1}
 
-# Lines 595 to 595
->>> def samples(limit, generator):
-...     for n, value in enumerate(generator):
-...         if n == limit: break
-...         yield value
-
-# Lines 601 to 602
->>> random.seed(1)
->>> list(samples(10, arrival1()))
-[2, 1, 4, 1, 7, 7, 7, 6, 3, 1]
-
-# Lines 607 to 608
->>> from fractions import Fraction
->>> def expected(n=8):
-...     return n * sum(Fraction(1,(i+1)) for i in range(n))
-
-# Lines 611 to 613
->>> expected(8)
-Fraction(761, 35)
->>> round(float(expected(8)))
-22
-
-# Lines 647 to 649
->>> collection = set()
->>> collection.add(1)
->>> collection
-{1}
-
-# Lines 652 to 655
->>> collection.add(1)
->>> collection
-{1}
->>> 1 in collection
-True
-
-# Lines 666 to 671
 >>> collection
 {1}
 >>> item = 3
->>> collection.union( {item} )
+>>> collection.union({item})
 {1, 3}
 >>> collection
 {1}
 
-# Lines 676 to 677
 >>> collection = collection | {item}
 >>> collection
 {1, 3}
 
-# Lines 681 to 682
->>> collection.update( {4} )
+>>> collection.update({4})
 >>> collection
 {1, 3, 4}
 
-# Lines 697 to 697
->>> log = '''
-... [2016-03-05T09:29:31-05:00] INFO: Processing ruby_block[print IP] action run (@recipe_files::/home/slott/ch4/deploy.rb line 9)
-... [2016-03-05T09:29:31-05:00] INFO: Installed IP: 111.222.111.222
-... [2016-03-05T09:29:31-05:00] INFO: ruby_block[print IP] called
-...
-...  - execute the ruby block print IP
-... [2016-03-05T09:29:31-05:00] INFO: Chef Run complete in 23.233811181 seconds
-...
-... Running handlers:
-... [2016-03-05T09:29:31-05:00] INFO: Running report handlers
-... Running handlers complete
-... [2016-03-05T09:29:31-05:00] INFO: Report handlers complete
-... Chef Client finished, 2/2 resources updated in 29.233811181 seconds
-... '''
 
-# Lines 713 to 716
->>> import re
->>> pattern = re.compile(r"IP: \d+\.\d+\.\d+\.\d+")
->>> matches = set( pattern.findall(log) )
->>> matches
-{'IP: 111.222.111.222'}
+# Controlling the order of dict keys.
 
-# Lines 722 to 728
->>> to_be_ignored = {'IP: 0.0.0.0', 'IP: 1.2.3.4'}
->>> matches = {'IP: 111.222.111.222', 'IP: 1.2.3.4'}
->>> matches - to_be_ignored
-{'IP: 111.222.111.222'}
->>> matches.difference(to_be_ignored)
-{'IP: 111.222.111.222'}
+>>> row = {'columns': 42, 'data': 3.14, 'of': 2.718, 'some': 1.618}
 
-# Lines 732 to 733
->>> valid_matches = matches - to_be_ignored
->>> valid_matches
-{'IP: 111.222.111.222'}
+>>> import collections
 
-# Lines 747 to 749
->>> valid_matches = matches.copy()
->>> valid_matches.difference_update( to_be_ignored )
->>> valid_matches
-{'IP: 111.222.111.222'}
+>>> key_order = ['some', 'columns', 'of', 'data']
+>>> collections.OrderedDict(
+...     [(name, row[name]) for name in key_order]
+... )
+OrderedDict([('some', 1.618), ('columns', 42), ('of', 2.718), ('data', 3.14)])
 
-# Lines 754 to 755
->>> valid_matches = matches.copy()
->>> for item in to_be_ignored:
-...    if item in valid_matches:
-...        valid_matches.remove(item)
+>>> import collections
+>>> import datetime
+>>> log_rows = [
+...     {'date': '2019-11-12T13:14:15', 'path': '/path/to/resource'},
+...     {'date': '2019-11-14T15:16:17', 'path': '/path/to/resource'},
+...     {'date': '2019-11-19T20:21:11', 'path': '/path/to/resource'},
+...     {'date': '2019-11-20T21:22:23', 'path': '/path/to/resource'},
+...     {'date': '2019-11-26T07:08:09', 'path': '/path/to/resource'},
+... ]
+>>> summary = collections.Counter()
+>>> for row in log_rows:
+...     date = datetime.datetime.strptime(row['date'], "%Y-%m-%dT%H:%M:%S")
+...     summary[date.weekday()] += 1
+>>> summary
+Counter({1: 3, 3: 1, 2: 1})
 
-# Lines 758 to 758
->>> valid_matches
-{'IP: 111.222.111.222'}
+>>> import calendar
+>>> for k in sorted(summary):
+...      print(calendar.day_name[k], summary[k])
+Tuesday 3
+Wednesday 1
+Thursday 1
 
-# Lines 772 to 772
->>> def arrival2(n=8):
-...     p = 0
-...     while True:
-...         step = random.choice([-1,0,+1])
-...         p += step
-...         yield abs(p) % n
+# Understanding variables, references, and assignment
 
-
-# Lines 780 to 783
->>> import random
->>> from Chapter_04.ch04_r07 import samples, arrival2
->>> random.seed(1)
->>> list( samples(10, arrival2(8)) )
-[1, 0, 1, 1, 2, 2, 2, 2, 1, 1]
-
-# Lines 828 to 829
->>> from collections import Counter
->>> def summarize_4(source):
-...    histogram = Counter(source)
-...    return histogram
-
-
-# Lines 834 to 838
->>> import random
->>> from pprint import pprint
->>> random.seed(1)
->>> histogram = summarize_4(samples(1000, arrival2(8)))
->>> pprint(histogram)
-Counter({1: 150, 0: 130, 2: 129, 4: 128, 5: 127, 6: 118, 3: 117, 7: 101})
-
-# Lines 842 to 842
->>> for key in sorted(histogram):
-...    print(key, histogram[key])
-0 130
-1 150
-2 129
-3 117
-4 128
-5 127
-6 118
-7 101
-
-
-# Lines 927 to 930
->>> from pathlib import Path
->>> import csv
->>> data_path = Path('data/craps.csv')
->>> with data_path.open() as data_file:
-...     reader = csv.DictReader(data_file)
-...     data = list(reader)
-
-# Lines 933 to 933
->>> for row in data: 
-...    print(row)
-{'final': '5', 'least': '0', 'most': '6'}
-{'final': '-3', 'least': '-4', 'most': '0'}
-{'final': '-1', 'least': '-3', 'most': '1'}
-{'final': '3', 'least': '0', 'most': '4'}
-
-# Lines 952 to 953
->>> from collections import OrderedDict
->>> with data_path.open() as data_file:
-...     reader = csv.DictReader(data_file)
-...     for raw_row in reader:
-...         column_sequence = ((name, raw_row[name])
-...            for name in reader.fieldnames)
-...         good_row = OrderedDict(column_sequence)
-...         print(good_row)
-OrderedDict([('final', '5'), ('least', '0'), ('most', '6')])
-OrderedDict([('final', '-3'), ('least', '-4'), ('most', '0')])
-OrderedDict([('final', '-1'), ('least', '-3'), ('most', '1')])
-OrderedDict([('final', '3'), ('least', '0'), ('most', '4')])
-
-# Lines 983 to 983
->>> {"Poe", "E", "Near", "A", "Raven"}  # doctest: +SKIP
-{'E', 'Poe', 'Raven', 'Near', 'A'}
-
-# Lines 989 to 989
->>> words = set(
-... '''Beautiful is better than ugly.
-... Explicit is better than implicit.
-... Simple is better than complex.
-... Complex is better than complicated.
-... '''.replace('.', ' ').split())
-
-# Lines 995 to 995
->>> words == {'is', 'Simple', 'Complex', 'better', 'than', 'complicated', 'Beautiful', 'complex', 'implicit', 'ugly', 'Explicit'}
-True
-
-# Lines 1007 to 1007
->>> list(sorted(words)) # doctest: +ELLIPSIS
-['Beautiful', 'Complex', 'Explicit', 'Simple', 'better', ...
-
-# Lines 1037 to 1038
 >>> mutable = [1, 1, 2, 3, 5, 8]
 >>> immutable = (5, 8, 13, 21)
 
-# Lines 1043 to 1044
 >>> mutable_b = mutable
 >>> immutable_b = immutable
 
-
-# Lines 1047 to 1049
 >>> mutable_b is mutable
 True
 >>> immutable_b is immutable
 True
 
-# Lines 1052 to 1052
 >>> mutable += [mutable[-2] + mutable[-1]]
 
-# Lines 1055 to 1055
 >>> immutable += (immutable[-2] + immutable[-1],)
 
-# Lines 1058 to 1064
 >>> mutable_b
 [1, 1, 2, 3, 5, 8, 13]
 >>> mutable is mutable_b
 True
+
 >>> immutable_b
 (5, 8, 13, 21)
 >>> immutable
 (5, 8, 13, 21, 34)
 
-# Lines 1079 to 1082
+
 >>> a = 355
 >>> a += 113
 >>> a = a + 113
 
-# Lines 1105 to 1108
+
+# Making shallow and deep copies of objects
+
 >>> some_dict = {'a': [1, 1, 2, 3]}
 >>> another_dict = some_dict.copy()
 >>> another_dict
 {'a': [1, 1, 2, 3]}
 
-# Lines 1111 to 1112
 >>> some_dict['a'].append(5)
 >>> another_dict
 {'a': [1, 1, 2, 3, 5]}
 
-# Lines 1116 to 1116
 >>> id(some_dict['a']) == id(another_dict['a'])
 True
 
-# Lines 1120 to 1124
 >>> some_list = [[2, 3, 5], [7, 11, 13]]
 >>> another_list = some_list.copy()
 >>> some_list is another_list
@@ -307,7 +149,6 @@ False
 >>> some_list[0] is another_list[0]
 True
 
-# Lines 1132 to 1140
 >>> import copy
 >>> some_dict = {'a': [1, 1, 2, 3]}
 >>> another_dict = copy.deepcopy(some_dict)
@@ -317,61 +158,9 @@ True
 >>> another_dict
 {'a': [1, 1, 2, 3]}
 
-# Lines 1143 to 1143
 >>> id(some_dict['a']) == id(another_dict['a'])
 False
 
-# Lines 1148 to 1149
 >>> copy_of_list = [item for item in some_list]
 >>> copy_of_dict = {key:value for key, value in some_dict.items()}
-
-# Lines 1174 to 1176
->>> from collections import Counter
->>> from random import randint, seed
->>> def gather_stats(n, samples=1000, summary=Counter()):
-...     summary.update(
-...         sum(randint(1,6) for d in range(n))
-...             for _ in range(samples))
-...     return summary
-
-# Lines 1182 to 1184
->>> seed(1)
->>> s1 = gather_stats(2)
->>> s1
-Counter({7: 168, 6: 147, 8: 136, 9: 114, 5: 110, 10: 77, 11: 71, 4: 70, 3: 52, 12: 29, 2: 26})
-
-# Lines 1187 to 1191
->>> seed(1)
->>> mc = Counter()
->>> gather_stats(2, summary=mc)  # doctest: +ELLIPSIS
-Counter...
->>> mc
-Counter({7: 168, 6: 147, 8: 136, 9: 114, 5: 110, 10: 77, 11: 71, 4: 70, 3: 52, 12: 29, 2: 26})
-
-# Lines 1196 to 1198
->>> seed(1)
->>> s3 = gather_stats(2)
->>> s3
-Counter({7: 336, 6: 294, 8: 272, 9: 228, 5: 220, 10: 154, 11: 142, 4: 140, 3: 104, 12: 58, 2: 52})
-
-# Lines 1202 to 1202
->>> s1 is s3
-True
-
-# Lines 1206 to 1206
->>> s1
-Counter({7: 336, 6: 294, 8: 272, 9: 228, 5: 220, 10: 154, 11: 142, 4: 140, 3: 104, 12: 58, 2: 52})
-
-# Lines 1243 to 1243
->>> def gather_stats(n, samples=1000, summary_func=lambda x:Counter(x)):
-...     summary = summary_func(
-...         sum(randint(1,6) for d in range(n))
-...             for _ in range(samples))
-...     return summary
-
-
-# Lines 1250 to 1251
->>> seed(1)
->>> gather_stats(2, 12, summary_func=list)
-[7, 4, 5, 8, 10, 3, 5, 8, 6, 10, 9, 7]
 

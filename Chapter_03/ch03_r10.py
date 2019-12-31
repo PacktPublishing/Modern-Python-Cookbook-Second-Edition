@@ -7,6 +7,7 @@ import timeit
 import doctest
 from typing import Iterable, Iterator
 
+
 def prod(int_iter: Iterable[int]) -> int:
     p = 1
     for i in int_iter:
@@ -53,7 +54,7 @@ def fibo(n: int) -> int:
     if n <= 1:
         return 1
     else:
-        return fibo(n-1)+fibo(n-2)
+        return fibo(n - 1) + fibo(n - 2)
 
 
 from functools import lru_cache

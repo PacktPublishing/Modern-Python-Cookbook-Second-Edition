@@ -66,29 +66,24 @@ TypeError: sin() takes no keyword arguments
 ...
 ...     return R * c
 
-# Lines 437 to 437
 >>> round(haversine(36.12, -86.67, 33.94, -118.40, R=6372.8), 5)
 2887.25995
 
 >>> def nm_haversine(*args):
 ...     return haversine(*args, R=NM)
 
-# Lines 483 to 483
 >>> round(nm_haversine(36.12, -86.67, 33.94, -118.40), 2)
 1558.53
 
-# Lines 498 to 498
 >>> round(nm_haversine(36.12, -86.67, 33.94, -118.40), 2)
 1558.53
 
-# Lines 522 to 522
 >>> def Twc(T, V):
 ...     """Wind Chill Temperature."""
 ...     if V < 4.8 or T > 10.0:
 ...         raise ValueError("V must be over 4.8 kph, T must be below 10°C")
 ...     return 13.12 + 0.6215*T - 11.37*V**0.16 + 0.3965*T*V**0.16
 
-# Lines 604 to 604
 >>> round(Twc(-10, 25), 1)
 -18.8
 

@@ -6,6 +6,7 @@ Chapter 3, recipe 7, Writing hints for more complex types
 from typing import Optional, Union, Dict
 from decimal import Decimal
 
+
 def temperature(
     *, f_temp: Optional[float] = None, c_temp: Optional[float] = None
 ) -> Dict[str, float]:
@@ -42,24 +43,22 @@ def temperature_bad(
     result = {"c_temp": c_temp, "f_temp": f_temp}
     return result  # type: ignore
 
+
 # Without the type: ignore, we'll get mypy errors.
 # Chapter_03/ch03_r07.py:43: error: Incompatible return value type (got "Dict[str, float]", expected "float")
 
 from pytest import approx  # type: ignore
 
+
 def test_temperature():
     assert temperature(f_temp=72) == {"c_temp": approx(22.22222), "f_temp": 72}
     assert temperature(c_temp=22.2) == {"c_temp": 22.2, "f_temp": approx(71.96)}
 
+
 from mypy_extensions import TypedDict
 
-TempDict = TypedDict(
-    "TempDict",
-    {
-        "c_temp": float,
-        "f_temp": float,
-    }
-)
+TempDict = TypedDict("TempDict", {"c_temp": float, "f_temp": float,})
+
 
 def temperature_d(
     *, f_temp: Optional[float] = None, c_temp: Optional[float] = None

@@ -16,15 +16,18 @@ Note: Output from this is used in Chapter 4 examples.
 •	Concealing exception root cause
 •	Managing a context using the with statement
 
-Since these are all interactive, it's difficult to create separate
-modules for each recipe.
+Since these are almost all examples of the REPL, it's easier to
+show this is a long interaction.
 
 """
 
+
+# Recipe 1
 # Writing python script and module files
 >>> print("hello world")
 hello world
 
+# Recipe 2
 # Writing long lines of code
 >>> import math
 >>> example_value = (63/25) * (17+15*math.sqrt(5)) / (7+15*math.sqrt(5))
@@ -84,7 +87,9 @@ several values including mantissa = 0.785398163451422 exponent = 2
 >>> from math import (sin, cos, tan,
 ...    sqrt, log, frexp)
 
-# The named expression ("walrus") Operator
+
+# Recipe 6
+# Saving intermediate results with the := “walrus"
 
 >>> s = sum((1/(2*n+1))**2 for n in range(0, 20_000))
 >>> round(math.sqrt(8*s), 4)
@@ -133,6 +138,7 @@ several values including mantissa = 0.785398163451422 exponent = 2
 [11, 24, 41, 60, 83, 112]
 
 
+# Recipe 7
 # Avoiding a potential problem with break statements
 
 >>> sample_1 = "some_name = the_value"
@@ -189,6 +195,7 @@ name= name_only value= None
 name= name_only value= None
 
 
+# Recipe 8
 # Concealing exception root cause
 >>> class MyAppError(Exception):
 ...     pass
@@ -239,6 +246,8 @@ MyAppError: Some Known Problem
 'NoneType' object has no attribute 'some_method'
 None
 
+
+# Recipe 9
 # Managing a context using the with statement
 
 >>> import csv

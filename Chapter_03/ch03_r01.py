@@ -7,10 +7,11 @@ from math import isclose
 
 # https://www.easyrgb.com/en/math.php
 
+
 def rgb2hsl(rgb: Tuple[int, int, int]) -> Tuple[float, float, float]:
-    r = rgb[0]/255
-    g = rgb[1]/255
-    b = rgb[2]/255
+    r = rgb[0] / 255
+    g = rgb[1] / 255
+    b = rgb[2] / 255
 
     min_color = min(r, g, b)
     max_color = max(r, g, b)
@@ -33,11 +34,11 @@ def rgb2hsl(rgb: Tuple[int, int, int]) -> Tuple[float, float, float]:
         b_factor = (((max_color - b) / 6) + mid_color) / delta_color
 
         if r == max_color:
-            hue =       b_factor - g_factor
+            hue = b_factor - g_factor
         elif g == max_color:
-            hue = 1/3 + r_factor - b_factor
+            hue = 1 / 3 + r_factor - b_factor
         elif b == max_color:
-            hue = 2/3 + g_factor - r_factor
+            hue = 2 / 3 + g_factor - r_factor
 
         if hue < 0:
             hue += 1
@@ -46,6 +47,7 @@ def rgb2hsl(rgb: Tuple[int, int, int]) -> Tuple[float, float, float]:
 
     return hue, saturation, lightness
 
+
 def hex2rgb(hx_int: Union[int, str]) -> Tuple[int, int, int]:
     if isinstance(hx_int, str):
         if hx_int[0] == "#":
@@ -53,28 +55,28 @@ def hex2rgb(hx_int: Union[int, str]) -> Tuple[int, int, int]:
         else:
             hx_int = int(hx_int, 16)
     # reveal_type(hx_int)
-    r, g, b = (hx_int >> 16)&0xff, (hx_int >> 8)&0xff, hx_int&0xff
+    r, g, b = (hx_int >> 16) & 0xFF, (hx_int >> 8) & 0xFF, hx_int & 0xFF
     return r, g, b
 
 
 def hsl2rgb(hsl: Tuple[float, float, float]) -> Tuple[float, float, float]:
     hue, saturation, lightness = hsl
-    c = saturation * (1-abs(2*lightness-1))
-    c2 = c * (1-abs(int(hue*360)/60 % 2 - 1))
-    if hue < 1/6:
+    c = saturation * (1 - abs(2 * lightness - 1))
+    c2 = c * (1 - abs(int(hue * 360) / 60 % 2 - 1))
+    if hue < 1 / 6:
         r, g, b = c, c2, 0.0
-    elif hue < 1/3:
+    elif hue < 1 / 3:
         r, g, b = c2, c, 0.0
-    elif hue < 1/2:
+    elif hue < 1 / 2:
         r, g, b = 0.0, c, c2
-    elif hue < 2/3:
+    elif hue < 2 / 3:
         r, g, b = 0.0, c2, c
-    elif hue < 5/6:
+    elif hue < 5 / 6:
         r, g, b = c2, 0.0, c
     else:
         r, g, b = c, 0.0, c2
-    m = lightness - c/2
-    return (r+m)*255, (g+m)*255, (b+m)*255
+    m = lightness - c / 2
+    return (r + m) * 255, (g + m) * 255, (b + m) * 255
 
 
 # Examples from https://www.easyrgb.com/en/convert.php#inputFORM
@@ -142,10 +144,13 @@ test_color_set_Brick_Red = """
 
 
 from typing import NamedTuple
+
+
 class RGB(NamedTuple):
     red: int
     green: int
     blue: int
+
 
 def hex_to_rgb2(hx_int: Union[int, str]) -> RGB:
     """
@@ -162,10 +167,7 @@ def hex_to_rgb2(hx_int: Union[int, str]) -> RGB:
         else:
             hx_int = int(hx_int, 16)
     # reveal_type(hx_int)
-    return RGB(
-        (hx_int >> 16)&0xff,
-        (hx_int >> 8)&0xff,
-        (hx_int&0xff)
-    )
+    return RGB((hx_int >> 16) & 0xFF, (hx_int >> 8) & 0xFF, (hx_int & 0xFF))
+
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

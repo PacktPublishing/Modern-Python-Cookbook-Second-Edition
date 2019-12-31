@@ -4,8 +4,10 @@ Chapter 3, recipe 3, Designing type hints for optional parameters
 """
 import random
 
+
 def dice(n, sides=6):
     return tuple(random.randint(1, sides) for _ in range(n))
+
 
 test_dice = """
 >>> random.seed(113)
@@ -15,19 +17,25 @@ test_dice = """
 
 from typing import Tuple
 
+
 def dice_t(n: int, sides: int = 6) -> Tuple[int, ...]:
     return tuple(random.randint(1, sides) for _ in range(n))
 
+
 Dice = Tuple[int, ...]
+
 
 def craps() -> Dice:
     return dice_t(2)
 
-def zonk(n: int=6) -> Dice:
+
+def zonk(n: int = 6) -> Dice:
     return dice_t(n)
+
 
 def mage_hitpoints(n) -> int:
     return sum(dice_t(n, 4))
+
 
 test_craps = """
 >>> random.seed(113)
@@ -48,10 +56,13 @@ test_mage = """
 """
 
 from typing import Optional, Tuple
+
+
 def polydice(n: Optional[int] = None, sides: int = 6) -> Tuple[int, ...]:
     if n is None:
         n = 2 if sides == 6 else 1
     return tuple(random.randint(1, sides) for _ in range(n))
+
 
 test_polydice = """
 >>> random.seed(113)

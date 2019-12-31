@@ -35,9 +35,9 @@ test_rtd = """
 
 
 def rtd2(**keywords):
-    rate = keywords.get('rate', None)
-    time = keywords.get('time', None)
-    distance = keywords.get('distance', None)
+    rate = keywords.get("rate", None)
+    time = keywords.get("time", None)
+    distance = keywords.get("distance", None)
     if distance is None and rate is not None and time is not None:
         distance = rate * time
     elif rate is None and distance is not None and time is not None:
@@ -47,6 +47,7 @@ def rtd2(**keywords):
     else:
         warnings.warn("Nothing to solve for")
     return dict(distance=distance, rate=rate, time=time)
+
 
 test_rtd2 = """
 >>> rtd2(distance=31.2, rate=6) 

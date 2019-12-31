@@ -15,12 +15,13 @@ Chapter 1, Examples from the text.
 •	Using tuples of items
 •	Using NamedTuples to simplify item access in tuples
 
-Since these are all interactive, it's difficult to create separate
-modules for each recipe.
+Since these are all examples of the REPL, it's easier to
+show this is a long interaction.
+
 """
 
 
-
+# Recipe 1
 # Working with large and small integers
 >>> 2
 2
@@ -74,6 +75,8 @@ sys.int_info(bits_per_digit=30, sizeof_digit=4)
 >>> bin(composite_byte & bottom_6_mask)
 '0b101100'
 
+
+# Recipe 2
 # Choosing between float, decimal, and fraction
 >>> from decimal import Decimal
 >>> from decimal import Decimal
@@ -111,7 +114,6 @@ Fraction(3, 2)
 >>> 1-answer
 1.1102230246251565e-16
 
-# Converting numbers from one type to another
 >>> float(total_amount)
 3.163875
 >>> float(sugar_cups * scale_factor)
@@ -149,6 +151,8 @@ ValueError: math domain error
 >>> cmath.sqrt(-2)
 1.4142135623730951j
 
+
+# Recipe 3
 # Choosing between true division and floor division
 >>> total_seconds = 7385
 >>> hours = total_seconds//3600
@@ -183,6 +187,8 @@ Fraction(1477, 720)
 
 >>> from __future__ import division
 
+
+# Recipe 4
 # Rewriting an immutable string
 >>> title = "Recipe 5: Rewriting, and the Immutable String"
 >>> title[8]= ''
@@ -193,7 +199,6 @@ Traceback (most recent call last):
     title[8]= ''
 TypeError: 'str' object does not support item assignment
 
-# Slicing a piece of a string
 >>> title = "Recipe 5: Rewriting, and the Immutable String"
 
 >>> colon_position = title.index(':')
@@ -210,7 +215,6 @@ TypeError: 'str' object does not support item assignment
 >>> post_colon_text
 ' Rewriting, and the Immutable String'
 
-# Updating a string with a replacement
 >>> post_colon_text = post_colon_text.replace(' ', '_')
 >>> post_colon_text = post_colon_text.replace(',', '_')
 >>> post_colon_text
@@ -222,10 +226,8 @@ TypeError: 'str' object does not support item assignment
 >>> post_colon_text
 '_Rewriting__and_the_Immutable_String'
 
-# Making a string all lowercase
 >>> post_colon_text = post_colon_text.lower()
 
-# Removing extra punctuation marks
 >>> post_colon_text = post_colon_text.strip('_')
 >>> while '__' in post_colon_text:
 ...   post_colon_text = post_colon_text.replace('__', '_')
@@ -241,6 +243,8 @@ False
 >>> '1298'.isnumeric()
 True
 
+
+# Recipe 5
 # String parsing with regular expressions
 >>> ingredient = "Kumquat: 2 cups"
 
@@ -268,6 +272,7 @@ False
 ... )
 
 
+# Recipe 6
 # Building complex strings with f"strings"
 >>> id = "IAD"
 >>> location = "Dulles Intl Airport"
@@ -289,8 +294,6 @@ False
 >>> '{id:3s}  : {location:19s} :  {max_temp:3d} / {min_temp:3d} / {precipitation:5.2f}'.format_map(data)
 'IAD  : Dulles Intl Airport :   32 /  13 /  0.40'
 
-
-# Lines 646 to 646
 >>> class Summary:
 ...     def __init__(self, id, location, min_temp, max_temp, precipitation):
 ...         self.id= id
@@ -307,6 +310,8 @@ False
 >>> print(s)
 IAD  : Dulles Intl Airport :   32 /  13 /  0.40
 
+
+# Recipe 7
 # Building complex strings from lists of characters
 >>> title = "Recipe 5: Rewriting an Immutable String"
 
@@ -328,6 +333,8 @@ IAD  : Dulles Intl Airport :   32 /  13 /  0.40
 >>> ''.join(title_list)
 'prefix_Rewriting_an_Immutable_String'
 
+
+# Recipe 8
 # Using the Unicode characters that aren't on our keyboards
 >>> 'You Rolled \u2680'
 'You Rolled ⚀'
@@ -339,6 +346,8 @@ IAD  : Dulles Intl Airport :   32 /  13 /  0.40
 >>> r"\w+"
 '\\w+'
 
+
+# Recipe 9
 # Encoding strings – creating ASCII and UTF-8 bytes
 >>> with open('data/some_file.txt', 'w', encoding='utf-8') as output:
 ...     print( 'You drew \U0001F000', file=output )
@@ -359,6 +368,8 @@ Traceback (most recent call last):
     'You drew \U0001F000'.encode('ascii')
 UnicodeEncodeError: 'ascii' codec can't encode character '\U0001f000' in position 9: ordinal not in range(128)
 
+
+# Recipe 10
 # Decoding bytes – how to get proper characters from some bytes
 
 ###
@@ -399,6 +410,7 @@ b'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR
 'BULLETIN - IMMEDIATE BROADCAST REQUESTED\nSpecial Marine Warning\nNational Weather Service Wakefield VA\n1245 AM EDT Fri Nov 1 2019\n\nThe National Weather Service'
 
 
+# Recipe 11
 # Using tuples of items
 >>> ingredient = "Kumquat: 2 cups"
 >>> import re
@@ -416,7 +428,6 @@ b'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR
 >>> 355,
 (355,)
 
-# Extracting items from a tuple
 >>> my_data[1]
 Fraction(1, 4)
 
@@ -447,6 +458,8 @@ Traceback (most recent call last):
     t.index('Rice')
 ValueError: tuple.index(x): x not in tuple
 
+
+# Recipe 12
 # Using NamedTules to simplify tuples
 >>> item = ('Kumquat', '2', 'cups')
 >>> Fraction(item[1])

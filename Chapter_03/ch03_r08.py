@@ -73,9 +73,9 @@ def test_haversine():
     assert nm_haversine_3(36.12, -86.67, 33.94, -118.40) == approx(1558.526)
     assert haversine(36.12, -86.67, 33.94, -118.40, R=NM) == approx(1558.526)
 
+
 def p_haversine(
-    R: float,
-    lat_1: float, lon_1: float, lat_2: float, lon_2: float
+    R: float, lat_1: float, lon_1: float, lat_2: float, lon_2: float
 ) -> float:
     Δ_lat = radians(lat_2) - radians(lat_1)
     Δ_lon = radians(lon_2) - radians(lon_1)
@@ -86,7 +86,9 @@ def p_haversine(
 
     return R * 2 * asin(a)
 
+
 from functools import partial
+
 nm_haversine_4 = partial(p_haversine, NM)
 
 test_ordered = """

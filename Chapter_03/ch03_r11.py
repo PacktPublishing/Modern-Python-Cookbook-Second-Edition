@@ -66,5 +66,6 @@ def test_distance(capsys):
         "'2012-11-28', 'time': '11:35:00'} 65.5310772193093",
     ]
 
+
 if __name__ == "__main__":
     distances()

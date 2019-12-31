@@ -5,11 +5,14 @@ Chapter 3, recipe 2, Designing functions with optional parameters
 import random
 from typing import Tuple
 
+
 def die() -> int:
-   return random.randint(1,6)
+    return random.randint(1, 6)
+
 
 def craps() -> Tuple[int, int]:
-   return (die(), die())
+    return (die(), die())
+
 
 test_die_craps = """
 >>> random.seed(113)
@@ -21,19 +24,24 @@ test_die_craps = """
 (1, 4)
 """
 
+
 def zonk() -> Tuple[int, ...]:
     return tuple(die() for x in range(6))
+
 
 test_zonk = """
 >>> zonk()
 (5, 3, 2, 4, 1, 1)
 """
 
+
 def craps2() -> Tuple[int, ...]:
     return tuple(die() for x in range(2))
 
+
 def dice2(n: int) -> Tuple[int, ...]:
     return tuple(die() for x in range(n))
+
 
 test_craps2_dice2 = """
 >>> random.seed(113)
@@ -45,12 +53,18 @@ test_craps2_dice2 = """
 (1, 4, 5, 3, 2, 4)
 """
 
-def dice3(n: int=2) -> Tuple[int, ...]:
+
+def dice3(n: int = 2) -> Tuple[int, ...]:
     return tuple(die() for x in range(n))
+
+
 def craps3() -> Tuple[int, ...]:
     return dice3(2)
+
+
 def zonk3() -> Tuple[int, ...]:
     return dice3(6)
+
 
 test_dice3_craps3_zonk3 = """
 >>> random.seed(113)
@@ -60,10 +74,14 @@ test_dice3_craps3_zonk3 = """
 (6, 3, 1, 4, 5, 3)
 """
 
-def die4(sides: int=6) -> int:
-    return random.randint(1,6)
-def dice4(n: int=2, sides: int=6) -> Tuple[int, ...]:
+
+def die4(sides: int = 6) -> int:
+    return random.randint(1, 6)
+
+
+def dice4(n: int = 2, sides: int = 6) -> Tuple[int, ...]:
     return tuple(die4(sides) for x in range(n))
+
 
 test_dice4 = """
 >>> random.seed(113)

@@ -69,20 +69,20 @@ test_list_extend = """
 >>> len(ch3)
 12
 >>> len(ch4)
-10
+16
 >>> final = ch3 + ch4
 >>> len(final)
-22
+28
 >>> sum(final)
-40548
+59465
 
 >>> final_ex = []
 >>> final_ex.extend(ch3)
 >>> final_ex.extend(ch4)
 >>> len(final_ex)
-22
+28
 >>> sum(final_ex)
-40548
+59465
 """
 
 test_insert = """
