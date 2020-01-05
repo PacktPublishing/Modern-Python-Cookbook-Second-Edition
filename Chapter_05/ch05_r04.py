@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 5, recipe 4
+Chapter 5, recipe 4, Using argparse to get command-line input
 """
 
 import argparse
@@ -28,13 +28,13 @@ def point_type(text: str) -> Tuple[float, float]:
         lat = float(lat_str)
         lon = float(lon_str)
         return lat, lon
-    except Exception as ex:
-        raise argparse.ArgumentTypeError from ex
+    except ValueError as ex:
+        raise argparse.ArgumentTypeError(ex)
 
 
 def get_options(argv: List[str]) -> argparse.Namespace:
     """
-    >>> opts= get_options(['-r', 'KM', '36.12,-86.67', '33.94,-118.4'])
+    >>> opts = get_options(['-r', 'KM', '36.12,-86.67', '33.94,-118.4'])
     >>> opts.r
     'KM'
     >>> opts.p1
@@ -43,7 +43,8 @@ def get_options(argv: List[str]) -> argparse.Namespace:
     (33.94, -118.4)
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("-r", action="store", choices=("NM", "MI", "KM"), default="NM")
+    parser.add_argument("-r", action="store",
+                        choices=("NM", "MI", "KM"), default="NM")
     parser.add_argument("p1", action="store", type=point_type)
     parser.add_argument("p2", action="store", type=point_type)
     options = parser.parse_args(argv)

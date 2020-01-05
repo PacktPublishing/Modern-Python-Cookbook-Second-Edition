@@ -2,92 +2,57 @@
 
 Chapter 5, Examples from the text.
 
-Note: Output from this is used in Chapter 4 examples.
+
+•	Using features of the print() function
+•	Using input() and getpass() for user input
+•	Debugging with f"{value=}" strings
+•	Using argparse to get command-line input
+•	Using cmd for creating command-line applications
+•	Using the OS environment settings
+
+Note: Output from this is used in Chapter 4 and Chapter 9 examples.
 """
 
-# Lines 18 to 19
+# Using features of the print() function
+
+>>> print("Hello, world.")
+Hello, world.
+
 >>> count = 9973
 >>> print("Final count", count)
 Final count 9973
 
-# Lines 48 to 51
+>>> import sys
+>>> print("Red Alert!", file=sys.stderr)
+
 >>> from pathlib import Path
->>> import csv
->>> from collections import OrderedDict
->>> def get_fuel_use(source_path):
-...     with source_path.open() as source_file:
-...         rdr= csv.DictReader(source_file)
-...         od = (OrderedDict(
-...             [(column, row[column]) for column in rdr.fieldnames])
-...             for row in rdr)
-...         data = list(od)
-...     return data
+>>> target_path = Path("data")/"extra_detail.log"
+>>> with target_path.open('w', encoding='utf-8') as target_file:
+...     print("Some detailed output", file=target_file)
+...     print("Ordinary log")
+Ordinary log
 
-# Lines 59 to 61
->>> source_path = Path("data/fuel2.csv")
->>> fuel_use= get_fuel_use(source_path)
->>> fuel_use 
-[OrderedDict([('date', '10/25/13'), ('engine on', '08:24:00'), ('fuel height on', '29'), ('engine off', '13:15:00'), ('fuel height off', '27')]), OrderedDict([('date', '10/26/13'), ('engine on', '09:12:00'), ('fuel height on', '27'), ('engine off', '18:25:00'), ('fuel height off', '22')]), OrderedDict([('date', '10/28/13'), ('engine on', '13:21:00'), ('fuel height on', '22'), ('engine off', '06:25:00'), ('fuel height off', '14')])]
+# Debugging with f"{value=}" strings
 
-# Lines 80 to 80
->>> for leg in fuel_use:
-...    start = float(leg['fuel height on'])
-...    finish = float(leg['fuel height off'])
-...    print("On", leg['date'],
-...    'from', leg['engine on'],
-...    'to', leg['engine off'],
-...    'change', start-finish, 'in.')
-On 10/25/13 from 08:24:00 to 13:15:00 change 2.0 in.
-On 10/26/13 from 09:12:00 to 18:25:00 change 5.0 in.
-On 10/28/13 from 13:21:00 to 06:25:00 change 8.0 in.
-
-# Lines 92 to 94
->>> print("date", "start", "end", "depth", sep=" | ")
-date | start | end | depth
->>> for leg in fuel_use:
-...    start = float(leg['fuel height on'])
-...    finish = float(leg['fuel height off'])
-...    print(leg['date'], leg['engine on'],
-...    leg['engine off'], start-finish, sep=" | ")
-10/25/13 | 08:24:00 | 13:15:00 | 2.0
-10/26/13 | 09:12:00 | 18:25:00 | 5.0
-10/28/13 | 13:21:00 | 06:25:00 | 8.0
-
-# Lines 105 to 105
->>> for leg in fuel_use:
-...    start = float(leg['fuel height on'])
-...    finish = float(leg['fuel height off'])
-...    print('date', leg['date'], sep='=', end=', ')
-...    print('on', leg['engine on'], sep='=', end=', ')
-...    print('off', leg['engine off'], sep='=', end=', ')
-...    print('change', start-finish, sep="=")
-date=10/25/13, on=08:24:00, off=13:15:00, change=2.0
-date=10/26/13, on=09:12:00, off=18:25:00, change=5.0
-date=10/28/13, on=13:21:00, off=06:25:00, change=8.0
-
-# Lines 288 to 289
 >>> import statistics
 >>> size = [2353, 2889, 2195, 3094,
 ... 725, 1099, 690, 1207, 926,
 ... 758, 615, 521, 1320]
 
-# Lines 292 to 295
 >>> mean_size = statistics.mean(size)
 >>> std_size = statistics.stdev(size)
 >>> sig1 = round(mean_size + std_size, 1)
 >>> [x for x in size if x > sig1]
 [2353, 2889, 3094]
 
-# Lines 301 to 301
 >>> print(
-...     f"mean={mean_size:.2f}, std={std_size:.2f}"
+...     f"{mean_size=:.2f}, {std_size=:.2f}"
 ... )
-mean=1414.77, std=901.10
+mean_size=1414.77, std_size=901.10
 
-# Lines 316 to 316
 >>> print(
-...     f"mean={mean_size:.2f}, std={std_size:.2f},"
-...     f" limit2={mean_size+2*std_size:.2f}"
+...     f"{mean_size=:.2f}, {std_size=:.2f}, "
+...     f"{mean_size+2*std_size=:.2f}"
 ... )
-mean=1414.77, std=901.10, limit2=3216.97
+mean_size=1414.77, std_size=901.10, mean_size+2*std_size=3216.97
 

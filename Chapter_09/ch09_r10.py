@@ -104,6 +104,8 @@ The log was written separately; we can't create logs with pytest -- it captures 
 >>> parse_log2()
 Converted data/write.log to data/summary_log.csv
 Counter({'non-match': 21})
+Converted data/extra_detail.log to data/summary_log.csv
+Counter({'non-match': 1})
 Converted data/sample.log to data/summary_log.csv
 Counter({'valid': 3})
 Converted data/ch09_r10.log to data/summary_log.csv

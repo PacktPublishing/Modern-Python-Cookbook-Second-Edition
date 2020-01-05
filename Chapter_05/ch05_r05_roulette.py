@@ -1,10 +1,13 @@
 """Python Cookbook 2nd ed.
 
-Chapter 5, recipe 5
+Chapter 5, recipe 5, Using cmd for creating command-line applications
+
+This is from a previous edition.
 """
 
 import cmd
 import random
+from typing import Tuple, Set, List, Optional, Dict
 
 red_bins = (1, 3, 5, 7, 9, 12, 14, 16, 18, 21, 23, 25, 27, 28, 30, 32, 34, 36)
 
@@ -14,7 +17,7 @@ red_bins = (1, 3, 5, 7, 9, 12, 14, 16, 18, 21, 23, 25, 27, 28, 30, 32, 34, 36)
 # assert set(red_bins) | set(black_bins) == set(range(1,37))
 
 
-def roulette_bin(i):
+def roulette_bin(i: int) -> Tuple[str, Set[str]]:
     return (
         str(i),
         {
@@ -25,15 +28,15 @@ def roulette_bin(i):
     )
 
 
-def zero_bin():
+def zero_bin() -> Tuple[str, Set[str]]:
     return "0", set()
 
 
-def zerozero_bin():
+def zerozero_bin() -> Tuple[str, Set[str]]:
     return "00", set()
 
 
-def wheel():
+def wheel() -> List[Tuple[str, Set[str]]]:
     """
     >>> random.seed(1)
     >>> w = wheel()
@@ -53,18 +56,18 @@ class Roulette(cmd.Cmd):
     prompt = "Roulette> "
     bet_names = set(["even", "odd", "high", "low", "red", "black"])
 
-    def preloop(self):
+    def preloop(self) -> None:
         self.stake = 100
         self.wheel = wheel()
-        self.bets = {}
+        self.bets: Dict[str, int] = {}
         print(f"Starting with {self.stake}")
 
-    def postloop(self):
+    def postloop(self) -> None:
         print(f"Ending with {self.stake}")
 
     bet_names = set(["even", "odd", "high", "low", "red", "black"])
 
-    def do_bet(self, bet):
+    def do_bet(self, bet: str) -> Optional[bool]:
         """Bet <name> <amount>
         Name is one of even, odd, red, black, high, or low
         """
@@ -74,13 +77,14 @@ class Roulette(cmd.Cmd):
             amount = int(text_amount)
         except Exception as ex:
             print(ex)
-            return
+            return False
         self.bets[name] = amount
+        return False
 
-    def do_spin(self, args):
+    def do_spin(self, args: str) -> Optional[bool]:
         if not self.bets:
             print("No bets placed")
-            return
+            return False
         self.spin = random.choice(self.wheel)
         label, winners = self.spin
         print("Spin", label, sorted(winners))
@@ -92,11 +96,13 @@ class Roulette(cmd.Cmd):
                 self.stake -= self.bets[b]
                 print("Lose", b)
         self.bets = {}
+        return False
 
-    def do_stake(self, args):
-        print(f"{stake=}")
+    def do_stake(self, args: str) -> Optional[bool]:
+        print(f"{self.stake=}")
+        return False
 
-    def do_done(self, args):
+    def do_done(self, args: str) -> Optional[bool]:
         return True
 
 

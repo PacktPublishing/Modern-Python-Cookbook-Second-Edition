@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 5, recipe 6
+Chapter 5, recipe 6, Using the OS environment settings
 """
 import argparse
 import os
