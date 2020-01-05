@@ -21,7 +21,7 @@ def point_type(text: str) -> Tuple[float, float]:
         point_type('36.12, 76.abc')
       File "Chapter_05/ch05_r04.py", line 22, in point_type
         raise argparse.ArgumentTypeError from ex
-    argparse.ArgumentTypeError
+    argparse.ArgumentTypeError: could not convert string to float: ' 76.abc'
     """
     try:
         lat_str, lon_str = text.split(",")
