@@ -46,7 +46,7 @@ class DiceCLI(cmd.Cmd):
         return False
 
     def do_roll(self, arg: str) -> bool:
-        """Roll the dice."""
+        """Roll the dice. Use the dice command to set the number of dice."""
         self.dice = [random.randint(1, 6) for _ in range(self.n_dice)]
         print(f"{self.dice}")
         return False

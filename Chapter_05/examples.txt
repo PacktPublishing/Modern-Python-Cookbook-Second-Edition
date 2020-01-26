@@ -11,6 +11,9 @@ Chapter 5, Examples from the text.
 •	Using the OS environment settings
 
 Note: Output from this is used in Chapter 4 and Chapter 9 examples.
+
+This has Darwin/Linux examples. For Windows, the output will
+be different.
 """
 
 # Using features of the print() function
@@ -31,6 +34,35 @@ Final count 9973
 ...     print("Some detailed output", file=target_file)
 ...     print("Ordinary log")
 Ordinary log
+
+# Using input() and getpass() for user input
+
+>>> import os
+>>> PID = os.getpid()
+
+###
+### The following tests may need to be skipped if you are using Windows.
+### Adding  # doctest: +SKIP to each '>>>' line will skip running the test.
+###
+
+>>> import subprocess
+>>> status = subprocess.run(["ps", str(PID)], check=True, text=True)  # doctest: +ELLIPSIS
+>>> status  # doctest: +ELLIPSIS
+CompletedProcess(args=['ps', ...], returncode=0)
+
+### For Windows, the following will produce different output.
+### Adding  # doctest: +SKIP to the '...' line will skip running the test.
+
+>>> status = subprocess. run(
+...     ["tasklist", "/fi", f'"PID eq {PID}"'], check=True, text=True)
+Traceback (most recent call last):
+   ...
+FileNotFoundError: [Errno 2] No such file or directory: 'tasklist'
+
+###
+### The preceding tests may need to be skipped if you are using Windows.
+###
+
 
 # Debugging with f"{value=}" strings
 

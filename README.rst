@@ -37,6 +37,8 @@ Installation and Setup
 
         tox
 
+    Some of the tests require special setup.
+
     The Chapter_01 tests make an internet connection and download a
     file. In case you have connectivity problems, you might want to
     either delete the test examples, or include ``#doctest: +SKIP`` at the end of each ``>>>`` line.
@@ -50,6 +52,11 @@ Installation and Setup
         >>> import urllib.request  # doctest: +SKIP
 
     On each of the six of lines with ``>>>`` found between the "may need to be skipped" comments.
+
+    The Chapter_05 examples make OS requests that work for Darwin and Linux,
+    but are not designed to work for Windows. In this chapter's examples, also,
+    you might need to use ``#doctest: +SKIP`` to skip over tests that are not relevant
+    for your specific OS.
 
 To run a specific example as a main program, be sure to set the ``PYTHONPATH`` environment variable.
 
