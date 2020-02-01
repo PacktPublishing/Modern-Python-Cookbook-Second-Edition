@@ -1,34 +1,13 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 8
+Chapter 6, recipe 11, Using settable properties to update eager attributes
 """
 import collections
 from typing import Deque, Optional
 
 
 class Leg:
-    """
-    >>> leg_1 = Leg()
-    >>> leg_1.rate = 6.0 # knots
-    >>> leg_1.distance = 35.6 # nautical miles
-    >>> ("option 1 {leg.distance:.1f}nm"
-    ... " at {leg.rate:.2f}kt"
-    ... " = {leg.time:.2f}hr".format(leg=leg_1))
-    'option 1 35.6nm at 6.00kt = 5.93hr'
-
-    leg_1.distance = 38.2
-    >>> ("option 2 {leg.distance:.1f}nm"
-    ... " at {leg.rate:.2f}kt"
-    ... " = {leg.time:.2f}hr".format(leg=leg_1))
-    'option 2 35.6nm at 6.00kt = 5.93hr'
-
-    leg_1.time= 7
-    >>> ("option 3 {leg.distance:.1f}nm"
-    ... " at {leg.rate:.2f}kt"
-    ... " = {leg.time:.2f}hr".format(leg=leg_1))
-    'option 3 35.6nm at 6.00kt = 5.93hr'
-
-    """
+    """Computations for a leg of a journey."""
 
     def __init__(
         self,
@@ -36,14 +15,14 @@ class Leg:
         time: Optional[float] = None,
         distance: Optional[float] = None,
     ) -> None:
-        self._changes: Deque = collections.deque(maxlen=2)
         self._rate = rate
+        self._time = time
+        self._distance = distance
+        self._changes: Deque = collections.deque(maxlen=2)
         if rate:
             self._calculate("rate")
-        self._time = time
         if time:
             self._calculate("time")
-        self._distance = distance
         if distance:
             self._calculate("distance")
 
@@ -100,38 +79,45 @@ class Leg:
         self._distance = value
         self._calculate("distance")
 
+test_leg = """
+>>> leg_1 = Leg()
+>>> leg_1.rate = 6.0 # knots
+>>> leg_1.distance = 35.6 # nautical miles
+>>> print(f"option 1 {leg_1.distance:.1f}nm"
+... f" at {leg_1.rate:.2f}kt"
+... f" = {leg_1.time:.2f}hr")
+option 1 35.6nm at 6.00kt = 5.93hr
+
+>>> leg_1.distance = 38.2 # nautical miles
+>>> print(f"option 2 {leg_1.distance:.1f}nm"
+... f" at {leg_1.rate:.2f}kt"
+... f" = {leg_1.time:.2f}hr")
+option 2 38.2nm at 6.00kt = 6.37hr
+
+>>> leg_1.time= 7
+>>> print(f"option 3 {leg_1.distance:.1f}nm"
+... f" at {leg_1.rate:.2f}kt"
+... f" = {leg_1.time:.2f}hr")
+option 3 38.2nm at 5.46kt = 7.00hr
+
+"""
 
 class Leg_Alt:
-    """
-    >>> leg_2 = Leg_Alt(rate=6, distance=35.6)
-    >>> round(leg_2.rate,1)
-    6
-    >>> round(leg_2.time,1)
-    5.9
-    >>> round(leg_2.distance,1)
-    35.6
-
-    >>> ("option 1 {leg.distance:.1f}nm"
-    ... " at {leg.rate:.2f}kt"
-    ... " = {leg.time:.2f}hr".format(leg=leg_2))
-    'option 1 35.6nm at 6.00kt = 5.93hr'
-
-    """
-
+    """Alternate calculation implementation"""
     def __init__(
         self,
         rate: Optional[float] = None,
         time: Optional[float] = None,
         distance: Optional[float] = None,
     ) -> None:
-        self._changes: Deque = collections.deque(maxlen=2)
         self._rate = rate
+        self._time = time
+        self._distance = distance
+        self._changes: Deque = collections.deque(maxlen=2)
         if rate:
             self._calculate("rate")
-        self._time = time
         if time:
             self._calculate("time")
-        self._distance = distance
         if distance:
             self._calculate("distance")
 
@@ -150,10 +136,11 @@ class Leg_Alt:
     def _calculate(self, change: str) -> None:
         if change not in self._changes:
             self._changes.append(change)
-        compute = {"rate", "time", "distance"} - set(self._changes)
+        properties = {"rate", "time", "distance"}
+        compute = properties - set(self._changes)
         if len(compute) == 1:
             name = compute.pop()
-            method = getattr(self, "calc_" + name)
+            method = getattr(self, f"calc_{name}")
             method()
 
     @property
@@ -186,6 +173,26 @@ class Leg_Alt:
         self._distance = value
         self._calculate("distance")
 
+test_leg_alt = """
+>>> leg_2 = Leg_Alt(distance=38.2, time=7)
+>>> round(leg_2.rate, 1)
+5.5
+>>> round(leg_2.time, 1)
+7
+>>> round(leg_2.distance, 1)
+38.2
+>>> leg_2.time=6.5
+>>> round(leg_2.rate, 1)
+5.9
+
+
+>>> (f"option 1 {leg_2.distance:.1f}nm"
+... f" at {leg_2.rate:.2f}kt"
+... f" = {leg_2.time:.2f}hr")
+'option 1 38.2nm at 5.88kt = 6.50hr'
+"""
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
 
 if __name__ == "__main__":
 

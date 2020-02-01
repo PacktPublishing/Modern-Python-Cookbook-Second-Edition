@@ -1,65 +1,51 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 3 and 4
+Chapter 6, recipe 4, Using typing.NamedTuple for immutable objects
 """
-import random
-from typing import Optional
-
-# Card = collections.namedtuple('Card', ('rank', 'suit'))
-
-from typing import NamedTuple, List, Union
 
 
+from typing import NamedTuple
 class Card(NamedTuple):
     rank: int
     suit: str
 
+test_card = """
+>>> eight_hearts = Card(rank=8, suit='\N{White Heart Suit}')
+>>> eight_hearts
+Card(rank=8, suit='♡')
+>>> eight_hearts.rank
+8
+>>> eight_hearts.suit
+'♡'
+>>> eight_hearts[0]
+8
 
-class Hand:
-    """
-    >>> h = Hand(1)
-    >>> h.deal(Card(1,'\N{white heart suit}'))
-    >>> h.deal(Card(10, '\N{black club suit}'))
-    >>> h
-    Hand(bet=1, hand=[Card(rank=1, suit='♡'), Card(rank=10, suit='♣')])
-    >>> h.total = 11
-    Traceback (most recent call last):
-      File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
-        compileflags, 1), test.globs)
-      File "<doctest __main__.Hand[4]>", line 1, in <module>
-        h.total = 11 #doctest: +IGNORE_EXCEPTION_DETAIL
-    AttributeError: 'Hand' object has no attribute 'total'
-    """
+>>> eight_hearts.suit = '\N{Black Spade Suit}'
+Traceback (most recent call last):
+  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
+    compileflags, 1), test.globs)
+  File "<doctest examples.txt[30]>", line 1, in <module>
+    eight_hearts.suit = '\N{Black Spade Suit}'
+AttributeError: can't set attribute
+"""
 
-    __slots__ = ("cards", "bet")
+class CardPoints(NamedTuple):
+    rank: int
+    suit: str
 
-    def __init__(self, bet: int, hand: Union["Hand", List[Card], None] = None) -> None:
-        self.cards: List[Card] = [] if hand is None else hand.cards if isinstance(
-            hand, Hand
-        ) else hand
-        self.bet: int = bet
+    def points(self) -> int:
+        if 1 <= self.rank < 10:
+            return self.rank
+        else:
+            return 10
 
-    def deal(self, card: Card) -> None:
-        self.cards.append(card)
+test_card_points = """
+>>> hj = CardPoints(rank=11, suit='\N{White Heart Suit}')
+>>> h5 = CardPoints(rank=5, suit='\N{White Heart Suit}')
+>>> print(f"Hand: {hj=}, {h5=}")
+Hand: hj=CardPoints(rank=11, suit='♡'), h5=CardPoints(rank=5, suit='♡')
+>>> print(f"Total: {hj.points() + h5.points()=}")
+Total: hj.points() + h5.points()=15
+"""
 
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(bet={self.bet}, hand={self.cards})"
-
-
-if __name__ == "__main__":
-
-    SUITS = (
-        "\N{black spade suit}",
-        "\N{white heart suit}",
-        "\N{white diamond suit}",
-        "\N{black club suit}",
-    )
-    deck = [Card(r, s) for r in range(1, 14) for s in SUITS]
-    random.seed(2)
-    random.shuffle(deck)
-    dealer = iter(deck)
-
-    h = Hand(2)
-    h.deal(next(dealer))
-    h.deal(next(dealer))
-    print(h)
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

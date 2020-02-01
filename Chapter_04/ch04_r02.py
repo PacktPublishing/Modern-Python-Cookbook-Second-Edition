@@ -11,6 +11,7 @@ test_raw_data = """
 1810 wc1.csv
 28 ex2_r12.csv
 1790 wc.csv
+160 ch06_r13.csv
 215 sample.csv
 45 craps.csv
 28 output.csv
@@ -26,9 +27,9 @@ test_gather = """
 >>> for path in home.glob('data/*.csv'):
 ...     file_sizes.append(path.stat().st_size)
 >>> print(file_sizes)
-[1810, 28, 1790, 215, 45, 28, 225, 166, 412, 156]
+[1810, 28, 1790, 160, 215, 45, 28, 225, 166, 412, 156]
 >>> print(sum(file_sizes))
-4875
+5035
 """
 
 
@@ -36,26 +37,26 @@ test_comprehensions = """
 >>> home = Path.cwd()
 >>> [path.stat().st_size
 ...    for path in home.glob('data/*.csv')]
-[1810, 28, 1790, 215, 45, 28, 225, 166, 412, 156]
+[1810, 28, 1790, 160, 215, 45, 28, 225, 166, 412, 156]
 """
 
 test_generator = """
 >>> home = Path.cwd()
 >>> list(path.stat().st_size
 ...    for path in home.glob('data/*.csv'))
-[1810, 28, 1790, 215, 45, 28, 225, 166, 412, 156]
+[1810, 28, 1790, 160, 215, 45, 28, 225, 166, 412, 156]
 
 >>> sizes = list(path.stat().st_size
 ...    for path in home.glob('data/*.csv'))
 >>> sum(sizes)
-4875
+5035
 >>> max(sizes)
 1810
 >>> min(sizes)
 28
 >>> from statistics import mean
 >>> round(mean(sizes), 3)
-487.5
+457.727
 >>> sizes.index(min(sizes))
 1
 """
@@ -74,7 +75,7 @@ test_list_extend = """
 >>> len(final)
 28
 >>> sum(final)
-59465
+59499
 
 >>> final_ex = []
 >>> final_ex.extend(ch3)
@@ -82,7 +83,7 @@ test_list_extend = """
 >>> len(final_ex)
 28
 >>> sum(final_ex)
-59465
+59499
 """
 
 test_insert = """

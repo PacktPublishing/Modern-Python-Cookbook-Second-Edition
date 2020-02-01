@@ -1,101 +1,36 @@
 """Python Cookbook
 
 Chapter 6, Examples from the text.
+
+•	Using a class to encapsulate data and processing
+•	Essential Type Hints for class definitions
+•	Designing classes with lots of processing
+•	Using typing.NamedTuple for immutable objects
+•	Using dataclasses for mutable objects
+•	Using frozen dataclasses for immtable objects
+•	Optimizing small objects with __slots__
+•	Using more sophisticated collections
+•	Extending a built-in collection – a list that does statistics
+•	Using properties for lazy attributes
+•	Using settable properties to update eager attributes
+•	Creating contexts and context managers
+•	Managing multiple contexts with multiple resources
+
 """
 
-# Lines 71 to 79
->>> import random
->>> random.seed(1)
+# Optimizing small objects with __slots__
 
->>> from Chapter_06.ch06_r01 import Dice
->>> d1 = Dice()
->>> d1.roll()
->>> d1.total()
-7
->>> d1.faces
-(2, 5)
-
-# Lines 82 to 88
->>> d2 = Dice()
->>> d2.roll()
->>> d2.total()
-4
->>> d2.hardway()
-False
->>> d2.faces
-(1, 3)
-
-# Lines 91 to 91
->>> d1.total()
-7
-
-# Lines 179 to 181
->>> from Chapter_04.ch04_r07 import *
->>> from collections import Counter
->>> def raw_data(n=8, limit=1000, arrival_function=arrival1):
-...    expected_time = float(expected(n))
-...    data = samples(limit, arrival_function(n))
-...    wait_times = Counter(coupon_collector(n, data))
-...    return wait_times
-
-
-# Lines 190 to 197
->>> import random
->>> from Chapter_06.ch06_r02 import CounterStatistics
->>> random.seed(1)
->>> data = raw_data()
->>> stats = CounterStatistics(data)
->>> print(f"Mean: {stats.mean:.2f}")
-Mean: 20.81
->>> print(f"Standard Deviation: {stats.stddev:.3f}")
-Standard Deviation: 7.025
-
-# Lines 277 to 286
->>> from collections import namedtuple
->>> Card = namedtuple('Card', ('rank', 'suit'))
->>> eight_hearts = Card(rank=8, suit='\N{White Heart Suit}')
->>> eight_hearts
-Card(rank=8, suit='♡')
->>> eight_hearts.rank
-8
->>> eight_hearts.suit
-'♡'
->>> eight_hearts[0]
-8
-
-# Lines 291 to 291
->>> eight_hearts.suit = '\N{Black Spade Suit}'
-Traceback (most recent call last):
-  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
-    compileflags, 1), test.globs)
-  File "<doctest examples.txt[30]>", line 1, in <module>
-    eight_hearts.suit = '\N{Black Spade Suit}'
-AttributeError: can't set attribute
-
-# Lines 313 to 319
->>> from types import SimpleNamespace
->>> Player = SimpleNamespace
->>> player_1 = Player(stake=100, hand=[], insurance=None, bet=None)
->>> player_1.bet = 10
->>> player_1.stake -= player_1.bet
->>> player_1.hand.append( eight_hearts )
->>> player_1
-namespace(bet=10, hand=[Card(rank=8, suit='♡')], insurance=None, stake=90)
-
-# Lines 375 to 379
->>> from Chapter_06.ch06_r04 import Card, Hand
+>>> from Chapter_06.ch06_r07 import Card, Hand
 >>> h1 = Hand(2)
 >>> h1.deal(Card(rank=4, suit='♣'))
 >>> h1.deal(Card(rank=8, suit='♡'))
 >>> h1
 Hand(bet=2, hand=[Card(rank=4, suit='♣'), Card(rank=8, suit='♡')])
 
-# Lines 384 to 385
 >>> h1.bet *= 2
 >>> h1
 Hand(bet=4, hand=[Card(rank=4, suit='♣'), Card(rank=8, suit='♡')])
 
-# Lines 389 to 389
 >>> h1.some_other_attribute = True
 Traceback (most recent call last):
   File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
@@ -104,8 +39,9 @@ Traceback (most recent call last):
     h1.some_other_attribute = True
 AttributeError: 'Hand' object has no attribute 'some_other_attribute'
 
-# Lines 525 to 530
->>> from Chapter_06.ch06_r06 import StatsList
+# Extending a collection – a list that does statistics
+
+>>> from Chapter_06.ch06_r09 import StatsList
 >>> subset1 = StatsList([10, 8, 13, 9, 11])
 >>> data = StatsList([14, 6, 4, 12, 7, 5])
 >>> data.extend(subset1)
@@ -113,19 +49,16 @@ AttributeError: 'Hand' object has no attribute 'some_other_attribute'
 >>> data
 [14, 6, 4, 12, 7, 5, 10, 8, 13, 9, 11]
 
-# Lines 533 to 535
 >>> data.mean()
 9.0
 >>> data.variance()
 11.0
 
-# Lines 538 to 539
 >>> data.sort()
 >>> data[len(data)//2]
 9
 
-# Lines 629 to 631
->>> from Chapter_04.ch04_r07 import *
+>>> from Chapter_04.ch04_r07 import arrival1, expected, coupon_collector, samples
 >>> from collections import Counter
 >>> def raw_data(n=8, limit=1000, arrival_function=arrival1):
 ...    expected_time = float(expected(n))
@@ -134,9 +67,8 @@ AttributeError: 'Hand' object has no attribute 'some_other_attribute'
 ...    return wait_times
 
 
-# Lines 640 to 647
 >>> import random
->>> from Chapter_06.ch06_r07 import LazyCounterStatistics
+>>> from Chapter_06.ch06_r10 import LazyCounterStatistics
 >>> random.seed(1)
 >>> data = raw_data()
 >>> stats = LazyCounterStatistics(data)

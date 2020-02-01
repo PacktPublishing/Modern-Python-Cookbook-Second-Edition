@@ -1,107 +1,74 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 7
+Chapter 6, recipe 7, Optimizing small objects with __slots__
 """
-from Chapter_04.ch04_r07 import *
-import collections
-import math
-import statistics
-from typing import Counter, Iterator
+import random
+from typing import Optional
+
+# Card = collections.namedtuple('Card', ('rank', 'suit'))
+
+from typing import NamedTuple, List, Union
 
 
-ArrivalF = Callable[[int], Iterator[int]]
+class Card(NamedTuple):
+    rank: int
+    suit: str
 
 
-def raw_data(
-    n: int = 8, limit: int = 1000, arrival_function: ArrivalF = arrival1
-) -> Counter[int]:
+class Hand:
     """
-    >>> random.seed(1)
-    >>> data = raw_data(n=2, limit=8, arrival_function=arrival1)
-    >>> data
-    Counter({3: 1, 2: 1})
-    """
-    data = samples(limit, arrival_function(n))
-    wait_times = collections.Counter(coupon_collector(n, data))
-    return wait_times
-
-
-class LazyCounterStatistics:
-    """
-    >>> data = collections.Counter( [10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5] )
-    >>> cs = LazyCounterStatistics(data)
-    >>> round(cs.mean,1)
-    9.0
-    >>> round(cs.stddev**2,1)
-    11.0
+    >>> h = Hand(1)
+    >>> h.deal(Card(1,'\N{white heart suit}'))
+    >>> h.deal(Card(10, '\N{black club suit}'))
+    >>> h
+    Hand(bet=1, hand=[Card(rank=1, suit='♡'), Card(rank=10, suit='♣')])
+    >>> h.total = 11
+    Traceback (most recent call last):
+      File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
+        compileflags, 1), test.globs)
+      File "<doctest __main__.Hand[4]>", line 1, in <module>
+        h.total = 11 #doctest: +IGNORE_EXCEPTION_DETAIL
+    AttributeError: 'Hand' object has no attribute 'total'
     """
 
-    def __init__(self, raw_counter: Counter) -> None:
-        self.raw_counter = raw_counter
+    __slots__ = ("cards", "bet")
 
-    @property
-    def sum(self) -> float:
-        return sum(f * v for v, f in self.raw_counter.items())
+    def __init__(
+            self,
+            bet: int,
+            hand: Union["Hand", List[Card], None] = None
+    ) -> None:
+        self.cards: List[Card] = (
+            [] if hand is None
+                else hand.cards if isinstance(hand, Hand)
+                    else hand
+        )
+        self.bet: int = bet
 
-    @property
-    def count(self) -> int:
-        return sum(f for v, f in self.raw_counter.items())
+    def deal(self, card: Card) -> None:
+        self.cards.append(card)
 
-    @property
-    def sum2(self) -> float:
-        return sum(f * v ** 2 for v, f in self.raw_counter.items())
-
-    @property
-    def mean(self) -> float:
-        return self.sum / self.count
-
-    @property
-    def variance(self) -> float:
-        return (self.sum2 - self.sum ** 2 / self.count) / (self.count - 1)
-
-    @property
-    def stddev(self) -> float:
-        return math.sqrt(self.variance)
-
-
-__test__ = {
-    "expected": """
->>> expected(8)
-Fraction(761, 35)
-""",
-    "raw_data": """
->>> import random
->>> random.seed(1)
->>> data = raw_data(8)
->>> round(statistics.mean(data.elements()), 2)
-20.81
->>> round(statistics.stdev(data.elements()), 2)
-7.02
-""",
-    "LazyCounterStatistics": """
->>> import random
->>> random.seed(1)
->>> data = raw_data(8)
->>> stats = LazyCounterStatistics(data)
->>> round(stats.mean, 2)
-20.81
->>> round(stats.stddev, 2)
-7.02
-""",
-}
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}("
+            f"bet={self.bet}, hand={self.cards})"
+        )
 
 
 if __name__ == "__main__":
 
-    import random
+    SUITS = (
+        "\N{black spade suit}",
+        "\N{white heart suit}",
+        "\N{white diamond suit}",
+        "\N{black club suit}",
+    )
+    deck = [Card(r, s) for r in range(1, 14) for s in SUITS]
+    random.seed(2)
+    random.shuffle(deck)
+    dealer = iter(deck)
 
-    random.seed(1)
-    data = raw_data(8)
-
-    print("expected_time", float(expected(8)))
-    print("expected mean", statistics.mean(data.elements()))
-    print("expected stddev", statistics.stdev(data.elements()))
-
-    stats = LazyCounterStatistics(data)
-    print("Mean: {stats.mean:.2f}")
-    print("Standard Deviation: {stats.stddev:.3f}")
+    h = Hand(2)
+    h.deal(next(dealer))
+    h.deal(next(dealer))
+    print(h)

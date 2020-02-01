@@ -1,18 +1,18 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 1
+Chapter 6, recipe 1, Using a class to encapsulate data and processing
 """
-import random
+from random import randint
 from typing import Tuple
 
 
 class Dice:
     def __init__(self) -> None:
         # No value provided, only a type hint.
-        self.faces: Tuple[int, int]
+        self.faces: Tuple[int, int] = 0, 0
 
     def roll(self) -> None:
-        self.faces = (random.randint(1, 6), random.randint(1, 6))
+        self.faces = (randint(1, 6), randint(1, 6))
 
     def total(self) -> int:
         return sum(self.faces)
@@ -24,28 +24,29 @@ class Dice:
         return self.faces[0] != self.faces[1]
 
 
-__test__ = {
-    "example1": """
+test_example1 = """
 >>> import random
->>> random.seed(1)
+>>> random.seed(42)
 >>> d1 = Dice()
 >>> d1.roll()
 >>> d1.total()
 7
 >>> d1.faces
-(2, 5)
+(6, 1)
 
 >>> d1.total()
 7
-""",
-    "example2": """
+"""
+
+test_example2 = """
 >>> d2 = Dice()
 >>> d2.roll()
 >>> d2.total()
-4
+7
 >>> d2.hardway()
 False
 >>> d2.faces
-(1, 3)
-""",
-}
+(1, 6)
+"""
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
