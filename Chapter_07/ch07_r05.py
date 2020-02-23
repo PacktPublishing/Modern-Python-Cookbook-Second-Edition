@@ -1,63 +1,115 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 5.
+Chapter 7, recipe 5, Using more complex structures – maps of lists
 """
 
 import collections
+from dataclasses import dataclass, InitVar, field, fields
+from typing import ClassVar
+import re
+from typing import List, DefaultDict, cast, NamedTuple, Optional, Iterable
 
-from typing import Dict, List, DefaultDict
+@dataclass(frozen=True)
+class Event_dc:
+    """
+    A detail line from a log
 
+    >>> Event_dc("[2016-04-24 11:05:01,462] INFO in module1: Sample Message One")
+    Event_dc(timestamp='2016-04-24 11:05:01,462', level='INFO', module='module1', message='Sample')
+    """
+    line: InitVar[str]
+    timestamp: str = field(init=False)
+    level: str = field(init=False)
+    module: str = field(init=False)
+    message: str = field(init=False)
 
-def summarize(data) -> Dict[str, List]:
-    module_details: DefaultDict[str, List[str]] = collections.defaultdict(list)
+    pattern: ClassVar[re.Pattern] = re.compile(
+        r"\[(?P<timestamp>.*?)\]\s+"
+        r"(?P<level>\w+)\s+"
+        r"in\s+(?P<module>\w+)"
+        r":\s+(?P<message>\w+)"
+    )
+
+    def __init__(self, line: str) -> None:
+        if log_line := self.pattern.match(line):
+            for field in fields(self):
+                object.__setattr__(
+                    self,
+                    field.name,
+                    cast(re.Match, log_line).group(field.name))
+
+class Event(NamedTuple):
+    """
+    A detail line from a log
+
+    >>> Event.from_line("[2016-04-24 11:05:01,462] INFO in module1: Sample Message One")
+    Event(timestamp='2016-04-24 11:05:01,462', level='INFO', module='module1', message='Sample')
+    """
+    timestamp: str
+    level: str
+    module: str
+    message: str
+
+    @staticmethod
+    def from_line(line: str) -> Optional['Event']:
+        pattern = re.compile(
+            r"\[(?P<timestamp>.*?)\]\s+"
+            r"(?P<level>\w+)\s+"
+            r"in\s+(?P<module>\w+)"
+            r":\s+(?P<message>\w+)"
+        )
+        if log_line := pattern.match(line):
+            return Event(
+                **cast(re.Match, log_line).groupdict()
+            )
+        return None
+
+Summary = DefaultDict[str, List[Event]]
+
+def summarize(data: Iterable[Event]) -> Summary:
+    module_details: Summary = collections.defaultdict(list)
     for event in data:
-        module_details[event[2]].append(event)
+        module_details[event.module].append(event)
     return module_details
 
 
 class ModuleEvents(dict):
-    def add_event(self, event: str) -> None:
-        if event[2] not in self:
-            self[event[2]] = list()
-        self[event[2]].append(event)
+    def add_event(self, event: Event) -> None:
+        if event.module not in self:
+            self[event.module] = list()
+        self[event.module].append(event)
 
 
-__test__ = {
-    "simple": """
+test_function = """
+>>> from pprint import pprint
 >>> data = [
-...    ('2016-04-24 11:05:01,462', 'INFO', 'module1', 'Sample Message One'),
-...    ('2016-04-24 11:06:02,624', 'DEBUG', 'module2', 'Debugging'),
-...    ('2016-04-24 11:07:03,246', 'WARNING', 'module1', 'Something might have gone wrong')
+...     '[2016-04-24 11:05:01,462] INFO in module1: Sample Message One',
+...     '[2016-04-24 11:06:02,624] DEBUG in module2: Debugging',
+...     '[2016-04-24 11:07:03,246] WARNING in module1: Something might have gone wrong'
 ... ]
+>>> event_iter = (Event.from_line(txt) for txt in data)
+>>> module_details = summarize(event_iter)
+>>> pprint(dict(module_details))
+{'module1': [Event(timestamp='2016-04-24 11:05:01,462', level='INFO', module='module1', message='Sample'),
+             Event(timestamp='2016-04-24 11:07:03,246', level='WARNING', module='module1', message='Something')],
+ 'module2': [Event(timestamp='2016-04-24 11:06:02,624', level='DEBUG', module='module2', message='Debugging')]}
+>>> sorted(module_details.items())  # doctest: +NORMALIZE_WHITESPACE
+[('module1', [Event(timestamp='2016-04-24 11:05:01,462', level='INFO', module='module1', message='Sample'), Event(timestamp='2016-04-24 11:07:03,246', level='WARNING', module='module1', message='Something')]), ('module2', [Event(timestamp='2016-04-24 11:06:02,624', level='DEBUG', module='module2', message='Debugging')])]
+"""
 
->>> import collections
->>> module_details = collections.defaultdict(list)
->>> for row in data:
-...     module_details[row[2]].append(row)
-
->>> sorted(module_details.items()) # doctest: +NORMALIZE_WHITESPACE
-[('module1', [('2016-04-24 11:05:01,462', 'INFO', 'module1', 'Sample Message One'), ('2016-04-24 11:07:03,246', 'WARNING', 'module1', 'Something might have gone wrong')]), ('module2', [('2016-04-24 11:06:02,624', 'DEBUG', 'module2', 'Debugging')])]
-""",
-    "function": """
+test_class = """
 >>> data = [
-...    ('2016-04-24 11:05:01,462', 'INFO', 'module1', 'Sample Message One'),
-...    ('2016-04-24 11:06:02,624', 'DEBUG', 'module2', 'Debugging'),
-...    ('2016-04-24 11:07:03,246', 'WARNING', 'module1', 'Something might have gone wrong')
+...     '[2016-04-24 11:05:01,462] INFO in module1: Sample Message One',
+...     '[2016-04-24 11:06:02,624] DEBUG in module2: Debugging',
+...     '[2016-04-24 11:07:03,246] WARNING in module1: Something might have gone wrong'
 ... ]
->>> module_details= summarize(data)
->>> sorted(module_details.items()) # doctest: +NORMALIZE_WHITESPACE
-[('module1', [('2016-04-24 11:05:01,462', 'INFO', 'module1', 'Sample Message One'), ('2016-04-24 11:07:03,246', 'WARNING', 'module1', 'Something might have gone wrong')]), ('module2', [('2016-04-24 11:06:02,624', 'DEBUG', 'module2', 'Debugging')])]
-""",
-    "class": """
->>> data = [
-...    ('2016-04-24 11:05:01,462', 'INFO', 'module1', 'Sample Message One'),
-...    ('2016-04-24 11:06:02,624', 'DEBUG', 'module2', 'Debugging'),
-...    ('2016-04-24 11:07:03,246', 'WARNING', 'module1', 'Something might have gone wrong')
-... ]
+>>> event_iter = (Event.from_line(txt) for txt in data)
 >>> module_details = ModuleEvents()
->>> for row in data:
-...     module_details.add_event(row)
->>> sorted(module_details.items()) # doctest: +NORMALIZE_WHITESPACE
-[('module1', [('2016-04-24 11:05:01,462', 'INFO', 'module1', 'Sample Message One'), ('2016-04-24 11:07:03,246', 'WARNING', 'module1', 'Something might have gone wrong')]), ('module2', [('2016-04-24 11:06:02,624', 'DEBUG', 'module2', 'Debugging')])]
-""",
-}
+>>> for event in event_iter:
+...     module_details.add_event(event)
+>>> sorted(module_details.items())  # doctest: +NORMALIZE_WHITESPACE
+[('module1', [Event(timestamp='2016-04-24 11:05:01,462', level='INFO', module='module1', message='Sample'), Event(timestamp='2016-04-24 11:07:03,246', level='WARNING', module='module1', message='Something')]), ('module2', [Event(timestamp='2016-04-24 11:06:02,624', level='DEBUG', module='module2', message='Debugging')])]
+
+"""
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

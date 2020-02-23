@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 3
+Chapter 7, recipe 3, Leveraging Python's duck typing
 """
 import random
 from typing import Tuple, Optional, List, Iterator, Type
@@ -36,19 +36,21 @@ class Dice2:
 
 
 def roller(
-    dice_class: Type[Dice2], seed: int = None, *, samples: int = 10
+    dice_class: Type[Dice2],
+    seed: int = None,
+    *,
+    samples: int = 10
 ) -> Iterator[Tuple[int, ...]]:
     dice = dice_class(seed)
     for _ in range(samples):
         yield dice.roll()
 
-
-__test__ = {
-    "roller": """
+test_roller = """
 >>> from Chapter_07.ch07_r03 import roller, Dice1, Dice2
 >>> list(roller(Dice1, 1, samples=5))
 [(1, 3), (1, 4), (4, 4), (6, 4), (2, 1)]
 >>> list(roller(Dice2, 1, samples=5))
 [(1, 3), (1, 4), (4, 4), (6, 4), (2, 1)]
 """
-}
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

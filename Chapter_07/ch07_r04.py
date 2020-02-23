@@ -1,10 +1,10 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 4
+Chapter 7, recipe 4, Managing global and singleton objects
 """
 
 import collections
-from typing import Dict, List, Tuple, Any, Counter
+from typing import List, Tuple, Any, Counter
 
 _global_counter: Counter[str] = collections.Counter()
 
@@ -27,8 +27,7 @@ class EventCounter:
         return EventCounter._counts.most_common()
 
 
-__test__ = {
-    "module_global": """
+test_module_global = """
 >>> from Chapter_07.ch07_r04 import *
 >>> from Chapter_07.ch07_r03 import Dice1
 >>> d = Dice1(1)
@@ -37,8 +36,10 @@ __test__ = {
 ...     else: count('other')
 >>> print(counts())
 [('other', 833), ('seven', 167)]
-""",
-    "class_variable": """
+"""
+
+test_class_variable = """
+>>> from Chapter_07.ch07_r04 import *
 >>> c1 = EventCounter()
 >>> c1.count('input')
 >>> c2 = EventCounter()
@@ -46,5 +47,6 @@ __test__ = {
 >>> c3 = EventCounter()
 >>> c3.counts()
 [('input', 2)]
-""",
-}
+"""
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

@@ -1,128 +1,76 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 7.
+Chapter 7, recipe 7, Improving performance with an an ordered collection
 """
-from typing import Iterable, Iterator, TypeVar, Dict, Any
-
-ItemType = Dict[str, Any]
-
-
-def writer_rule(source: Iterable[ItemType]) -> Iterator[ItemType]:
-    for item in source:
-        if "Lake" in item["writer"]:
-            continue
-        yield item
+import bisect
+from typing import Iterable, Iterator
+from Chapter_07.ch07_r06 import *
 
 
-__test__ = {
-    "chapter": """
->>> from pprint import pprint
->>> source = [
-...    {'title': 'Eruption', 'writer': ['Emerson'], 'time': '2:43'},
-...    {'title': 'Stones of Years', 'writer': ['Emerson', 'Lake'], 'time': '3:43'},
-...    {'title': 'Iconoclast', 'writer': ['Emerson'], 'time': '1:16'},
-...    {'title': 'Mass', 'writer': ['Emerson', 'Lake'], 'time': '3:09'},
-...    {'title': 'Manticore', 'writer': ['Emerson'], 'time': '1:49'},
-...    {'title': 'Battlefield', 'writer': ['Lake'], 'time': '3:57'},
-...    {'title': 'Aquatarkus', 'writer': ['Emerson'], 'time': '3:54'}
-... ]
+class Hand:
+    def __init__(self, card_iter: Iterable[Card]) -> None:
+        self.cards = list(card_iter)
+        self.cards.sort()
 
-Find all items with "Lake" as a writer.
+    def add(self, aCard: Card) -> None:
+        bisect.insort(self.cards, aCard)
 
->>> data = source.copy()
->>> for item in data:
-...    if 'Lake' in item['writer']:
-...        print("remove", item['title'])
-remove Stones of Years
-remove Mass
-remove Battlefield
+    def index(self, aCard: Card) -> int:
+        i = bisect.bisect_left(self.cards, aCard)
+        if i != len(self.cards) and self.cards[i] == aCard:
+            return i
+        raise ValueError
 
-Naive
+    def __contains__(self, aCard: Card) -> bool:
+        try:
+            self.index(aCard)
+            return True
+        except ValueError:
+            return False
 
->>> data = source.copy()
->>> for index in range(len(data)):
-...    if 'Lake' in data[index]['writer']:
-...       del data[index]
-Traceback (most recent call last):
-  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
-    compileflags, 1), test.globs)
-  File "<doctest __main__.__test__.chapter[5]>", line 2, in <module>
-    if 'Lake' in data[index]['writer']:
-IndexError: list index out of range
+    def __iter__(self) -> Iterator[Card]:
+        return iter(self.cards)
 
-Sequential Removal.
+    def __le__(self, other: Any) -> bool:
+        for card in self:
+            if card not in other:
+                return False
+        return True
 
-while x in list:
-    list.remove(x)
 
->>> def index(data):
-...    for i in range(len(data)):
-...        if 'Lake' in data[i]['writer']:
-...            return i
+test_hand = """
+>>> import random
+>>> random.seed(4)
+>>> deck = make_deck()
+>>> random.shuffle(deck)
+>>> h = Hand(deck[:12])
+>>> [str(c) for c in h.cards]
+[' 9 ♣', '10 ♣', ' J ♠', ' J ♢', ' J ♢', ' Q ♠', ' Q ♣', ' K ♠', ' K ♠', ' K ♣', ' A ♡', ' A ♣']
 
->>> data = source.copy()
->>> position = index(data)
->>> while position:
-...    del data[position] # or data.pop(position)
-...    position = index(data)
->>> pprint(data)
-[{'time': '2:43', 'title': 'Eruption', 'writer': ['Emerson']},
- {'time': '1:16', 'title': 'Iconoclast', 'writer': ['Emerson']},
- {'time': '1:49', 'title': 'Manticore', 'writer': ['Emerson']},
- {'time': '3:54', 'title': 'Aquatarkus', 'writer': ['Emerson']}]
-
-# Better Sequential Removal.
-
->>> data = source.copy()
->>> i = 0
->>> while i != len(data):
-...    if 'Lake' in data[i]['writer']:
-...        del data[i]
-...    else:
-...        i += 1
->>> pprint(data)
-[{'time': '2:43', 'title': 'Eruption', 'writer': ['Emerson']},
- {'time': '1:16', 'title': 'Iconoclast', 'writer': ['Emerson']},
- {'time': '1:49', 'title': 'Manticore', 'writer': ['Emerson']},
- {'time': '3:54', 'title': 'Aquatarkus', 'writer': ['Emerson']}]
-
-# Recursive Removal.
-
-def remover(sub_list):
-    if len(sub_list) == 0: return []
-    head, *tail = sub_list
-    if 'Lake' in head['writer']:
-        return remover(tail)
-    else:
-        return [head] + remover(tail)
-pprint(remover(source))
-
-# Filtered Copy.
-
-data = [item for item in source if not('Lake' in item['writer'])]
-pprint(data)
-[{'time': '2:43', 'title': 'Eruption', 'writer': ['Emerson']},
- {'time': '1:16', 'title': 'Iconoclast', 'writer': ['Emerson']},
- {'time': '1:49', 'title': 'Manticore', 'writer': ['Emerson']},
- {'time': '3:54', 'title': 'Aquatarkus', 'writer': ['Emerson']}]
-
-# Another Filter.
-
-data = list(filter(lambda item: not('Lake' in item['writer']), source))
-pprint(data)
-[{'time': '2:43', 'title': 'Eruption', 'writer': ['Emerson']},
- {'time': '1:16', 'title': 'Iconoclast', 'writer': ['Emerson']},
- {'time': '1:49', 'title': 'Manticore', 'writer': ['Emerson']},
- {'time': '3:54', 'title': 'Aquatarkus', 'writer': ['Emerson']}]
-
-# Filter Function.
-
-data = list(writer_rule(source))
-pprint(data)
-[{'time': '2:43', 'title': 'Eruption', 'writer': ['Emerson']},
- {'time': '1:16', 'title': 'Iconoclast', 'writer': ['Emerson']},
- {'time': '1:49', 'title': 'Manticore', 'writer': ['Emerson']},
- {'time': '3:54', 'title': 'Aquatarkus', 'writer': ['Emerson']}]
-
+>>> pinochle = Hand([make_card(11,'♢'), make_card(12,'♠')])
+>>> pinochle <= h
+True
+>>> sum(c.points() for c in h)
+56
 """
-}
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
+
+import random
+
+
+def pick_seed():
+    pinochle = Hand([make_card(11, "♢"), make_card(12, "♠")])
+    for seed in range(4096):
+        random.seed(seed)
+        deck = make_deck()
+        random.shuffle(deck)
+        h = Hand(deck[:12])
+        if pinochle <= h:
+            print(seed, h.cards)
+            return
+    print("No Pinochle in range(4096)")
+
+
+if __name__ == "__main__":
+    pick_seed()

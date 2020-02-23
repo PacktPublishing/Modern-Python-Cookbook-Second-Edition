@@ -1,35 +1,32 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 2
+Chapter 7, recipe 2, Separating concerns via multiple inheritance
 """
 import logging
 from typing import TYPE_CHECKING, Protocol
+from dataclasses import dataclass
 
 SUITS = "\u2660\u2661\u2662\u2663"
 Spades, Hearts, Diamonds, Clubs = SUITS
 
 
+@dataclass(frozen=True)
 class Card:
     """Superclass for cards"""
+    rank: int
+    suit: str
 
-    __slots__ = ("rank", "suit")
-
-    def __init__(self, rank: int, suit: str) -> None:
-        super().__init__()
-        self.rank = rank
-        self.suit = suit
-
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         return f"{self.rank:2d} {self.suit}"
 
 
 class AceCard(Card):
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         return f" A {self.suit}"
 
 
 class FaceCard(Card):
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         names = {11: "J", 12: "Q", 13: "K"}
         return f" {names[self.rank]} {self.suit}"
 
@@ -46,7 +43,7 @@ def make_card(rank: int, suit: str) -> Card:
 
 
 class PointedCard(Protocol):
-    """Define properties required so we can mixin properly."""
+    """Define properties required from the base class so we can mixin properly."""
 
     rank: int
 
@@ -104,15 +101,15 @@ class Logged(PointedCard):
         return p
 
 
-class LoggedCribbageAce(AceCard, Logged, CribbagePoints):
+class LoggedCribbageAce(Logged, AceCard, CribbagePoints):
     pass
 
 
-class LoggedCribbageCard(Card, Logged, CribbagePoints):
+class LoggedCribbageCard(Logged, Card, CribbagePoints):
     pass
 
 
-class LoggedCribbageFace(FaceCard, Logged, CribbageFacePoints):
+class LoggedCribbageFace(Logged, FaceCard, CribbageFacePoints):
     pass
 
 
@@ -127,37 +124,37 @@ def make_logged_card(rank: int, suit: str) -> Card:
     raise ValueError(f"Invalid rank {rank}")
 
 
-__test__ = {
-    "make_cribbage_card": """
+test_make_cribbage_card = """
 >>> import random
 >>> random.seed(1)
 >>> deck = [make_cribbage_card(rank+1, suit) for rank in range(13) for suit in SUITS]
 >>> random.shuffle(deck)
 >>> len(deck)
 52
->>> deck[:5]
-[ K ♡,  3 ♡, 10 ♡,  6 ♢,  A ♢]
+>>> [str(c) for c in deck[:5]]
+[' K ♡', ' 3 ♡', '10 ♡', ' 6 ♢', ' A ♢']
 >>> sum(c.points() for c in deck[:5])
 30
 
 >>> c = deck[5]
->>> c
-10 ♢
+>>> str(c)
+'10 ♢'
 >>> c.__class__.__name__
 'CribbageCard'
 >>> c.__class__.mro()  # doctest: +NORMALIZE_WHITESPACE
 [<class 'Chapter_07.ch07_r02.CribbageCard'>, <class 'Chapter_07.ch07_r02.Card'>, <class 'Chapter_07.ch07_r02.CribbagePoints'>, <class 'Chapter_07.ch07_r02.PointedCard'>, <class 'typing.Protocol'>, <class 'typing.Generic'>, <class 'object'>]
 
-""",
-    "make_logged_card": """
+"""
+
+test_make_logged_card = """
 >>> import random
 >>> random.seed(1)
 >>> deck = [make_logged_card(rank+1, suit) for rank in range(13) for suit in SUITS]
 >>> random.shuffle(deck)
 >>> len(deck)
 52
->>> deck[:5]
-[ K ♡,  3 ♡, 10 ♡,  6 ♢,  A ♢]
+>>> [str(c) for c in deck[:5]]
+[' K ♡', ' 3 ♡', '10 ♡', ' 6 ♢', ' A ♢']
 >>> sum(c.points() for c in deck[:5])
 30
 
@@ -166,13 +163,14 @@ __test__ = {
 'LoggedCribbageCard'
 >>> c.__class__.mro()  # doctest: +NORMALIZE_WHITESPACE
 [<class 'Chapter_07.ch07_r02.LoggedCribbageCard'>,
- <class 'Chapter_07.ch07_r02.Card'>,
  <class 'Chapter_07.ch07_r02.Logged'>,
+ <class 'Chapter_07.ch07_r02.Card'>,
  <class 'Chapter_07.ch07_r02.CribbagePoints'>,
  <class 'Chapter_07.ch07_r02.PointedCard'>,
  <class 'typing.Protocol'>,
  <class 'typing.Generic'>,
  <class 'object'>]
 
-""",
-}
+"""
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

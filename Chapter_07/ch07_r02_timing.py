@@ -1,6 +1,8 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 2, timing comparison
+Chapter 7, recipe 2, Separating concerns via multiple inheritance
+
+Timing comparison
 """
 
 import timeit
