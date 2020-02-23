@@ -103,6 +103,7 @@ test_multi_search_delete = """
  {'time': '3:54', 'title': 'Aquatarkus', 'writer': ['Emerson']}]
 """
 
+
 def incremental_delete(data: List[SongType], writer: str) -> None:
     i = 0
     while i != len(data):
@@ -123,6 +124,7 @@ test_incremental_delete = """
  {'time': '3:54', 'title': 'Aquatarkus', 'writer': ['Emerson']}]
 """
 
+
 def remover(sub_list: List[SongType], writer: str) -> List[SongType]:
     if len(sub_list) == 0: return []
     head, *tail = sub_list
@@ -131,7 +133,7 @@ def remover(sub_list: List[SongType], writer: str) -> List[SongType]:
     else:
         return [head] + remover(tail, writer)
 
-test_recursive_removal = """
+test_recursive_remover = """
 >>> song_list = source.copy()
 >>> assert len(song_list) == 7
 
@@ -141,6 +143,7 @@ test_recursive_removal = """
  {'time': '1:49', 'title': 'Manticore', 'writer': ['Emerson']},
  {'time': '3:54', 'title': 'Aquatarkus', 'writer': ['Emerson']}]
 """
+
 
 def copy_exclude(data: List[SongType], writer: str) -> List[SongType]:
     return [
@@ -160,6 +163,7 @@ test_filtered_copy = """
  {'time': '1:49', 'title': 'Manticore', 'writer': ['Emerson']},
  {'time': '3:54', 'title': 'Aquatarkus', 'writer': ['Emerson']}]
 """
+
 
 def copy_exclude_2(data: List[SongType], writer: str) -> List[SongType]:
     return list(

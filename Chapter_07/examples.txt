@@ -213,6 +213,8 @@ remove Stones of Years
 remove Mass
 remove Battlefield
 
+Naïve Delete
+
 >>> data = source.copy()
 >>> for index in range(len(data)): 
 ...    if 'Lake' in data[index]['writer']:
@@ -224,18 +226,24 @@ Traceback (most recent call last):
     if 'Lake' in data[index]['writer']:
 IndexError: list index out of range
 
->>> def index(data):
-...    for i in range(len(data)):
-...        if 'Lake' in data[i]['writer']:
-...            return i
+Multiple passes through the data.
+
+>>> from Chapter_07.ch07_r08 import index_of_writer
 
 >>> data = source.copy()
->>> position = index(data)
->>> while position:
+>>> position = index_of_writer(data, 'Lake')
+>>> while position is not None:
 ...    del data[position]  # or data.pop(position)
-...    position = index(data)
+...    position = index_of_writer(data, 'Lake')
+>>> pprint(data)
+[{'time': '2:43', 'title': 'Eruption', 'writer': ['Emerson']},
+ {'time': '1:16', 'title': 'Iconoclast', 'writer': ['Emerson']},
+ {'time': '1:49', 'title': 'Manticore', 'writer': ['Emerson']},
+ {'time': '3:54', 'title': 'Aquatarkus', 'writer': ['Emerson']}]
 
+One pass through the data
 
+>>> data = source.copy()
 >>> i = 0
 >>> while i != len(data):
 ...    if 'Lake' in data[i]['writer']:
@@ -249,9 +257,20 @@ IndexError: list index out of range
  {'time': '1:49', 'title': 'Manticore', 'writer': ['Emerson']},
  {'time': '3:54', 'title': 'Aquatarkus', 'writer': ['Emerson']}]
 
->>> data = [item for item in source if not('Lake' in item['writer'])]
+Alternatives: Copying
 
+>>> cleaned_copy = [item for item in source if not('Lake' in item['writer'])]
+>>> pprint(cleaned_copy)
+[{'time': '2:43', 'title': 'Eruption', 'writer': ['Emerson']},
+ {'time': '1:16', 'title': 'Iconoclast', 'writer': ['Emerson']},
+ {'time': '1:49', 'title': 'Manticore', 'writer': ['Emerson']},
+ {'time': '3:54', 'title': 'Aquatarkus', 'writer': ['Emerson']}]
 
->>> data = list(filter(lambda item: not('Lake' in item['writer']), source))
+>>> cleaned_copy_2 = list(filter(lambda item: not('Lake' in item['writer']), source))
+>>> pprint(cleaned_copy_2)
+[{'time': '2:43', 'title': 'Eruption', 'writer': ['Emerson']},
+ {'time': '1:16', 'title': 'Iconoclast', 'writer': ['Emerson']},
+ {'time': '1:49', 'title': 'Manticore', 'writer': ['Emerson']},
+ {'time': '3:54', 'title': 'Aquatarkus', 'writer': ['Emerson']}]
 
 
