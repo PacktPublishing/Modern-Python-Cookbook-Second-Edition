@@ -1,100 +1,108 @@
 """Python Cookbook 2nd ed.
 
-Chapter 9, recipe 2.
+Chapter 9, recipe 2, Replacing a file while preserving the previous version
 
 Note: Output from this is used in Chapter 4 examples.
 """
 
-import csv
 from pathlib import Path
-from pprint import pprint
-from typing import Iterable, Iterator, Dict, Any
+import csv
+from dataclasses import dataclass, asdict, fields
+from typing import Callable, Any
 
 
-def raw() -> None:
-    data_path = Path("data/waypoints.csv")
-    with data_path.open() as data_file:
-        data_reader = csv.DictReader(data_file)
-        for row in data_reader:
-            pprint(row)
+@dataclass
+class Quotient:
+    numerator: int
+    denominator: int
 
 
-import datetime
+def save_data(output_path: Path, data: Quotient) -> None:
+    with output_path.open('w', newline='') as output_file:
+        headers = [f.name for f in fields(Quotient)]
+        writer = csv.DictWriter(output_file, headers)
+        writer.writeheader()
+        writer.writerow(asdict(data))
 
+def safe_write(output_path: Path, data: Quotient) -> None:
+    ext = output_path.suffix
+    output_new_path = output_path.with_suffix(f'{ext}.new')
+    save_data(output_new_path, data)
 
-def clean_row(source_row: Dict[str, Any]) -> Dict[str, Any]:
-    source_row["lat_n"] = float(source_row["lat"])
-    source_row["lon_n"] = float(source_row["lon"])
-    source_row["ts_date"] = datetime.datetime.strptime(
-        source_row["date"], "%Y-%m-%d"
-    ).date()
-    source_row["ts_time"] = datetime.datetime.strptime(
-        source_row["time"], "%H:%M:%S"
-    ).time()
-    source_row["timestamp"] = datetime.datetime.combine(
-        source_row["ts_date"], source_row["ts_time"]
-    )
-    return source_row
+    # Clear any previous .{ext}.old
+    output_old_path = output_path.with_suffix(f'{ext}.old')
+    try:
+        output_old_path.unlink()
+    except FileNotFoundError as ex:
+        # No previous file
+        pass
 
+    # Try to preserve current as old
+    try:
+        output_path.rename(output_old_path)
+    except FileNotFoundError as ex:
+        # No previous file. That's okay.
+        pass
 
-def cleanse(reader: Iterable[Dict[str, Any]]) -> Iterator[Dict[str, Any]]:
-    for row in reader:
-        yield clean_row(row)
+    # Try to replace current .{ext} with new .{ext}.new
+    try:
+        output_new_path.rename(output_path)
+    except IOError as ex:
+        # Possible recovery...
+        output_old_path.rename(output_path)
 
+test_step1 = """
+>>> d1 = Quotient(355, 113)
+>>> safe_write(Path("data")/"quotient.csv", d1)
+>>> (Path("data")/"quotient.csv").read_text()
+'numerator,denominator\\n355,113\\n'
+"""
 
-def clean() -> None:
-    data_path = Path("data/waypoints.csv")
-    with data_path.open() as data_file:
-        data_reader = csv.DictReader(data_file)
-        clean_data_reader = cleanse(data_reader)
-        for row in clean_data_reader:
-            pprint(row)
+test_step2 = """
+>>> d2 = Quotient(87, 32)
+>>> safe_write(Path("data")/"quotient.csv", d2)
+>>> (Path("data")/"quotient.csv").read_text()
+'numerator,denominator\\n87,32\\n'
+>>> (Path("data")/"quotient.csv.old").read_text()
+'numerator,denominator\\n355,113\\n'
+"""
 
+# Bonus: Decorator implementation
 
-__test__ = {
-    "raw": """
->>> raw()
-{'date': '2012-11-27',
- 'lat': '32.8321666666667',
- 'lon': '-79.9338333333333',
- 'time': '09:15:00'}
-{'date': '2012-11-28',
- 'lat': '31.6714833333333',
- 'lon': '-80.93325',
- 'time': '00:00:00'}
-{'date': '2012-11-28',
- 'lat': '30.7171666666667',
- 'lon': '-81.5525',
- 'time': '11:35:00'}
-""",
-    "clean": """
->>> clean()
-{'date': '2012-11-27',
- 'lat': '32.8321666666667',
- 'lat_n': 32.8321666666667,
- 'lon': '-79.9338333333333',
- 'lon_n': -79.9338333333333,
- 'time': '09:15:00',
- 'timestamp': datetime.datetime(2012, 11, 27, 9, 15),
- 'ts_date': datetime.date(2012, 11, 27),
- 'ts_time': datetime.time(9, 15)}
-{'date': '2012-11-28',
- 'lat': '31.6714833333333',
- 'lat_n': 31.6714833333333,
- 'lon': '-80.93325',
- 'lon_n': -80.93325,
- 'time': '00:00:00',
- 'timestamp': datetime.datetime(2012, 11, 28, 0, 0),
- 'ts_date': datetime.date(2012, 11, 28),
- 'ts_time': datetime.time(0, 0)}
-{'date': '2012-11-28',
- 'lat': '30.7171666666667',
- 'lat_n': 30.7171666666667,
- 'lon': '-81.5525',
- 'lon_n': -81.5525,
- 'time': '11:35:00',
- 'timestamp': datetime.datetime(2012, 11, 28, 11, 35),
- 'ts_date': datetime.date(2012, 11, 28),
- 'ts_time': datetime.time(11, 35)}
-""",
-}
+from typing import Callable
+
+Writer = Callable[..., None]
+
+def safe(function: Writer) -> Writer:
+    def concrete_function(output_path: Path, *args):
+        ext = output_path.suffix
+        output_new_path = output_path.with_suffix(f'{ext}.new')
+
+        function(output_path, *args)
+
+        output_old_path = output_path.with_suffix(f'{ext}.old')
+        try:
+            output_old_path.unlink()
+        except FileNotFoundError as ex:
+            pass
+
+        try:
+            output_path.rename(output_old_path)
+        except FileNotFoundError as ex:
+            pass
+
+        try:
+            output_new_path.rename(output_path)
+        except IOError as ex:
+            output_old_path.rename(output_path)
+    return concrete_function
+
+@safe
+def write_quotient(output_path: Path, data: Quotient) -> None:
+    with output_path.open('w', newline='') as output_file:
+        headers = [f.name for f in fields(Quotient)]
+        writer = csv.DictWriter(output_file, headers)
+        writer.writeheader()
+        writer.writerow(asdict(data))
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

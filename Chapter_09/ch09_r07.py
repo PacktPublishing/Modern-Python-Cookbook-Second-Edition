@@ -1,108 +1,53 @@
 """Python Cookbook 2nd ed.
 
-Chapter 9, recipe 7.
+Chapter 9, recipe 7, Reading XML documents
 
 Note: Output from this is used in Chapter 4 examples.
 """
 
+import xml.etree.ElementTree as XML
 from pathlib import Path
-import csv
-import datetime
-from typing import NamedTuple
+from typing import cast
 
-# from collections import namedtuple
-# Waypoint = namedtuple('Waypoint', ['lat', 'lon', 'date', 'time'])
+def race_summary(source_path: Path) -> None:
+    source_text = source_path.read_text(encoding='UTF-8')
+    document = XML.fromstring(source_text)
 
+    legs = cast(XML.Element, document.find('legs'))
+    teams = cast(XML.Element, document.find('teams'))
 
-class Waypoint(NamedTuple):
-    """Raw data, values are strings"""
+    for leg in legs.findall('leg'):
+        print(cast(str, leg.text).strip())
+        n = leg.attrib['n']
 
-    lat: str
-    lon: str
-    date: str
-    time: str
+        for team in teams.findall('team'):
+            position_leg = cast(XML.Element, team.find(f"position/leg[@n='{n}']"))
+            name = cast(XML.Element, team.find('name'))
+            print(
+                cast(str, name.text).strip(),
+                cast(str, position_leg.text).strip()
+            )
 
+test_summary = """
+>>> race_summary(source_path=Path("data") / "race_result.xml")  # doctest: +ELLIPSIS
+ALICANTE - CAPE TOWN
+Abu Dhabi Ocean Racing 1
+Team Brunel 3
+Dongfeng Race Team 2
+MAPFRE 7
+Team Alvimedica 5
+Team SCA 6
+Team Vestas Wind 4
+...
+LORIENT - GOTHENBURG
+Abu Dhabi Ocean Racing 5
+Team Brunel 2
+Dongfeng Race Team 4
+MAPFRE 3
+Team Alvimedica 1
+Team SCA 7
+Team Vestas Wind 6
 
-# Waypoint_Data = namedtuple('Waypoint_Data', ['lat', 'lon', 'timestamp'])
-class Waypoint_Data(NamedTuple):
-    lat: float
-    lon: float
-    timestamp: datetime.datetime
+"""
 
-
-import datetime
-
-parse_date = lambda txt: datetime.datetime.strptime(txt, "%Y-%m-%d").date()
-parse_time = lambda txt: datetime.datetime.strptime(txt, "%H:%M:%S").time()
-
-
-def convert_waypoint(waypoint: Waypoint) -> Waypoint_Data:
-    return Waypoint_Data(
-        lat=float(waypoint.lat),
-        lon=float(waypoint.lon),
-        timestamp=datetime.datetime.combine(
-            parse_date(waypoint.date), parse_time(waypoint.time)
-        ),
-    )
-
-
-def wp_0(waypoints_path: Path) -> None:
-    with waypoints_path.open() as waypoints_file:
-        raw_reader = csv.reader(waypoints_file)
-        waypoints_reader = (Waypoint(*row) for row in raw_reader)
-        for row in waypoints_reader:
-            print(row)
-
-
-def wp_1(waypoints_path: Path) -> None:
-    with waypoints_path.open() as waypoints_file:
-        raw_reader = csv.reader(waypoints_file)
-        skip_header = filter(lambda row: row[0] != "lat", raw_reader)
-        waypoints_reader = (Waypoint(*row) for row in skip_header)
-        waypoints_data_reader = (convert_waypoint(wp) for wp in waypoints_reader)
-
-        for row_data in waypoints_data_reader:
-            print(row_data.lat, row_data.lon, row_data.timestamp)
-
-
-def wp_2(waypoints_path: Path) -> None:
-    from itertools import starmap
-
-    with waypoints_path.open() as waypoints_file:
-        raw_reader = csv.reader(waypoints_file)
-        waypoint_raw_reader = starmap(Waypoint, raw_reader)
-        for raw_row in waypoint_raw_reader:
-            print(raw_row)
-
-
-__test__ = {
-    "wp_0": """
->>> waypoints_path = Path.cwd()/'data'/'waypoints.csv'
->>> wp_0(waypoints_path)
-Waypoint(lat='lat', lon='lon', date='date', time='time')
-Waypoint(lat='32.8321666666667', lon='-79.9338333333333', date='2012-11-27', time='09:15:00')
-Waypoint(lat='31.6714833333333', lon='-80.93325', date='2012-11-28', time='00:00:00')
-Waypoint(lat='30.7171666666667', lon='-81.5525', date='2012-11-28', time='11:35:00')
-""",
-    "wp_1": """
->>> waypoints_path = Path.cwd()/'data'/'waypoints.csv'
->>> wp_1(waypoints_path)
-32.8321666666667 -79.9338333333333 2012-11-27 09:15:00
-31.6714833333333 -80.93325 2012-11-28 00:00:00
-30.7171666666667 -81.5525 2012-11-28 11:35:00
-""",
-    "wp_2": """
->>> waypoints_path = Path.cwd()/'data'/'waypoints.csv'
->>> wp_2(waypoints_path)
-Waypoint(lat='lat', lon='lon', date='date', time='time')
-Waypoint(lat='32.8321666666667', lon='-79.9338333333333', date='2012-11-27', time='09:15:00')
-Waypoint(lat='31.6714833333333', lon='-80.93325', date='2012-11-28', time='00:00:00')
-Waypoint(lat='30.7171666666667', lon='-81.5525', date='2012-11-28', time='11:35:00')
-""",
-}
-
-if __name__ == "__main__":
-    waypoints_path = Path.cwd() / "data" / "waypoints.csv"
-    wp_0(waypoints_path)
-    wp_1(waypoints_path)
-    wp_2(waypoints_path)
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

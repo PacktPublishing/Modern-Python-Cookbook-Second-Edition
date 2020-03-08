@@ -17,6 +17,7 @@ test_raw_data = """
 28 output.csv
 225 fuel.csv
 166 waypoints.csv
+30 quotient.csv
 412 summary_log.csv
 156 fuel2.csv
 """
@@ -27,9 +28,9 @@ test_gather = """
 >>> for path in home.glob('data/*.csv'):
 ...     file_sizes.append(path.stat().st_size)
 >>> print(file_sizes)
-[1810, 28, 1790, 160, 215, 45, 28, 225, 166, 412, 156]
+[1810, 28, 1790, 160, 215, 45, 28, 225, 166, 30, 412, 156]
 >>> print(sum(file_sizes))
-5035
+5065
 """
 
 
@@ -37,26 +38,26 @@ test_comprehensions = """
 >>> home = Path.cwd()
 >>> [path.stat().st_size
 ...    for path in home.glob('data/*.csv')]
-[1810, 28, 1790, 160, 215, 45, 28, 225, 166, 412, 156]
+[1810, 28, 1790, 160, 215, 45, 28, 225, 166, 30, 412, 156]
 """
 
 test_generator = """
 >>> home = Path.cwd()
 >>> list(path.stat().st_size
 ...    for path in home.glob('data/*.csv'))
-[1810, 28, 1790, 160, 215, 45, 28, 225, 166, 412, 156]
+[1810, 28, 1790, 160, 215, 45, 28, 225, 166, 30, 412, 156]
 
 >>> sizes = list(path.stat().st_size
 ...    for path in home.glob('data/*.csv'))
 >>> sum(sizes)
-5035
+5065
 >>> max(sizes)
 1810
 >>> min(sizes)
 28
 >>> from statistics import mean
 >>> round(mean(sizes), 3)
-457.727
+422.083
 >>> sizes.index(min(sizes))
 1
 """
@@ -75,7 +76,7 @@ test_list_extend = """
 >>> len(final)
 28
 >>> sum(final)
-59499
+59527
 
 >>> final_ex = []
 >>> final_ex.extend(ch3)
@@ -83,7 +84,7 @@ test_list_extend = """
 >>> len(final_ex)
 28
 >>> sum(final_ex)
-59499
+59527
 """
 
 test_insert = """

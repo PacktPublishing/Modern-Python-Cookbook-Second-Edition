@@ -2,13 +2,23 @@
 
 Chapter 9, Examples from the text.
 
+•	Using pathlib to work with file names
+•	Replacing a file while preserving the previous version
+•	Reading delimited files with the cvs module
+•	Using data classes to simplify working with CSV files
+•	Reading complex formats using regular expressions
+•	Reading JSON and YAML documents
+•	Reading XML documents
+•	Reading HTML documents
+•	Refactoring a csv DictReader to a dataclass reader
+
 Note: Output from this is used in Chapter 4 examples.
 """
 
-# Lines 51 to 51
+# Using pathlib to work with file names
+
 >>> from pathlib import Path
 
-# Lines 55 to 56
 >>> from argparse import Namespace
 >>> options = Namespace(
 ...     input='/path/to/some/file.csv',
@@ -16,52 +26,40 @@ Note: Output from this is used in Chapter 4 examples.
 ...     file2='data/ch09_file2.yaml',
 ... )
 
-
-# Lines 73 to 74
 >>> input_path = Path(options.input)
 >>> input_path
 PosixPath('/path/to/some/file.csv')
 
-# Lines 79 to 80
 >>> output_path = input_path.with_suffix('.out')
 >>> output_path
 PosixPath('/path/to/some/file.out')
 
-# Lines 86 to 87
 >>> input_path = Path(options.input)
 >>> input_path
 PosixPath('/path/to/some/file.csv')
 
-# Lines 92 to 93
 >>> input_directory = input_path.parent
 >>> input_stem = input_path.stem
 
-
-# Lines 96 to 97
->>> output_stem_pass = input_stem+"_pass"
+>>> output_stem_pass = f"{input_stem}_pass"
 >>> output_stem_pass
 'file_pass'
 
-# Lines 100 to 101
 >>> output_path = (input_directory / output_stem_pass).with_suffix('.csv')
 >>> output_path
 PosixPath('/path/to/some/file_pass.csv')
 
-# Lines 107 to 108
 >>> input_path = Path(options.input)
 >>> input_path
 PosixPath('/path/to/some/file.csv')
 
-# Lines 113 to 114
 >>> output_parent = input_path.parent / "output"
 >>> output_parent
 PosixPath('/path/to/some/output')
 
-# Lines 120 to 121
 >>> input_stem = input_path.stem
 >>> output_path = (output_parent / input_stem).with_suffix('.src')
 
-# Lines 126 to 130
 >>> file1_path = Path(options.file1)
 >>> file1_path
 PosixPath('data/ch09_file1.yaml')
@@ -80,33 +78,29 @@ PosixPath('data/ch09_file2.yaml')
 >>> datetime.datetime.fromtimestamp(mtime_1)  # doctest: +SKIP
 datetime.datetime(2016, 5, 28, 7, 19, 45)
 
-# Lines 149 to 150
 >>> input_path = Path(options.input)
 >>> input_path
 PosixPath('/path/to/some/file.csv')
 
-# Lines 154 to 154
 >>> try:
 ...     input_path.unlink()
 ... except FileNotFoundError as ex:
 ...     print("File already deleted")
 File already deleted
 
-# Lines 164 to 165
 >>> directory_path = Path(options.file1).parent
 >>> directory_path
 PosixPath('data')
 
-# Lines 169 to 169
 >>> list(directory_path.glob("*.csv"))  # doctest: +NORMALIZE_WHITESPACE
 [PosixPath('data/wc1.csv'), PosixPath('data/ex2_r12.csv'),
  PosixPath('data/wc.csv'), PosixPath('data/ch06_r13.csv'),
  PosixPath('data/sample.csv'),
  PosixPath('data/craps.csv'), PosixPath('data/output.csv'),
  PosixPath('data/fuel.csv'), PosixPath('data/waypoints.csv'),
+ PosixPath('data/quotient.csv'),
  PosixPath('data/summary_log.csv'), PosixPath('data/fuel2.csv')]
 
-# Lines 192 to 197
 >>> from pathlib import PureWindowsPath
 >>> home_path = PureWindowsPath(r'C:\Users\slott')
 >>> name_path = home_path / 'filename.ini'
@@ -115,45 +109,8 @@ PureWindowsPath('C:/Users/slott/filename.ini')
 >>> str(name_path)
 'C:\\Users\\slott\\filename.ini'
 
-# Lines 295 to 295
->>> from pathlib import Path
+# Reading complex formats using regular expressions
 
-
-# Lines 298 to 299
->>> from argparse import Namespace
->>> options = Namespace(
-...     target='data/output.csv'
-... )
-
-
-# Lines 304 to 305
->>> output_path = Path(options.target)
->>> output_path
-PosixPath('data/output.csv')
-
-# Lines 308 to 308
->>> output_temp_path = output_path.with_suffix('.csv.tmp')
-
-
-# Lines 311 to 311
->>> output_temp_path.write_text("Heading1,Heading2\r\n355,113\r\n")
-28
-
-# Lines 315 to 316
->>> output_old_path = output_path.with_suffix('.csv.old')
->>> try:
-...     output_old_path.unlink()
-... except FileNotFoundError as ex:
-...     pass # No previous file
-
-
-# Lines 323 to 323
->>> output_path.rename(output_old_path)
-PosixPath('data/output.csv.old')
->>> output_temp_path.rename(output_path)
-PosixPath('data/output.csv')
-
-# Lines 508 to 509
 >>> import re
 >>> pattern_text = (r'\[(\d+-\d+-\d+ \d+:\d+:\d+,\d+)\]'
 ...     '\s+(\w+)'
@@ -161,53 +118,29 @@ PosixPath('data/output.csv')
 ...     '\s+([\w_\.]+):'
 ...     '\s+(.*)')
 
-# Lines 514 to 514
 >>> pattern = re.compile(pattern_text)
 
-
-# Lines 518 to 520
 >>> sample_data = '[2016-05-08 11:08:18,651] INFO in ch09_r09: Sample Message One'
 >>> match = pattern.match(sample_data)
 >>> match.groups()
 ('2016-05-08 11:08:18,651', 'INFO', 'ch09_r09', 'Sample Message One')
 
-# Lines 688 to 688
+# Reading JSON and YAML documents
+
 >>> import json
 
-
-# Lines 691 to 692
 >>> from pathlib import Path
 >>> source_path = Path("data/race_result.json")
-
-
-# Lines 696 to 696
 >>> document = json.loads(source_path.read_text())
 
 
-# Lines 700 to 700
->>> document['teams'][0]['name']
-'Abu Dhabi Ocean Racing'
+>>> document['teams'][6]['name']
+'Team Vestas Wind'
 
-# Lines 703 to 703
 >>> document['legs'][5]
 'ITAJAÍ - NEWPORT'
 
-# Lines 725 to 731
->>> import random
->>> random.seed(1)
->>> from collections import Counter
->>> colors = (["red"]*18)+(["black"]*18)+(["green"]*2)
->>> data = Counter(random.choice(colors) for _ in range(100))
 
->>> print(json.dumps(data, sort_keys=True, indent=2))
-{
-  "black": 53,
-  "green": 7,
-  "red": 40
-}
-
-
-# Lines 744 to 748
 >>> import datetime
 >>> example_date = datetime.datetime(2014, 6, 7, 8, 9, 10)
 >>> document = {'date': example_date}
@@ -228,61 +161,51 @@ Traceback (most recent call last):
     raise TypeError(f'Object of type {o.__class__.__name__} '
 TypeError: Object of type datetime is not JSON serializable
 
-# Lines 754 to 755
 >>> document_converted = {'date': example_date.isoformat()}
 >>> json.dumps(document_converted)
 '{"date": "2014-06-07T08:09:10"}'
 
-# Lines 759 to 759
->>> def default_date(object):
+>>> from typing import Any, Union, Dict
+>>> def default_date(object: Any) -> Union[Any, Dict[str, Any]]:
 ...     if isinstance(object, datetime.datetime):
-...         return example_date.isoformat()
+...         return {"$date": object.isoformat()}
 ...     return object
 
-
-# Lines 765 to 766
+>>> example_date = datetime.datetime(2014, 6, 7, 8, 9, 10)
 >>> document = {'date': example_date}
 >>> print(
 ...     json.dumps(document, default=default_date, indent=2))
 {
-  "date": "2014-06-07T08:09:10"
+  "date": {
+    "$date": "2014-06-07T08:09:10"
+  }
 }
 
 
-# Lines 775 to 775
 >>> def as_date(object):
-...     if 'date' in object:
+...     if {'$date'} == set(object.keys()):
 ...         return datetime.datetime.strptime(
-...            object['date'], '%Y-%m-%dT%H:%M:%S')
+...            object['$date'], '%Y-%m-%dT%H:%M:%S')
 ...     return object
 
-
-# Lines 782 to 783
->>> source= '''{"date": "2014-06-07T08:09:10"}'''
+>>> source = '''{"date": {"$date": "2014-06-07T08:09:10"}}'''
 >>> json.loads(source, object_hook=as_date)
-datetime.datetime(2014, 6, 7, 8, 9, 10)
+{'date': datetime.datetime(2014, 6, 7, 8, 9, 10)}
 
-# Lines 871 to 872
+# Reading XML documents
+
 >>> import xml.etree.ElementTree as XML
 >>> from pathlib import Path
 
-
-# Lines 876 to 876
 >>> source_path = Path("data/race_result.xml")
-
-
-# Lines 879 to 880
 >>> source_text = source_path.read_text(encoding='UTF-8')
 >>> document = XML.fromstring(source_text)
 
-
-# Lines 883 to 885
 >>> teams = document.find('teams')
 >>> name = teams.find('team').find('name')
 >>> name.text.strip()
 'Abu Dhabi Ocean Racing'
 
-# Lines 902 to 902
 >>> for tag in document.findall('teams/team/name'):
 ...      print(tag.text.strip())
 Abu Dhabi Ocean Racing
@@ -293,7 +216,6 @@ Team Alvimedica
 Team SCA
 Team Vestas Wind
 
-# Lines 914 to 914
 >>> for tag in document.findall("teams/team/position/leg[@n='8']"):
 ...     print(tag.text.strip())
 3
@@ -305,30 +227,52 @@ Team Vestas Wind
 2
 
 
-# Lines 991 to 992
+# Reading HTML documents
+
 >>> from bs4 import BeautifulSoup
 >>> from pathlib import Path
 
 
-# Lines 996 to 998
 >>> source_path = Path("data/Volvo Ocean Race.html")
-
 >>> with source_path.open(encoding='utf8') as source_file:
 ...     soup = BeautifulSoup(source_file, 'html.parser')
 
+>>> def clean_leg(text: str) -> str:
+...     leg_soup = BeautifulSoup(text, "html.parser")
+...     return leg_soup.text
 
-# Lines 1029 to 1029
+>>> def get_legs(soup):
+...     legs = []
+...     thead = soup.table.thead.tr
+...     for tag in thead.find_all('th'):
+...         if 'data-title' in tag.attrs:
+...             leg_description_text = clean_leg(tag.attrs['data-title'])
+...             legs.append(leg_description_text)
+...     return legs
+
+>>> get_legs(soup)
+['ALICANTE - CAPE TOWN', 'CAPE TOWN - ABU DHABI', 'ABU DHABI - SANYA', 'SANYA - AUCKLAND', 'AUCKLAND - ITAJAÍ', 'ITAJAÍ - NEWPORT', 'NEWPORT - LISBON', 'LISBON - LORIENT', 'LORIENT - GOTHENBURG']
+
+>>> def get_legs_comprehension(soup):
+...     thead = soup.table.thead.tr
+...     legs = [
+...         clean_leg(tag.attrs['data-title'])
+...           for tag in thead.find_all('th')
+...             if 'data-title' in tag.attrs
+...     ]
+...     return legs
+
+>>> get_legs_comprehension(soup)
+['ALICANTE - CAPE TOWN', 'CAPE TOWN - ABU DHABI', 'ABU DHABI - SANYA', 'SANYA - AUCKLAND', 'AUCKLAND - ITAJAÍ', 'ITAJAÍ - NEWPORT', 'NEWPORT - LISBON', 'LISBON - LORIENT', 'LORIENT - GOTHENBURG']
+
+
 >>> example = BeautifulSoup('''
 ...     <tr>
 ...         <td>data</td>
 ...     </tr>
 ... ''', 'html.parser')
 
-# Lines 1034 to 1034
 >>> list(example.tr.children)
 ['\n', <td>data</td>, '\n']
 
-# Lines 1047 to 1047
 >>> ranking_table = soup.find('table', class_="ranking-list")
-
-

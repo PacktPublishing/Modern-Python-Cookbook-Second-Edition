@@ -1,78 +1,151 @@
 """Python Cookbook 2nd ed.
 
-Chapter 9, recipe 3.
+Chapter 9, recipe 3, Reading delimited files with the cvs module
 
 Note: Output from this is used in Chapter 4 examples.
 """
 
-import re
+import csv
+import datetime
 from pathlib import Path
 from pprint import pprint
-from typing import Dict, Any, cast, Match
+from typing import Iterable, Iterator, Dict, Any, TypedDict, Tuple, cast
 
-pattern_text = (
-    r"\[(?P<date>\d+-\d+-\d+ \d+:\d+:\d+,\d+)\]"
-    r"\s+(?P<level>\w+)"
-    r"\s+in\s+(?P<module>[\w_\.]+):"
-    r"\s+(?P<message>.*)"
-)
-pattern = re.compile(pattern_text)
-
-
-def log_parser(source_line: str) -> Dict[str, Any]:
-    """
-    >>> log_parser("[2019-11-07 11:12:13,098765] info in this.module: example message")
-    {'date': '2019-11-07 11:12:13,098765', 'level': 'info', 'module': 'this.module', 'message': 'example message'}
-    """
-    # match = pattern.match(source_line)
-    # if match:
-    if match := pattern.match(source_line):
-        # Chapter_09/ch09_r03.py:27: error: Item "None" of "Optional[Match[str]]" has no attribute "groupdict"
-        # return match.groupdict()
-        return cast(Match, match).groupdict()
-    raise ValueError(f"Unexpected input {source_line=}")
-
-
-def raw() -> None:
-    data_path = Path("data") / "sample.log"
+def raw(data_path: Path) -> None:
     with data_path.open() as data_file:
-        data_reader = map(log_parser, data_file)
+        data_reader = csv.DictReader(data_file)
         for row in data_reader:
             pprint(row)
 
+Raw = Dict[str, Any]
+Waypoint = Dict[str, Any]
 
-def copy() -> None:
-    import csv
+def clean_row(source_row: Raw) -> Waypoint:
+    ts_date = datetime.datetime.strptime(
+        source_row["date"], "%Y-%m-%d"
+    ).date()
+    ts_time = datetime.datetime.strptime(
+        source_row["time"], "%H:%M:%S"
+    ).time()
+    return dict(
+        date=source_row["date"],
+        time=source_row["time"],
+        lat=source_row["lat"],
+        lon=source_row["lon"],
+        lat_lon=(
+            float(source_row["lat"]),
+            float(source_row["lon"])
+        ),
+        ts_date=ts_date,
+        ts_time=ts_time,
+        timestamp = datetime.datetime.combine(
+            ts_date, ts_time
+        )
+    )
 
-    data_path = Path("data") / "sample.log"
-    target_path = data_path.with_suffix(".csv")
-    with target_path.open("w", newline="") as target_file:
-        writer = csv.DictWriter(target_file, ["date", "level", "module", "message"])
-        writer.writeheader()
 
-        with data_path.open() as data_file:
-            reader = map(log_parser, data_file)
-            writer.writerows(reader)
+def cleanse(reader: csv.DictReader) -> Iterator[Waypoint]:
+    for row in reader:
+        yield clean_row(cast(Raw, row))
 
 
-__test__ = {
-    "raw": """
->>> raw()
-{'date': '2016-06-15 17:57:54,715',
- 'level': 'INFO',
- 'message': 'Sample Message One',
- 'module': 'ch09_r10'}
-{'date': '2016-06-15 17:57:54,715',
- 'level': 'DEBUG',
- 'message': 'Debugging',
- 'module': 'ch09_r10'}
-{'date': '2016-06-15 17:57:54,715',
- 'level': 'WARNING',
- 'message': 'Something might have gone wrong',
- 'module': 'ch09_r10'}
+def clean(data_path: Path) -> None:
+    with data_path.open() as data_file:
+        data_reader = csv.DictReader(data_file)
+        clean_data_reader = cleanse(data_reader)
+        for row in clean_data_reader:
+            pprint(row)
 
-""",
-}
 
-if __name__ == "__main__":
-    copy()
+test_raw = """
+>>> raw(Path("data/waypoints.csv"))
+{'date': '2012-11-27',
+ 'lat': '32.8321666666667',
+ 'lon': '-79.9338333333333',
+ 'time': '09:15:00'}
+{'date': '2012-11-28',
+ 'lat': '31.6714833333333',
+ 'lon': '-80.93325',
+ 'time': '00:00:00'}
+{'date': '2012-11-28',
+ 'lat': '30.7171666666667',
+ 'lon': '-81.5525',
+ 'time': '11:35:00'}
+"""
+
+test_clean = """
+>>> clean(Path("data/waypoints.csv"))
+{'date': '2012-11-27',
+ 'lat': '32.8321666666667',
+ 'lat_lon': (32.8321666666667, -79.9338333333333),
+ 'lon': '-79.9338333333333',
+ 'time': '09:15:00',
+ 'timestamp': datetime.datetime(2012, 11, 27, 9, 15),
+ 'ts_date': datetime.date(2012, 11, 27),
+ 'ts_time': datetime.time(9, 15)}
+{'date': '2012-11-28',
+ 'lat': '31.6714833333333',
+ 'lat_lon': (31.6714833333333, -80.93325),
+ 'lon': '-80.93325',
+ 'time': '00:00:00',
+ 'timestamp': datetime.datetime(2012, 11, 28, 0, 0),
+ 'ts_date': datetime.date(2012, 11, 28),
+ 'ts_time': datetime.time(0, 0)}
+{'date': '2012-11-28',
+ 'lat': '30.7171666666667',
+ 'lat_lon': (30.7171666666667, -81.5525),
+ 'lon': '-81.5525',
+ 'time': '11:35:00',
+ 'timestamp': datetime.datetime(2012, 11, 28, 11, 35),
+ 'ts_date': datetime.date(2012, 11, 28),
+ 'ts_time': datetime.time(11, 35)}
+"""
+
+
+# Alternative Definitions
+
+class Raw_TD(TypedDict):
+    date: str
+    time: str
+    lat: str
+    lon: str
+
+class Waypoint_TD(TypedDict):
+    date: str
+    time: str
+    lat: str
+    lon: str
+    lat_lon: Tuple[float, float]
+    ts_date: datetime.date
+    ts_time: datetime.time
+    timestamp: datetime.datetime
+
+def clean_row_td(source_row: Raw_TD) -> Waypoint_TD:
+    ts_date = datetime.datetime.strptime(
+        source_row["date"], "%Y-%m-%d"
+    ).date()
+    ts_time = datetime.datetime.strptime(
+        source_row["time"], "%H:%M:%S"
+    ).time()
+    return Waypoint_TD(
+        date=source_row["date"],
+        time=source_row["time"],
+        lat=source_row["lat"],
+        lon=source_row["lon"],
+        lat_lon=(
+            float(source_row["lat"]),
+            float(source_row["lon"])
+        ),
+        ts_date=ts_date,
+        ts_time=ts_time,
+        timestamp = datetime.datetime.combine(
+            ts_date, ts_time
+        )
+    )
+
+def cleanse_td(reader: csv.DictReader) -> Iterator[Waypoint_TD]:
+    for row in reader:
+        yield clean_row_td(cast(Raw_TD, row))
+
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

@@ -1,6 +1,7 @@
 """Python Cookbook 2nd ed.
 
-Chapter 9, recipe 1a.
+Chapter 6, recipe 12a, Using contexts and context managers
+This (and related recipes) are part of Chapter 6, Recipe 12.
 
 FileFacts(name=PosixPath('anscome_json.py'), modified='2019-11-08T16:24:50.834272', size=993, checksum='ab8cea15584ffbe17eb3763205cae947')
 FileFacts(name=PosixPath('hint_game.py'), modified='2016-03-16T14:36:20', size=1152, checksum='43b9119fb44ba26be022ba11928b33ad')
@@ -38,3 +39,7 @@ if __name__ == "__main__":
         base = Path.cwd()
         for member in base.glob("Chapter_*/*.py"):
             print(file_facts(member), file=summary_file)
+
+    with summary_path.open() as summary_file:
+        for line in summary_file:
+            print(line.rstrip())
