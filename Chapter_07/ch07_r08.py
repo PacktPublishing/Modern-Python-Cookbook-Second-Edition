@@ -2,7 +2,17 @@
 
 Chapter 7, recipe 8, Deleting from a list of mappings
 """
-from typing import Iterable, Iterator, TypeVar, Dict, Any, TypedDict, List, Optional, cast
+from typing import (
+    Iterable,
+    Iterator,
+    TypeVar,
+    Dict,
+    Any,
+    TypedDict,
+    List,
+    Optional,
+    cast,
+)
 from pprint import pprint
 
 # Superficially correct, but very broad
@@ -10,10 +20,7 @@ from pprint import pprint
 
 # Better
 
-SongType = TypedDict(
-    'SongType',
-    {'title': str, 'writer': List[str], 'time': str}
-)
+SongType = TypedDict("SongType", {"title": str, "writer": List[str], "time": str})
 
 raw_data = """title,writer,time
 Eruption,['Emerson'],2:43
@@ -26,26 +33,28 @@ Aquatarkus,['Emerson'],3:54
 """
 
 import ast
+
+
 def build_song(row: Dict[str, str]) -> SongType:
     return SongType(
-        title=row['title'],
-        writer=ast.literal_eval(row['writer']),
-        time=row['time']
+        title=row["title"], writer=ast.literal_eval(row["writer"]), time=row["time"]
     )
+
 
 import csv
 import io
+
 rdr = csv.DictReader(io.StringIO(raw_data))
 source: List[SongType] = list(map(build_song, filter(None, rdr)))
 
 song_list: List[SongType] = [
-{'title': 'Eruption', 'writer': ['Emerson'], 'time': '2:43'},
-{'title': 'Stones of Years', 'writer': ['Emerson', 'Lake'], 'time': '3:43'},
-{'title': 'Iconoclast', 'writer': ['Emerson'], 'time': '1:16'},
-{'title': 'Mass', 'writer': ['Emerson', 'Lake'], 'time': '3:09'},
-{'title': 'Manticore', 'writer': ['Emerson'], 'time': '1:49'},
-{'title': 'Battlefield', 'writer': ['Lake'], 'time': '3:57'},
-{'title': 'Aquatarkus', 'writer': ['Emerson'], 'time': '3:54'}
+    {"title": "Eruption", "writer": ["Emerson"], "time": "2:43"},
+    {"title": "Stones of Years", "writer": ["Emerson", "Lake"], "time": "3:43"},
+    {"title": "Iconoclast", "writer": ["Emerson"], "time": "1:16"},
+    {"title": "Mass", "writer": ["Emerson", "Lake"], "time": "3:09"},
+    {"title": "Manticore", "writer": ["Emerson"], "time": "1:49"},
+    {"title": "Battlefield", "writer": ["Lake"], "time": "3:57"},
+    {"title": "Aquatarkus", "writer": ["Emerson"], "time": "3:54"},
 ]
 
 assert source == song_list, f"{source=} is not the same as {song_list=}"
@@ -62,8 +71,9 @@ remove Battlefield
 
 def naive_delete(data: List[SongType], writer: str) -> None:
     for index in range(len(data)):
-        if 'Lake' in data[index]['writer']:
+        if "Lake" in data[index]["writer"]:
             del data[index]
+
 
 test_naive_delete = """
 >>> song_list = source.copy()
@@ -80,16 +90,19 @@ Traceback (most recent call last):
 IndexError: list index out of range
 """
 
+
 def index_of_writer(data: List[SongType], writer: str) -> Optional[int]:
     for i in range(len(data)):
-        if writer in data[i]['writer']:
+        if writer in data[i]["writer"]:
             return i
     return None
 
+
 def multi_search_delete(data: List[SongType], writer: str) -> None:
-    while (position := index_of_writer(data, 'Lake')) is not None:
+    while (position := index_of_writer(data, "Lake")) is not None:
         # The cast is only because mypy 0.761 doesn't completely handle the walrus operator
         del data[cast(int, position)]  # or data.pop(position)
+
 
 test_multi_search_delete = """
 >>> song_list = source.copy()
@@ -107,10 +120,11 @@ test_multi_search_delete = """
 def incremental_delete(data: List[SongType], writer: str) -> None:
     i = 0
     while i != len(data):
-        if 'Lake' in data[i]['writer']:
+        if "Lake" in data[i]["writer"]:
             del data[i]
         else:
             i += 1
+
 
 test_incremental_delete = """
 >>> song_list = source.copy()
@@ -126,12 +140,14 @@ test_incremental_delete = """
 
 
 def remover(sub_list: List[SongType], writer: str) -> List[SongType]:
-    if len(sub_list) == 0: return []
+    if len(sub_list) == 0:
+        return []
     head, *tail = sub_list
-    if writer in head['writer']:
+    if writer in head["writer"]:
         return remover(tail, writer)
     else:
         return [head] + remover(tail, writer)
+
 
 test_recursive_remover = """
 >>> song_list = source.copy()
@@ -146,11 +162,8 @@ test_recursive_remover = """
 
 
 def copy_exclude(data: List[SongType], writer: str) -> List[SongType]:
-    return [
-        item
-        for item in data
-        if writer not in item['writer']
-    ]
+    return [item for item in data if writer not in item["writer"]]
+
 
 test_filtered_copy = """
 >>> song_list = source.copy()
@@ -166,12 +179,8 @@ test_filtered_copy = """
 
 
 def copy_exclude_2(data: List[SongType], writer: str) -> List[SongType]:
-    return list(
-        filter(
-            lambda item: writer not in item['writer'],
-            data
-        )
-    )
+    return list(filter(lambda item: writer not in item["writer"], data))
+
 
 test_another_filter = """
 >>> data = copy_exclude_2(song_list, 'Lake')
@@ -189,6 +198,7 @@ def writer_exclude_iter(source: Iterable[SongType], writer: str) -> Iterator[Son
         if writer in item["writer"]:
             continue
         yield item
+
 
 test_generator = """
 >>> data = list(writer_exclude_iter(song_list, 'Lake'))

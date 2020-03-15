@@ -1,11 +1,11 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 10.
+Chapter 8, recipe 10, Writing recursive generator functions with the yield from statement
 """
 from typing import List, Dict, Union, Any, Iterator, Optional
 
 
-JSON_DOC = Union[Dict[str, Any], List[Any], str, int, float, None]
+JSON_DOC = Union[Dict[str, Any], List[Any], str, int, float, bool, None]
 
 Node_Id = Union[str, int]
 
@@ -21,7 +21,7 @@ def find_path(
     elif isinstance(node, list):
         for index in range(len(node)):
             yield from find_path(value, node[index], path + [index])
-    else:
+    else:  # str, int, float, bool, None
         if node == value:
             yield path
 
@@ -56,24 +56,27 @@ document = {
     "object": {"attribute1": "value", "attribute2": "value2"},
 }
 
-__test__ = {
-    "find value1": """
+test_find_value1 = """
 >>> list(find_path('value1', document))
 [['field']]
-""",
-    "find array_item_value2": """
+"""
+
+test_find_array_item_value2 = """
 >>> list(find_path('array_item_value2', document))
 [['array', 1, 'array_item_key2']]
-""",
-    "find object_value2": """
+"""
+
+test_find_object_value2 = """
 >>> list(find_path('value2', document))
 [['object', 'attribute2']]
-""",
-    "find value": """
+"""
+
+test_find_value = """
 >>> list(find_path('value', document))
 [['array', 0, 'array_item_key1'], ['field2'], ['object', 'attribute1']]
-""",
-    "factor_list": """
+"""
+
+test_factor_list_factor_iter = """
 >>> factor_list(255255)
 [3, 5, 7, 11, 13, 17]
 >>> list(factor_iter(255255))
@@ -81,5 +84,6 @@ __test__ = {
 >>> from collections import Counter
 >>> Counter(factor_iter(384))
 Counter({2: 7, 3: 1})
-""",
-}
+"""
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

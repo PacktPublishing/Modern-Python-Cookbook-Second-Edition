@@ -9,11 +9,13 @@ import datetime
 from pathlib import Path
 from typing import List, Dict, Iterable, Iterator
 
+
 def get_fuel_use(source_path: Path) -> List[Dict[str, str]]:
     with source_path.open() as source_file:
         rdr = csv.DictReader(source_file)
         data: List[Dict[str, str]] = list(rdr)
     return data
+
 
 test_get_fuel_use = """
 >>> source_path = Path("data/fuel2.csv")
@@ -26,29 +28,29 @@ test_get_fuel_use = """
 """
 
 from mypy_extensions import TypedDict
+
 History = TypedDict(
-    'History',
+    "History",
     {
-        'date': datetime.date,
-        'start_time': datetime.time,
-        'start_fuel': float,
-        'end_time': datetime.time,
-        'end_fuel': float
-    }
+        "date": datetime.date,
+        "start_time": datetime.time,
+        "start_fuel": float,
+        "end_time": datetime.time,
+        "end_fuel": float,
+    },
 )
+
 
 def make_history(source: Iterable[Dict[str, str]]) -> Iterator[History]:
     for row in source:
         yield dict(
-            date=datetime.datetime.strptime(
-                row['date'], "%m/%d/%y").date(),
-            start_time=datetime.datetime.strptime(
-                row['engine on'], '%H:%M:%S').time(),
-            start_fuel=float(row['fuel height on']),
-            end_time=datetime.datetime.strptime(
-                row['engine off'], '%H:%M:%S').time(),
-            end_fuel=float(row['fuel height off']),
+            date=datetime.datetime.strptime(row["date"], "%m/%d/%y").date(),
+            start_time=datetime.datetime.strptime(row["engine on"], "%H:%M:%S").time(),
+            start_fuel=float(row["fuel height on"]),
+            end_time=datetime.datetime.strptime(row["engine off"], "%H:%M:%S").time(),
+            end_fuel=float(row["fuel height off"]),
         )
+
 
 test_get_fuel_history = """
 >>> source_path = Path("data/fuel2.csv")
@@ -61,29 +63,29 @@ test_get_fuel_history = """
 """
 
 from typing import NamedTuple
+
 HistoryT = NamedTuple(
-    'HistoryT',
+    "HistoryT",
     [
-        ('date', datetime.date),
-        ('start_time', datetime.time),
-        ('start_fuel', float),
-        ('end_time', datetime.time),
-        ('end_fuel', float)
-    ]
+        ("date", datetime.date),
+        ("start_time", datetime.time),
+        ("start_fuel", float),
+        ("end_time", datetime.time),
+        ("end_fuel", float),
+    ],
 )
+
 
 def make_history_t(source: Iterable[Dict[str, str]]) -> Iterator[HistoryT]:
     for row in source:
         yield HistoryT(
-            date=datetime.datetime.strptime(
-                row['date'], "%m/%d/%y").date(),
-            start_time=datetime.datetime.strptime(
-                row['engine on'], '%H:%M:%S').time(),
-            start_fuel=float(row['fuel height on']),
-            end_time=datetime.datetime.strptime(
-                row['engine off'], '%H:%M:%S').time(),
-            end_fuel=float(row['fuel height off']),
+            date=datetime.datetime.strptime(row["date"], "%m/%d/%y").date(),
+            start_time=datetime.datetime.strptime(row["engine on"], "%H:%M:%S").time(),
+            start_fuel=float(row["fuel height on"]),
+            end_time=datetime.datetime.strptime(row["engine off"], "%H:%M:%S").time(),
+            end_fuel=float(row["fuel height off"]),
         )
+
 
 test_get_fuel_history_namedtyple = """
 >>> source_path = Path("data/fuel2.csv")
@@ -95,7 +97,7 @@ test_get_fuel_history_namedtyple = """
 {'date': datetime.date(2013, 10, 28), 'start_time': datetime.time(13, 21), 'start_fuel': 22.0, 'end_time': datetime.time(6, 25), 'end_fuel': 14.0}
 """
 
-result: History = {'date': 42}  # type: ignore
+result: History = {"date": 42}  # type: ignore
 # Chapter_04/ch04_r13.py:98: error: Keys ('start_time', 'start_fuel', 'end_time', 'end_fuel') missing for TypedDict "History"
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

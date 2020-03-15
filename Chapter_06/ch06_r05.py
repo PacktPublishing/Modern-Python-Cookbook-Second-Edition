@@ -8,20 +8,23 @@ from typing import List, ClassVar, Tuple
 from Chapter_06.ch06_r04 import CardPoints
 import random
 
+
 @dataclass(init=False)
 class Deck:
     suits: ClassVar[Tuple[str, ...]] = (
-        '\N{Black Club Suit}', '\N{White Diamond Suit}',
-        '\N{White Heart Suit}', '\N{Black Spade Suit}'
+        "\N{Black Club Suit}",
+        "\N{White Diamond Suit}",
+        "\N{White Heart Suit}",
+        "\N{Black Spade Suit}",
     )
     cards: List[CardPoints]
+
     def __init__(self) -> None:
         self.cards = [
-            CardPoints(rank=r, suit=s)
-                for r in range(1, 14)
-                    for s in self.suits
+            CardPoints(rank=r, suit=s) for r in range(1, 14) for s in self.suits
         ]
         random.shuffle(self.cards)
+
 
 @dataclass
 class CribbageHand:
@@ -30,6 +33,7 @@ class CribbageHand:
     def to_crib(self, card1, card2):
         self.cards.remove(card1)
         self.cards.remove(card2)
+
 
 test_Dataclass = """
 >>> random.seed(42)

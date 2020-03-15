@@ -23,6 +23,7 @@ log_parser_t = re.compile(r"\[(.*?)\] (\w+) (\S+) (.*)")
 
 LogRec = Tuple[str, ...]
 
+
 def request_iter_t(source: Iterable[str]) -> Iterator[List[LogRec]]:
     requests: DefaultDict[str, List[LogRec]] = collections.defaultdict(list)
     for line in source:
@@ -30,11 +31,12 @@ def request_iter_t(source: Iterable[str]) -> Iterator[List[LogRec]]:
             match = cast(re.Match, match)  # https://github.com/python/mypy/issues/7316
             id = match.group(3)
             requests[id].append(tuple(match.groups()))
-            if match.group(4).startswith('status'):
+            if match.group(4).startswith("status"):
                 yield requests[id]
                 del requests[id]
     if requests:
         print("Dangling", requests)
+
 
 test_request_iter_t = """
 >>> for r in request_iter_t(log.splitlines()):
@@ -46,13 +48,11 @@ Dangling defaultdict(<class 'list'>, {'>UL>PB_R>&nEGG?2%32U': [('2019/11/12:08:0
 """
 
 log_parser_d = re.compile(
-    r"\[(?P<time>.*?)\] "
-    r"(?P<sev>\w+) "
-    r"(?P<id>\S+) "
-    r"(?P<msg>.*)"
+    r"\[(?P<time>.*?)\] " r"(?P<sev>\w+) " r"(?P<id>\S+) " r"(?P<msg>.*)"
 )
 
 LogRecD = Dict[str, str]
+
 
 def request_iter_d(source: Iterable[str]) -> Iterator[List[LogRecD]]:
     requests: DefaultDict[str, List[LogRecD]] = collections.defaultdict(list)
@@ -60,13 +60,14 @@ def request_iter_d(source: Iterable[str]) -> Iterator[List[LogRecD]]:
         if (match := log_parser_d.match(line)) is not None:
             match = cast(re.Match, match)  # https://github.com/python/mypy/issues/7316
             record = match.groupdict()
-            id = record.pop('id')
+            id = record.pop("id")
             requests[id].append(record)
-            if record['msg'].startswith('status'):
+            if record["msg"].startswith("status"):
                 yield requests[id]
                 del requests[id]
     if requests:
         print("Dangling", requests)
+
 
 test_request_iter_d = """
 >>> for r in request_iter_d(log.splitlines()):

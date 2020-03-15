@@ -8,6 +8,7 @@ from enum import Enum
 import random
 from typing import List, Tuple, Set
 
+
 class Die(str, Enum):
     d_1 = "\u2680"
     d_2 = "\u2681"
@@ -16,8 +17,10 @@ class Die(str, Enum):
     d_5 = "\u2684"
     d_6 = "\u2685"
 
+
 def zonk(n: int = 6) -> Tuple[Die, ...]:
     return tuple(random.choice(list(Die)) for _ in range(n))
+
 
 test_zonk = """
 >>> random.seed(42)
@@ -49,6 +52,7 @@ def eval_zonk_6(hand: Tuple[Die, ...]) -> str:
         elif Die.d_1 in unique:
             return "ace"
     return "Zonk!"
+
 
 test_eval_zonk_6 = """
 >>> eval_zonk_6([Die.d_1, Die.d_1, Die.d_1, Die.d_1, Die.d_1, Die.d_1])
@@ -85,4 +89,3 @@ test_integration = """
 """
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
-

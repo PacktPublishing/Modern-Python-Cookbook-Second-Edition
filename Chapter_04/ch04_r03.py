@@ -7,6 +7,7 @@ import csv
 from pathlib import Path
 from typing import List, Any
 
+
 def get_fuel_use(path: Path) -> List[List[Any]]:
     with path.open() as source_file:
         reader = csv.reader(source_file)

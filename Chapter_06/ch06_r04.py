@@ -5,9 +5,12 @@ Chapter 6, recipe 4, Using typing.NamedTuple for immutable objects
 
 
 from typing import NamedTuple
+
+
 class Card(NamedTuple):
     rank: int
     suit: str
+
 
 test_card = """
 >>> eight_hearts = Card(rank=8, suit='\N{White Heart Suit}')
@@ -29,6 +32,7 @@ Traceback (most recent call last):
 AttributeError: can't set attribute
 """
 
+
 class CardPoints(NamedTuple):
     rank: int
     suit: str
@@ -38,6 +42,7 @@ class CardPoints(NamedTuple):
             return self.rank
         else:
             return 10
+
 
 test_card_points = """
 >>> hj = CardPoints(rank=11, suit='\N{White Heart Suit}')

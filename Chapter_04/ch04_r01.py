@@ -2,14 +2,16 @@
 
 Chapter 4, recipe 1, Choosing a data structure
 """
-from unittest.mock import  Mock, patch
+from unittest.mock import Mock, patch
+
 
 def confirm() -> bool:
     yes = {"yes", "y"}
     no = {"no", "n"}
-    while (answer := input("Confirm: ")).lower() not in (yes|no):
+    while (answer := input("Confirm: ")).lower() not in (yes | no):
         print("Please respond with yes or no")
     return answer in yes
+
 
 test_confirm = """
 >>> mock_input = Mock(side_effect=["what", "yes"])
@@ -45,4 +47,3 @@ True
 
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
-

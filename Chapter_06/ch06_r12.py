@@ -24,12 +24,13 @@ class Distance:
         self,
         exc_type: Optional[Type[Exception]],
         exc_val: Optional[Exception],
-        exc_tb: Optional[TracebackType]
+        exc_tb: Optional[TracebackType],
     ) -> Optional[bool]:
         return None
 
     def distance(self, p1: Point, p2: Point) -> float:
         return haversine(p1.lat, p1.lon, p2.lat, p2.lon, self.r)
+
 
 test_distance = """
 >>> p1 = Point(38.9784, -76.4922)
@@ -44,6 +45,7 @@ nm_dist(p1, p2)=128.48
 nm_calc(p1, p2)=128.48
 """
 
+
 class Distance_2:
     def __init__(self, r: float) -> None:
         self.r = r
@@ -55,7 +57,7 @@ class Distance_2:
         self,
         exc_type: Optional[Type[Exception]],
         exc_val: Optional[Exception],
-        exc_tb: Optional[TracebackType]
+        exc_tb: Optional[TracebackType],
     ) -> Optional[bool]:
         if exc_type == TypeError:
             raise ValueError(f"Invalid r={self.r}")
@@ -63,6 +65,7 @@ class Distance_2:
 
     def distance(self, p1: Point, p2: Point) -> float:
         return haversine(p1.lat, p1.lon, p2.lat, p2.lon, self.r)
+
 
 test_bad = """
 >>> p1 = Point(38.9784, -76.4922)

@@ -33,15 +33,9 @@ class Hand:
 
     __slots__ = ("cards", "bet")
 
-    def __init__(
-            self,
-            bet: int,
-            hand: Union["Hand", List[Card], None] = None
-    ) -> None:
+    def __init__(self, bet: int, hand: Union["Hand", List[Card], None] = None) -> None:
         self.cards: List[Card] = (
-            [] if hand is None
-                else hand.cards if isinstance(hand, Hand)
-                    else hand
+            [] if hand is None else hand.cards if isinstance(hand, Hand) else hand
         )
         self.bet: int = bet
 
@@ -49,10 +43,7 @@ class Hand:
         self.cards.append(card)
 
     def __repr__(self) -> str:
-        return (
-            f"{self.__class__.__name__}("
-            f"bet={self.bet}, hand={self.cards})"
-        )
+        return f"{self.__class__.__name__}(" f"bet={self.bet}, hand={self.cards})"
 
 
 if __name__ == "__main__":

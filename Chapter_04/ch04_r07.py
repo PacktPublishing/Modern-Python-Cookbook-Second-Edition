@@ -12,6 +12,7 @@ def arrival1(n: int = 8) -> Iterator[int]:
     while True:
         yield random.randrange(n)
 
+
 test_arrival1 = """
     >>> random.seed(1)
     >>> for n, r in enumerate(arrival1()):
@@ -35,6 +36,7 @@ def arrival2(n: int = 8) -> Iterator[int]:
         p += step
         yield abs(p) % n
 
+
 test_arrival2 = """
     >>> random.seed(1)
     >>> for n, r in enumerate(arrival2()):
@@ -56,6 +58,7 @@ def samples(limit: int, generator: Iterable[int]):
         if n == limit:
             break
         yield value
+
 
 test_samples = """
     >>> random.seed(1)
@@ -88,9 +91,8 @@ test_samples = """
 
 # Interesting quirk: sum() definition doesn't properly include Fraction
 def expected(n: int = 8) -> Fraction:
-    return n * cast(Fraction, sum(Fraction(1, i + 1)
-          for i in range(n))
-    )
+    return n * cast(Fraction, sum(Fraction(1, i + 1) for i in range(n)))
+
 
 test_expected = """
 >>> expected(6)
@@ -117,6 +119,7 @@ def coupon_collector(n: int, data: Iterable[int]) -> Iterator[int]:
             yield count
             count, collection = 0, set()
 
+
 test_integration = """
 >>> random.seed(42)
 >>> size = 8
@@ -125,6 +128,7 @@ test_integration = """
 >>> round(mean(wait_times), 3)
 21.933
 """
+
 
 def summary(
     n: int, limit: int, arrival_function: Callable[[int], Iterable[int]]

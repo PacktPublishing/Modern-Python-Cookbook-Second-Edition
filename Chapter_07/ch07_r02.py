@@ -13,6 +13,7 @@ Spades, Hearts, Diamonds, Clubs = SUITS
 @dataclass(frozen=True)
 class Card:
     """Superclass for cards"""
+
     rank: int
     suit: str
 

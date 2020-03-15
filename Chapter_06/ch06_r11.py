@@ -79,6 +79,7 @@ class Leg:
         self._distance = value
         self._calculate("distance")
 
+
 test_leg = """
 >>> leg_1 = Leg()
 >>> leg_1.rate = 6.0 # knots
@@ -102,8 +103,10 @@ option 3 38.2nm at 5.46kt = 7.00hr
 
 """
 
+
 class Leg_Alt:
     """Alternate calculation implementation"""
+
     def __init__(
         self,
         rate: Optional[float] = None,
@@ -172,6 +175,7 @@ class Leg_Alt:
     def distance(self, value: float) -> None:
         self._distance = value
         self._calculate("distance")
+
 
 test_leg_alt = """
 >>> leg_2 = Leg_Alt(distance=38.2, time=7)

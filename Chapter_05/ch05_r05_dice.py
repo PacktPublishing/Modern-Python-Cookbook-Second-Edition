@@ -9,6 +9,7 @@ from typing import Set, List, Iterable, Optional
 
 class DiceCLI(cmd.Cmd):
     """A handy tool for rolling a number of dice, used in a variety of games."""
+
     use_rawinput = False  # sys.stdout.write() and sys.stdin.readline() are used
 
     prompt = "] "
@@ -74,8 +75,11 @@ if __name__ == "__main__":
 
 from unittest.mock import Mock, call
 
+
 def test_command(capsys):
-    mock_input = Mock(readline=Mock(side_effect=["roll", "reroll 1 2 4 5", "roll", "quit"]))
+    mock_input = Mock(
+        readline=Mock(side_effect=["roll", "reroll 1 2 4 5", "roll", "quit"])
+    )
     mock_output = Mock()
     random.seed(42)
     r = DiceCLI(stdin=mock_input, stdout=mock_output)
@@ -89,7 +93,7 @@ def test_command(capsys):
     ]
     out, err = capsys.readouterr()
     assert out.splitlines() == [
-        '[6, 1, 1, 6, 3, 2]', '[6, 2, 2, 6, 6, 1] (reroll 1)', '[6, 6, 5, 1, 5, 4]'
+        "[6, 1, 1, 6, 3, 2]",
+        "[6, 2, 2, 6, 6, 1] (reroll 1)",
+        "[6, 6, 5, 1, 5, 4]",
     ]
-
-

@@ -1,10 +1,11 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 6.
+Chapter 8, recipe 6, Combining map and reduce transformations
+
 """
 import datetime
 from typing import List, Iterable, Iterator
-from Chapter_08.ch08_r02 import row_merge, log_rows
+from Chapter_08.ch08_r03 import row_merge, CombinedRow, log_rows
 
 # from types import SimpleNamespace as Leg
 from dataclasses import dataclass, field
@@ -25,16 +26,15 @@ class Leg:
     fuel_per_hour: float = field(init=False)
 
 
-def make_Leg(row: List[str]) -> Leg:
-    ns = Leg(
-        date=row[0],
-        start_time=row[1],
-        start_fuel_height=row[2],
-        end_time=row[4],
-        end_fuel_height=row[5],
-        other_notes=row[7],
+def make_Leg(row: CombinedRow) -> Leg:
+    return Leg(
+        date=row.date,
+        start_time=row.engine_on_time,
+        start_fuel_height=row.engine_on_fuel_height,
+        end_time=row.engine_off_time,
+        end_fuel_height=row.engine_off_fuel_height,
+        other_notes=row.other_notes,
     )
-    return ns
 
 
 def timestamp(date_text: str, time_text: str) -> datetime.datetime:
@@ -72,14 +72,14 @@ def fuel_per_hour(row: Leg) -> Leg:
     return row
 
 
-def exclude_date(row: Leg) -> bool:
-    """Exclude a date == Include rows not of that date."""
+def reject_date_header(row: Leg) -> bool:
+    """Reject "date" means pass rows without "date"."""
     return not (row.date == "date")
 
 
-def clean_data(source: Iterable[List[str]]) -> Iterator[Leg]:
-    namespace_iter = map(make_Leg, source)
-    fitered_source = filter(exclude_date, namespace_iter)
+def clean_data_iter(source: Iterable[CombinedRow]) -> Iterator[Leg]:
+    leg_iter = map(make_Leg, source)
+    fitered_source = filter(reject_date_header, leg_iter)
     start_iter = map(start_datetime, fitered_source)
     end_iter = map(end_datetime, start_iter)
     delta_iter = map(duration, end_iter)
@@ -90,7 +90,7 @@ def clean_data(source: Iterable[List[str]]) -> Iterator[Leg]:
 
 def total_fuel(source: Iterable[Leg]) -> float:
     """
-    >>> round(total_fuel(clean_data(row_merge(log_rows))), 3)
+    >>> round(total_fuel(clean_data_iter(row_merge(log_rows))), 3)
     7.0
     """
     return sum(row.fuel_change for row in source)
@@ -101,7 +101,9 @@ from statistics import mean
 
 def avg_fuel_per_hour(source: Iterable[Leg]) -> float:
     """
-    >>> round(avg_fuel_per_hour(clean_data(row_merge(log_rows))), 3)
+    >>> round(
+    ...     avg_fuel_per_hour(clean_data_iter(row_merge(log_rows))),
+    ...     3)
     0.48
     """
     return mean(row.fuel_per_hour for row in source)
@@ -112,7 +114,7 @@ from statistics import stdev
 
 def stdev_fuel_per_hour(source: Iterable[Leg]) -> float:
     """
-    >>> round(stdev_fuel_per_hour(clean_data(row_merge(log_rows))), 4)
+    >>> round(stdev_fuel_per_hour(clean_data_iter(row_merge(log_rows))), 4)
     0.0897
     """
     return stdev(row.fuel_per_hour for row in source)
@@ -123,7 +125,7 @@ def summary(raw_data: Iterable[List[str]]) -> None:
     >>> summary(log_rows)
     Fuel use 0.48 ±0.18
     """
-    data = tuple(clean_data(row_merge(raw_data)))
+    data = tuple(clean_data_iter(row_merge(raw_data)))
     m = avg_fuel_per_hour(data)
     s = 2 * stdev_fuel_per_hour(data)
 
@@ -137,7 +139,7 @@ def summary_t(raw_data: Iterable[List[str]]):
     """
     from itertools import tee
 
-    data1, data2 = tee(clean_data(row_merge(raw_data)), 2)
+    data1, data2 = tee(clean_data_iter(row_merge(raw_data)), 2)
     m = avg_fuel_per_hour(data1)
     s = 2 * stdev_fuel_per_hour(data2)
     print(f"Fuel use {m:.2f} ±{s:.2f}")
@@ -148,7 +150,7 @@ from pprint import pprint
 
 def details(iterable):
     """
-    >>> details(clean_data(row_merge(log_rows))) # doctest: +NORMALIZE_WHITESPACE
+    >>> details(clean_data_iter(row_merge(log_rows))) # doctest: +NORMALIZE_WHITESPACE
     Leg(date='10/25/13',
      start_time='08:24:00 AM', start_fuel_height='29',
      end_time='01:15:00 PM', end_fuel_height='27',

@@ -42,14 +42,17 @@ def get_date2() -> date:
         except ValueError as ex:
             problem = f"invalid, {ex}"
 
+
 def get_date3() -> date:
     raw_date_str = input("date [yyyy-mm-dd]: ")
     input_date = datetime.strptime(raw_date_str, "%Y-%m-%d").date()
     return input_date
 
+
 DateGet = Callable[[], date]
 
-def get_date_list(get_date: DateGet=get_date1) -> List[date]:
+
+def get_date_list(get_date: DateGet = get_date1) -> List[date]:
     d1 = get_date()
     more = input("Another? ").lower()
     results = [d1]
@@ -61,12 +64,22 @@ def get_date_list(get_date: DateGet=get_date1) -> List[date]:
 
 
 class Comparable(Protocol):
-    def __lt__(self, other: Any) -> bool: ...
-    def __le__(self, other: Any) -> bool: ...
-    def __gt__(self, other: Any) -> bool: ...
-    def __ge__(self, other: Any) -> bool: ...
+    def __lt__(self, other: Any) -> bool:
+        ...
 
-def range_exception(value: Comparable, *, start: Comparable, stop: Comparable) -> Comparable:
+    def __le__(self, other: Any) -> bool:
+        ...
+
+    def __gt__(self, other: Any) -> bool:
+        ...
+
+    def __ge__(self, other: Any) -> bool:
+        ...
+
+
+def range_exception(
+    value: Comparable, *, start: Comparable, stop: Comparable
+) -> Comparable:
     if start <= value < stop:
         return value
     raise ValueError(f"invalid, not in range {start!r}, {stop!r}: {value!r}")
@@ -83,7 +96,9 @@ def get_conv(prompt: str, convert: Callable[[str], Any] = int) -> Any:
 
 
 def get_int_in_range(prompt: str, start: int, stop: int) -> int:
-    return get_conv(prompt, lambda text: range_exception(int(text), start=start, stop=stop))
+    return get_conv(
+        prompt, lambda text: range_exception(int(text), start=start, stop=stop)
+    )
 
 
 def get_date4() -> date:
@@ -92,52 +107,49 @@ def get_date4() -> date:
         month = get_int_in_range("month [1-12]: ", 1, 13)
         day_1_date = date(year, month, 1)
         if month == 12:
-            next_year, next_month = year+1, 1
+            next_year, next_month = year + 1, 1
         else:
-            next_year, next_month = year, month+1
+            next_year, next_month = year, month + 1
         # Alternative: y, m = divmod(y*12+(m-1)+1, 12); m += 1
         day_end_date = date(next_year, next_month, 1)
         stop = (day_end_date - day_1_date).days
-        day = get_int_in_range(f"day [1-{stop}]: ", 1, stop+1)
+        day = get_int_in_range(f"day [1-{stop}]: ", 1, stop + 1)
         try:
             result = date(year, month, day)
             return result
         except ValueError as ex:
             problem = f"invalid, {ex}"
 
+
 ### Unit tests ###
 
 from unittest.mock import Mock, call
 from pytest import approx  # type: ignore
+
 
 def test_get_integer_good(monkeypatch):
     mock_input = Mock(side_effect=["42"])
     monkeypatch.setitem(__builtins__, "input", mock_input)
     v = get_integer("Answer: ")
     assert v == 42
-    assert mock_input.mock_calls == [
-        call("Answer: ")
-    ]
+    assert mock_input.mock_calls == [call("Answer: ")]
+
 
 def test_get_integer_bad(monkeypatch):
     mock_input = Mock(side_effect=["Not a number", "42"])
     monkeypatch.setitem(__builtins__, "input", mock_input)
     v = get_integer("Answer: ")
     assert v == 42
-    assert mock_input.mock_calls == [
-        call("Answer: "),
-        call("Answer: ")
-    ]
+    assert mock_input.mock_calls == [call("Answer: "), call("Answer: ")]
+
 
 def test_get_conv_simple(monkeypatch):
     mock_input = Mock(side_effect=["bad", "42"])
     monkeypatch.setitem(__builtins__, "input", mock_input)
     v = get_conv("Answer: ", float)
     assert v == approx(42.0)
-    assert mock_input.mock_calls == [
-        call("Answer: "),
-        call("Answer: ")
-    ]
+    assert mock_input.mock_calls == [call("Answer: "), call("Answer: ")]
+
 
 def test_get_conv_complex(monkeypatch):
     mock_input = Mock(side_effect=["bad", "42", "12"])
@@ -147,7 +159,7 @@ def test_get_conv_complex(monkeypatch):
     assert mock_input.mock_calls == [
         call("Answer: "),
         call("Answer: "),
-        call("Answer: ")
+        call("Answer: "),
     ]
 
 
@@ -161,6 +173,7 @@ def test_get_date1(monkeypatch):
         call("month [1-12]: "),
         call("day [1-31]: "),
     ]
+
 
 def test_get_date2(monkeypatch):
     mock_input = Mock(side_effect=["2016", "4", "29"])
@@ -193,6 +206,7 @@ def test_get_date_list(monkeypatch):
         call("date [yyyy-mm-dd]: "),
         call("Another? "),
     ]
+
 
 def test_get_date4(monkeypatch):
     mock_input = Mock(side_effect=["2016", "4", "29"])

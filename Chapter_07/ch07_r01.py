@@ -26,7 +26,6 @@ Card(rank=2, suit='♠')
 
 
 class Deck_W:
-
     def __init__(self, cards: List[Card]) -> None:
         self.cards = cards.copy()
         self.deal_iter = iter(cards)
@@ -37,6 +36,7 @@ class Deck_W:
 
     def deal(self) -> Card:
         return next(self.deal_iter)
+
 
 test_Deck_W = """
 >>> domain = list(Card(r+1,s) for r in range(13) for s in SUITS)
@@ -49,13 +49,13 @@ test_Deck_W = """
 
 
 class Deck_X(list):
-
     def shuffle(self) -> None:
         random.shuffle(self)
         self.deal_iter = iter(self)
 
     def deal(self) -> Card:
         return next(self.deal_iter)
+
 
 test_Deck_X = """
 >>> domain = Deck_X(Card(r+1,s) for r in range(13) for s in SUITS)

@@ -6,10 +6,12 @@ Chapter 6, recipe 6, Using frozen dataclasses for immutable objects
 
 from dataclasses import dataclass
 
+
 @dataclass(frozen=True, order=True)
 class Card:
     rank: int
     suit: str
+
 
 test_card = """
 >>> eight_hearts = Card(rank=8, suit='\N{White Heart Suit}')
@@ -30,6 +32,7 @@ Traceback (most recent call last):
 dataclasses.FrozenInstanceError: cannot assign to field 'suit'
 """
 
+
 @dataclass(frozen=True, order=True)
 class CardPoints:
     rank: int
@@ -40,6 +43,7 @@ class CardPoints:
             return self.rank
         else:
             return 10
+
 
 test_card_points = """
 >>> hj = CardPoints(rank=11, suit='\N{White Heart Suit}')
@@ -52,6 +56,8 @@ Total: hj.points() + h5.points()=15
 
 from dataclasses import field
 from typing import List
+
+
 @dataclass(frozen=True, order=True)
 class Hand:
     cards: List[CardPoints] = field(default_factory=list)

@@ -12,6 +12,7 @@ def get_fuel_use(source_path: Path) -> List[Dict[str, str]]:
         rdr = csv.DictReader(source_file)
         return list(rdr)
 
+
 test_get_fuel_use = """
 >>> source_path = Path("data/fuel2.csv") 
 >>> fuel_use = get_fuel_use(source_path) 
@@ -68,9 +69,12 @@ date=10/28/13, on=13:21:00, off=06:25:00, change=8.0
 
 import sys
 
+
 def print_like(*args, sep=None, end=None, file=sys.stdout):
-    if sep is None: sep = " "
-    if end is None: end = "\n"
+    if sep is None:
+        sep = " "
+    if end is None:
+        end = "\n"
     arg_iter = iter(args)
     value = next(arg_iter)
     file.write(str(value))
@@ -79,6 +83,7 @@ def print_like(*args, sep=None, end=None, file=sys.stdout):
         file.write(str(value))
         file.write(end)
     file.flush()
+
 
 test_print_like = """
 >>> print_like("number", 1, sep="=", end=", ")

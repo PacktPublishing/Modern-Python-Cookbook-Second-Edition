@@ -31,10 +31,7 @@ class StatsList(list):
         return sum(v ** 2 for v in self)
 
     def variance(self) -> float:
-        return (
-            (self.sum2() - self.sum() ** 2 / self.size())
-            / (self.size() - 1)
-        )
+        return (self.sum2() - self.sum() ** 2 / self.size()) / (self.size() - 1)
 
     def stddev(self) -> float:
         return math.sqrt(self.variance())

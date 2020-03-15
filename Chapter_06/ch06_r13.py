@@ -16,6 +16,7 @@ class Point:
     lat: float
     lon: float
 
+
 @dataclass
 class Leg:
     start: Point
@@ -24,18 +25,18 @@ class Leg:
 
 
 class LegMaker:
-    def __enter__(self) -> 'LegMaker':
+    def __enter__(self) -> "LegMaker":
         return self
 
     def __exit__(
         self,
         exc_type: Optional[Type[Exception]],
         exc_val: Optional[Exception],
-        exc_tb: Optional[TracebackType]
+        exc_tb: Optional[TracebackType],
     ) -> Optional[bool]:
         return None
 
-    def __init__(self, r: float=NM) -> None:
+    def __init__(self, r: float = NM) -> None:
         self.last_point: Optional[Point] = None
         self.last_leg: Optional[Leg] = None
         self.r = r
@@ -45,9 +46,7 @@ class LegMaker:
         if self.last_point is not None:
             leg = Leg(self.last_point, next_point)
             d = haversine(
-                leg.start.lat, leg.start.lon,
-                leg.end.lat, leg.end.lon,
-                self.r
+                leg.start.lat, leg.start.lon, leg.end.lat, leg.end.lon, self.r
             )
             leg.distance = round(d)
         else:
@@ -57,6 +56,7 @@ class LegMaker:
 
     def end(self) -> None:
         self.last_point = None
+
 
 test_leg_maker = """
 >>> legger = LegMaker()
@@ -78,15 +78,18 @@ Leg(start=Point(lat=38.3185, lon=-76.4541), end=Point(lat=37.5531, lon=-76.3403)
 Leg(start=Point(lat=37.5531, lon=-76.3403), end=Point(lat=36.8443, lon=-76.2922), distance=43)
 """
 
+
 def flat_dict(leg: Leg) -> Dict[str, float]:
     struct = asdict(leg)
     return dict(
-        start_lat=struct['start']['lat'],
-        start_lon=struct['start']['lon'],
-        end_lat=struct['end']['lat'],
-        end_lon=struct['end']['lon'],
-        distance=struct['distance'],
+        start_lat=struct["start"]["lat"],
+        start_lon=struct["start"]["lon"],
+        end_lat=struct["end"]["lat"],
+        end_lon=struct["end"]["lon"],
+        distance=struct["distance"],
     )
+
+
 HEADERS = ["start_lat", "start_lon", "end_lat", "end_lon", "distance"]
 
 
@@ -103,11 +106,8 @@ test_flat_dict = """
 """
 
 
-def make_route_file(
-    points: Iterable[Point], target: Path
-) -> None:
-    with LegMaker(r=NM) as legger, \
-            target.open('w', newline='') as csv_file:
+def make_route_file(points: Iterable[Point], target: Path) -> None:
+    with LegMaker(r=NM) as legger, target.open("w", newline="") as csv_file:
         writer = csv.DictWriter(csv_file, HEADERS)
         writer.writeheader()
         for point in points:
@@ -115,6 +115,7 @@ def make_route_file(
             if leg is not None:
                 writer.writerow(flat_dict(leg))
     print(f"Finished creating {target}")
+
 
 test_make_route_file = """
 >>> points = [
@@ -138,11 +139,9 @@ Finished creating .../data/ch06_r13.csv
 
 import bz2
 
-def make_route_bz2(
-    points: Iterable[Point], target: Path
-) -> None:
-    with LegMaker(r=NM) as legger, \
-            bz2.open(target, "wt") as archive:
+
+def make_route_bz2(points: Iterable[Point], target: Path) -> None:
+    with LegMaker(r=NM) as legger, bz2.open(target, "wt") as archive:
         writer = csv.DictWriter(archive, HEADERS)
         writer.writeheader()
         for point in points:
@@ -159,7 +158,7 @@ if __name__ == "__main__":
         Point(38.9784, -76.4922),
         Point(38.3185, -76.4541),
         Point(37.5531, -76.3403),
-        Point(36.8443, -76.2922)
+        Point(36.8443, -76.2922),
     ]
-    make_route_file(points, Path.cwd()/"data"/"ch06_r13.csv")
-    make_route_bz2(points, Path.cwd()/"data"/"ch06_r13.csv.bz2")
+    make_route_file(points, Path.cwd() / "data" / "ch06_r13.csv")
+    make_route_bz2(points, Path.cwd() / "data" / "ch06_r13.csv.bz2")

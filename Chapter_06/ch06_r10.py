@@ -25,17 +25,11 @@ class LazyCounterStatistics:
 
     @property
     def sum(self) -> float:
-        return sum(
-            f * v
-            for v, f in self.raw_counter.items()
-        )
+        return sum(f * v for v, f in self.raw_counter.items())
 
     @property
     def count(self) -> int:
-        return sum(
-            f
-            for v, f in self.raw_counter.items()
-        )
+        return sum(f for v, f in self.raw_counter.items())
 
     @property
     def mean(self) -> float:
@@ -43,17 +37,11 @@ class LazyCounterStatistics:
 
     @property
     def sum2(self) -> float:
-        return sum(
-            f * v ** 2
-            for v, f in self.raw_counter.items()
-        )
+        return sum(f * v ** 2 for v, f in self.raw_counter.items())
 
     @property
     def variance(self) -> float:
-        return (
-            (self.sum2 - self.sum ** 2 / self.count) /
-            (self.count - 1)
-        )
+        return (self.sum2 - self.sum ** 2 / self.count) / (self.count - 1)
 
     @property
     def stddev(self) -> float:
@@ -64,10 +52,9 @@ class LazyCounterStatistics:
 
 ArrivalF = Callable[[int], Iterator[int]]
 
+
 def raw_data(
-    n: int = 8,
-    limit: int = 1000,
-    arrival_function: ArrivalF = arrival1
+    n: int = 8, limit: int = 1000, arrival_function: ArrivalF = arrival1
 ) -> Counter[int]:
     """
     >>> random.seed(1)
@@ -106,6 +93,7 @@ test_LazyCounterStatistics = """
 7.02
 """
 
+
 class CachingLazyCounterStatistics:
     def __init__(self, raw_counter: Counter) -> None:
         self.raw_counter = raw_counter
@@ -115,19 +103,13 @@ class CachingLazyCounterStatistics:
     @property
     def sum(self) -> float:
         if self._sum is None:
-            self._sum = sum(
-                f * v
-                for v, f in self.raw_counter.items()
-            )
+            self._sum = sum(f * v for v, f in self.raw_counter.items())
         return cast(float, self._sum)
 
     @property
     def count(self) -> float:
         if self._count is None:
-            self._count = sum(
-                f
-                for v, f in self.raw_counter.items()
-            )
+            self._count = sum(f for v, f in self.raw_counter.items())
         return cast(float, self._count)
 
     @property

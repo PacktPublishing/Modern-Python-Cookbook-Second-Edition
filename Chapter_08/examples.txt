@@ -2,63 +2,59 @@
 
 Chapter 8, Examples from the text.
 
+•	Writing generator functions with the yield statement
+•	Applying transformations to a collection
+•	Using stacked generator expressions
+•	Picking a subset – three ways to filter
+•	Summarizing a collection – how to reduce
+•	Combining map and reduce transformations
+•	Implementing "there exists" processing
+•	Creating a partial function
+•	Simplifying complex algorithms with immutable data structures
+•	Writing recursive generator functions with the yield from statement
+
 Note: Output from this is used in Chapter 4 examples.
 """
 
-# Lines 40 to 40
+>>> from Chapter_08.ch08_r01 import RawLog
+
 >>> data = [
-...    ('2016-04-24 11:05:01,462', 'INFO', 'module1', 'Sample Message One'),
-...    ('2016-04-24 11:06:02,624', 'DEBUG', 'module2', 'Debugging'),
-...    ('2016-04-24 11:07:03,246', 'WARNING', 'module1', 'Something might have gone wrong')
+...    RawLog('2016-04-24 11:05:01,462', 'INFO', 'module1', 'Sample Message One'),
+...    RawLog('2016-04-24 11:06:02,624', 'DEBUG', 'module2', 'Debugging'),
+...    RawLog('2016-04-24 11:07:03,246', 'WARNING', 'module1', 'Something might have gone wrong')
 ... ]
 
-
-# Lines 84 to 86
 >>> from pprint import pprint
 >>> from Chapter_08.ch08_r01 import parse_date_iter
 >>> for item in parse_date_iter(data):
 ...     pprint(item)
-(datetime.datetime(2016, 4, 24, 11, 5, 1, 462000),
- 'INFO',
- 'module1',
- 'Sample Message One')
-(datetime.datetime(2016, 4, 24, 11, 6, 2, 624000),
- 'DEBUG',
- 'module2',
- 'Debugging')
-(datetime.datetime(2016, 4, 24, 11, 7, 3, 246000),
- 'WARNING',
- 'module1',
- 'Something might have gone wrong')
+DatedLog(date=datetime.datetime(2016, 4, 24, 11, 5, 1, 462000), level='INFO', module='module1', message='Sample Message One')
+DatedLog(date=datetime.datetime(2016, 4, 24, 11, 6, 2, 624000), level='DEBUG', module='module2', message='Debugging')
+DatedLog(date=datetime.datetime(2016, 4, 24, 11, 7, 3, 246000), level='WARNING', module='module1', message='Something might have gone wrong')
 
-# Lines 102 to 102
 >>> details = list(parse_date_iter(data))
+>>> pprint(details)
+[DatedLog(date=datetime.datetime(2016, 4, 24, 11, 5, 1, 462000), level='INFO', module='module1', message='Sample Message One'),
+ DatedLog(date=datetime.datetime(2016, 4, 24, 11, 6, 2, 624000), level='DEBUG', module='module2', message='Debugging'),
+ DatedLog(date=datetime.datetime(2016, 4, 24, 11, 7, 3, 246000), level='WARNING', module='module1', message='Something might have gone wrong')]
 
-
-# Lines 105 to 105
 >>> parse_date_iter(data)  # doctest: +ELLIPSIS
 <generator object parse_date_iter at 0x...>
 
-# Lines 128 to 128
 >>> def gen_func():
 ...     print("pre-yield")
 ...     yield 1
 ...     print("post-yield")
 ...     yield 2
 
-
-# Lines 134 to 135
 >>> y = gen_func()
 >>> next(y)
 pre-yield
 1
-
-# Lines 138 to 138
 >>> next(y)
 post-yield
 2
 
-# Lines 143 to 143
 >>> next(y)
 Traceback (most recent call last):
   File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
@@ -67,122 +63,65 @@ Traceback (most recent call last):
     next(y)
 StopIteration
 
-# Lines 228 to 230
->>> from pathlib import Path
->>> import csv
->>> with Path('data/fuel.csv').open() as source_file:
-...    reader = csv.reader(source_file)
-...    log_rows = list(reader)
+# Applying transformations to a collection
 
-# Lines 233 to 235
->>> log_rows[0]
-['date', 'engine on', 'fuel height']
->>> log_rows[-1]
-['', "choppy -- anchor in jackson's creek", '']
-
-# Lines 424 to 424
 >>> data = [
 ...    ('2016-04-24 11:05:01,462', 'INFO', 'module1', 'Sample Message One'),
 ...    ('2016-04-24 11:06:02,624', 'DEBUG', 'module2', 'Debugging'),
 ...    ('2016-04-24 11:07:03,246', 'WARNING', 'module1', 'Something might have gone wrong')
 ... ]
 
-
-# Lines 486 to 486
 >>> def mul(a, b):
 ...    return a*b
 
-
-# Lines 489 to 492
 >>> list_1 = [2, 3, 5, 7]
 >>> list_2 = [11, 13, 17, 23]
-
 >>> list(map(mul, list_1, list_2))
 [22, 39, 85, 161]
 
-# Lines 496 to 498
 >>> def bundle(*args):
 ...     return args
 >>> list(map(bundle, list_1, list_2))
 [(2, 11), (3, 13), (5, 17), (7, 23)]
-
-# Lines 502 to 502
 >>> list(zip(list_1, list_2))
 [(2, 11), (3, 13), (5, 17), (7, 23)]
+>>> list(map(lambda *args: args, list_1, list_2))
+[(2, 11), (3, 13), (5, 17), (7, 23)]
 
-# Lines 563 to 564
->>> from Chapter_08.ch08_r02 import row_merge, log_rows
+# Using stacked generator expressions
+
+>>> from pathlib import Path
+>>> import csv
+>>> with Path('data/fuel.csv').open() as source_file:
+...    reader = csv.reader(source_file)
+...    log_rows = list(reader)
+
+>>> log_rows[0]
+['date', 'engine on', 'fuel height']
+>>> log_rows[-1]
+['', "choppy -- anchor in jackson's creek", '']
+
+>>> from Chapter_08.ch08_r03 import row_merge, skip_header_date, convert_datetime
+>>> row_gen = row_merge(log_rows)
+>>> tail_gen = skip_header_date(row_gen)
+>>> datetime_gen = (convert_datetime(row) for row in tail_gen)
+>>> for row in datetime_gen:
+...     print(f"{row.date}: duration {row.engine_off-row.engine_on}")
+2013-10-25: duration 4:51:00
+2013-10-26: duration 9:13:00
+
+# Picking a subset - three ways to filter
+
+>>> from Chapter_08.ch08_r03 import row_merge, log_rows
 >>> pprint(list(row_merge(log_rows)))
-[['date',
-  'engine on',
-  'fuel height',
-  '',
-  'engine off',
-  'fuel height',
-  '',
-  'Other notes',
-  ''],
- ['10/25/13',
-  '08:24:00 AM',
-  '29',
-  '',
-  '01:15:00 PM',
-  '27',
-  '',
-  "calm seas -- anchor solomon's island",
-  ''],
- ['10/26/13',
-  '09:12:00 AM',
-  '27',
-  '',
-  '06:25:00 PM',
-  '22',
-  '',
-  "choppy -- anchor in jackson's creek",
-  '']]
+[CombinedRow(date='date', engine_on_time='engine on', engine_on_fuel_height='fuel height', filler_1='', engine_off_time='engine off', engine_off_fuel_height='fuel height', filler_2='', other_notes='Other notes', filler_3=''),
+ CombinedRow(date='10/25/13', engine_on_time='08:24:00 AM', engine_on_fuel_height='29', filler_1='', engine_off_time='01:15:00 PM', engine_off_fuel_height='27', filler_2='', other_notes="calm seas -- anchor solomon's island", filler_3=''),
+ CombinedRow(date='10/26/13', engine_on_time='09:12:00 AM', engine_on_fuel_height='27', filler_1='', engine_off_time='06:25:00 PM', engine_off_fuel_height='22', filler_2='', other_notes="choppy -- anchor in jackson's creek", filler_3='')]
 
-# Lines 685 to 685
->>> from functools import reduce
+# Summarizing a collection – how to reduce
 
+# Combining map and reduce transformations
 
-# Lines 688 to 688
->>> def mul(a, b):
-...     return a * b
-
-
-# Lines 692 to 692
->>> def prod(values):
-...    return reduce(mul, values, 1)
-
-
-# Lines 701 to 701
->>> prod(range(1, 5+1))
-120
-
-# Lines 706 to 706
->>> def factorial(n):
-...    return prod(range(1, n+1))
-
-
-# Lines 709 to 709
->>> factorial(52)
-80658175170943878571660636856403766975289505440883277824000000000000
-
-# Lines 713 to 713
->>> factorial(52)//(factorial(5)*factorial(52-5))
-2598960
-
-# Lines 730 to 731
->>> add = lambda a, b: a + b
->>> mul = lambda a, b: a * b
-
-
-# Lines 734 to 734
->>> def prod2(values):
-...     return reduce(lambda a, b: a*b, values, 1)
-
-
-# Lines 767 to 770
 >>> typical_iterator = iter([0, 1, 2, 3, 4])
 >>> sum(typical_iterator)
 10
@@ -190,18 +129,19 @@ StopIteration
 0
 
 >>> from Chapter_08.ch08_r06 import (
-... clean_data, row_merge, total_fuel, avg_fuel_per_hour)
+... clean_data_iter, row_merge, total_fuel, avg_fuel_per_hour)
 
-# Lines 810 to 810
->>> round(total_fuel(clean_data(row_merge(log_rows))), 3)
+>>> round(
+...     total_fuel(clean_data_iter(row_merge(log_rows))),
+...     3)
 7.0
 
-# Lines 902 to 902
 >>> round(avg_fuel_per_hour(
-...    clean_data(row_merge(log_rows))), 3)
+...    clean_data_iter(row_merge(log_rows))), 3)
 0.48
 
-# Lines 989 to 994
+# Implementing "there exists" processing
+
 >>> from itertools import takewhile
 >>> n = 13
 >>> list(takewhile(lambda i: n % i != 0, range(2, 4)))
@@ -210,21 +150,22 @@ StopIteration
 >>> list(takewhile(lambda i: n % i != 0, range(2, 4)))
 [2]
 
-# Lines 1137 to 1139
+# Creating a partial function
+
 >>> from operator import mul
 >>> from functools import reduce
 >>> prod = lambda x: reduce(mul, x, 1)
 
 
-# Lines 1142 to 1143
 >>> factorial = lambda x: prod(range(2,x+1))
 >>> factorial(5)
 120
 
->>> from Chapter_08.ch08_r09 import rank_by_y, cleanse, get, text_1
+# Simplifying complex algorithms with immutable data structures
 
-# Lines 1252 to 1253
->>> data = rank_by_y(cleanse(get(text_1)))
+>>> from Chapter_08.ch08_r09 import rank_by_y, cleanse, text_parse, text_1
+
+>>> data = rank_by_y(cleanse(text_parse(text_1)))
 >>> pprint(list(data))
 [RankYDataPair(y_rank=1, pair=DataPair(x=4.0, y=4.26)),
  RankYDataPair(y_rank=2, pair=DataPair(x=7.0, y=4.82)),
@@ -238,13 +179,13 @@ StopIteration
  RankYDataPair(y_rank=10, pair=DataPair(x=14.0, y=9.96)),
  RankYDataPair(y_rank=11, pair=DataPair(x=12.0, y=10.84))]
 
+# Writing recursive generator functions with the yield from statement
+
 >>> from Chapter_08.ch08_r10 import find_path, document
 
-# Lines 1348 to 1348
 >>> list(find_path('array_item_value2', document))
 [['array', 1, 'array_item_key2']]
 
-# Lines 1353 to 1353
 >>> list(find_path('value', document))
 [['array', 0, 'array_item_key1'], ['field2'], ['object', 'attribute1']]
 

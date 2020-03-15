@@ -6,11 +6,13 @@ import csv
 from pathlib import Path
 from typing import List, Any
 
+
 def get_fuel_use(path: Path) -> List[List[Any]]:
     with path.open() as source_file:
         reader = csv.reader(source_file)
         log_rows = list(reader)
     return log_rows
+
 
 test_load = """
 >>> from pprint import pprint
@@ -61,12 +63,14 @@ test_pop = """
 ['10/25/13', '08:24:00 AM', '29', '01:15:00 PM', '27']
 """
 
+
 def number_column(row, column=2):
-   try:
-       float(row[column])
-       return True
-   except ValueError:
-       return False
+    try:
+        float(row[column])
+        return True
+    except ValueError:
+        return False
+
 
 test_number_filter = """
 >>> tail_rows = list(filter(number_column, log_rows))

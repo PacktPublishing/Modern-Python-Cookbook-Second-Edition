@@ -5,7 +5,7 @@ Chapter 4, recipe 8, Removing items from a set – remove(), pop(), and differen
 import re
 
 
-log = '''
+log = """
 [2016-03-05T09:29:31-05:00] INFO: Processing ruby_block[print IP] action run (@recipe_files::/home/slott/ch4/deploy.rb line 9)
 [2016-03-05T09:29:31-05:00] INFO: Installed IP: 111.222.111.222
 [2016-03-05T09:29:31-05:00] INFO: ruby_block[print IP] called
@@ -18,7 +18,7 @@ Running handlers:
 Running handlers complete
 [2016-03-05T09:29:31-05:00] INFO: Report handlers complete
 Chef Client finished, 2/2 resources updated in 29.233811181 seconds
-'''
+"""
 
 test_subtract = """
 >>> pattern = re.compile(r"IP: \\d+\\.\\d+\\.\\d+\\.\\d+")

@@ -1,57 +1,80 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 1.
+Chapter 8, recipe 1, Writing generator functions with the yield statement
 """
 import datetime
 from pprint import pprint
-from typing import Tuple, Iterable, Iterator
+import re
+from typing import Tuple, Iterable, Iterator, NamedTuple, Match, cast
 
-RawLog = Tuple[str, ...]
-DatedLog = Tuple[datetime.datetime, ...]
+
+class RawLog(NamedTuple):
+    date: str
+    level: str
+    module: str
+    message: str
+
+
+def parse_line_iter(source: Iterable[str]) -> Iterator[RawLog]:
+    pattern = re.compile(
+        r"\[(?P<timestamp>.*?)\]\s+"
+        r"(?P<level>\w+)\s+"
+        r"in\s+(?P<module>\w+)"
+        r":\s+(?P<message>.+)"
+    )
+    for line in source:
+        if match := pattern.match(line):
+            yield RawLog(*cast(Match, match).groups())
+
+
+test_parse_line_iter = """
+>>> log_lines = [
+...     '[2016-04-24 11:05:01,462] INFO in module1: Sample Message One',
+...     '[2016-04-24 11:06:02,624] DEBUG in module2: Debugging',
+...     '[2016-04-24 11:07:03,246] WARNING in module1: Something might have gone wrong'
+... ]
+>>> for item in parse_line_iter(log_lines):
+...     pprint(item)
+RawLog(date='2016-04-24 11:05:01,462', level='INFO', module='module1', message='Sample Message One')
+RawLog(date='2016-04-24 11:06:02,624', level='DEBUG', module='module2', message='Debugging')
+RawLog(date='2016-04-24 11:07:03,246', level='WARNING', module='module1', message='Something might have gone wrong')
+"""
+
+
+class DatedLog(NamedTuple):
+    date: datetime.datetime
+    level: str
+    module: str
+    message: str
 
 
 def parse_date_iter(source: Iterable[RawLog]) -> Iterator[DatedLog]:
     for item in source:
-
-        date = datetime.datetime.strptime(item[0], "%Y-%m-%d %H:%M:%S,%f")
-        new_item = (date,) + item[1:]
-
-        yield new_item
+        date = datetime.datetime.strptime(item.date, "%Y-%m-%d %H:%M:%S,%f")
+        yield DatedLog(date, item.level, item.module, item.message)
 
 
 def parse_date(item: RawLog) -> DatedLog:
-    date = datetime.datetime.strptime(item[0], "%Y-%m-%d %H:%M:%S,%f")
-    new_item = (date,) + item[1:]
-    return new_item
+    date = datetime.datetime.strptime(item.date, "%Y-%m-%d %H:%M:%S,%f")
+    return DatedLog(date, item.level, item.module, item.message)
 
 
-data = [
-    ("2016-04-24 11:05:01,462", "INFO", "module1", "Sample Message One"),
-    ("2016-04-24 11:06:02,624", "DEBUG", "module2", "Debugging"),
-    (
-        "2016-04-24 11:07:03,246",
-        "WARNING",
-        "module1",
-        "Something might have gone wrong",
-    ),
-]
-
-__test__ = {
-    "parse_date_iter": """
+test_parse_date_iter = """
+>>> data = [
+...     RawLog("2016-04-24 11:05:01,462", "INFO", "module1", "Sample Message One"),
+...     RawLog("2016-04-24 11:06:02,624", "DEBUG", "module2", "Debugging"),
+...     RawLog(
+...         "2016-04-24 11:07:03,246",
+...         "WARNING",
+...         "module1",
+...         "Something might have gone wrong",
+...     ),
+... ]
 >>> for item in parse_date_iter(data):
 ...     pprint(item)
-(datetime.datetime(2016, 4, 24, 11, 5, 1, 462000),
- 'INFO',
- 'module1',
- 'Sample Message One')
-(datetime.datetime(2016, 4, 24, 11, 6, 2, 624000),
- 'DEBUG',
- 'module2',
- 'Debugging')
-(datetime.datetime(2016, 4, 24, 11, 7, 3, 246000),
- 'WARNING',
- 'module1',
- 'Something might have gone wrong')
+DatedLog(date=datetime.datetime(2016, 4, 24, 11, 5, 1, 462000), level='INFO', module='module1', message='Sample Message One')
+DatedLog(date=datetime.datetime(2016, 4, 24, 11, 6, 2, 624000), level='DEBUG', module='module2', message='Debugging')
+DatedLog(date=datetime.datetime(2016, 4, 24, 11, 7, 3, 246000), level='WARNING', module='module1', message='Something might have gone wrong')
 
 >>> details = list(parse_date_iter(data))
 >>> len(details)
@@ -63,21 +86,20 @@ __test__ = {
 >>> iter(parse_date_iter(data)) # doctest: +ELLIPSIS
 <generator object parse_date_iter at 0x...>
 
-""",
-    "parse_date": """
->>> for item in map(parse_date, data):
+"""
+
+test_combined = """
+>>> log_lines = [
+...     '[2016-04-24 11:05:01,462] INFO in module1: Sample Message One',
+...     '[2016-04-24 11:06:02,624] DEBUG in module2: Debugging',
+...     '[2016-04-24 11:07:03,246] WARNING in module1: Something might have gone wrong'
+... ]
+>>> for item in parse_date_iter(parse_line_iter(log_lines)):
 ...     pprint(item)
-(datetime.datetime(2016, 4, 24, 11, 5, 1, 462000),
- 'INFO',
- 'module1',
- 'Sample Message One')
-(datetime.datetime(2016, 4, 24, 11, 6, 2, 624000),
- 'DEBUG',
- 'module2',
- 'Debugging')
-(datetime.datetime(2016, 4, 24, 11, 7, 3, 246000),
- 'WARNING',
- 'module1',
- 'Something might have gone wrong')
-""",
-}
+DatedLog(date=datetime.datetime(2016, 4, 24, 11, 5, 1, 462000), level='INFO', module='module1', message='Sample Message One')
+DatedLog(date=datetime.datetime(2016, 4, 24, 11, 6, 2, 624000), level='DEBUG', module='module2', message='Debugging')
+DatedLog(date=datetime.datetime(2016, 4, 24, 11, 7, 3, 246000), level='WARNING', module='module1', message='Something might have gone wrong')
+"""
+
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

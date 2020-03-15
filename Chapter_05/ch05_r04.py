@@ -43,8 +43,7 @@ def get_options(argv: List[str]) -> argparse.Namespace:
     (33.94, -118.4)
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("-r", action="store",
-                        choices=("NM", "MI", "KM"), default="NM")
+    parser.add_argument("-r", action="store", choices=("NM", "MI", "KM"), default="NM")
     parser.add_argument("p1", action="store", type=point_type)
     parser.add_argument("p2", action="store", type=point_type)
     options = parser.parse_args(argv)

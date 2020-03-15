@@ -44,7 +44,9 @@ class PinochleFace(FaceCard, SortedCard, PinochlePoints):
 class PinochleNumber(Card, SortedCard, PinochlePoints):
     pass
 
+
 PinochleCard = Union[PinochleAce, PinochleFace, PinochleNumber]
+
 
 def make_card(rank: int, suit: str) -> PinochleCard:
     if rank in (9, 10):
@@ -56,11 +58,7 @@ def make_card(rank: int, suit: str) -> PinochleCard:
 
 
 def make_deck() -> List[PinochleCard]:
-    return [
-        make_card(r, s)
-            for _ in range(2)
-                for r in range(9, 15)
-                    for s in SUITS]
+    return [make_card(r, s) for _ in range(2) for r in range(9, 15) for s in SUITS]
 
 
 test_card = """
@@ -95,6 +93,7 @@ test_deck = """
 >>> [str(c) for c in sorted(deck[:12])]
 [' 9 ♣', '10 ♣', ' J ♠', ' J ♢', ' J ♢', ' Q ♠', ' Q ♣', ' K ♠', ' K ♠', ' K ♣', ' A ♡', ' A ♣']
 """
+
 
 def has_rank(c: PinochleCard, rank: int) -> bool:
     """
@@ -147,6 +146,7 @@ class SortedIntCard(CardLike):
             return self.rank >= other
         return (self.rank, self.suit) >= (other.rank, other.suit)
 
+
 class PinochleIntAce(AceCard, SortedIntCard, PinochlePoints):
     pass
 
@@ -158,7 +158,9 @@ class PinochleIntFace(FaceCard, SortedIntCard, PinochlePoints):
 class PinochleIntNumber(Card, SortedIntCard, PinochlePoints):
     pass
 
+
 PinochleIntCard = Union[PinochleIntAce, PinochleIntFace, PinochleIntNumber]
+
 
 def make_int_card(rank: int, suit: str) -> PinochleIntCard:
     if rank in (9, 10):
@@ -167,6 +169,7 @@ def make_int_card(rank: int, suit: str) -> PinochleIntCard:
         return PinochleIntFace(rank, suit)
     else:
         return PinochleIntAce(rank, suit)
+
 
 test_intcard_int = """
 >>> c1 = make_int_card(9, '♡')
@@ -183,4 +186,3 @@ False
 """
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
-

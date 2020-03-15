@@ -39,15 +39,14 @@ test_default_counter_again = """
 Counter({7: 336, 6: 294, 8: 272, 9: 228, 5: 220, 10: 154, 11: 142, 4: 140, 3: 104, 12: 58, 2: 52})
 """
 
+
 def create_stats(n: int, samples: int = 1000) -> Counter[int]:
     return update_stats(n, samples, Counter())
 
-def update_stats(n: int, samples: int, summary: Counter[int] ) -> Counter[int]:
-    summary.update(
-        sum(randint(1, 6)
-            for d in range(n)) for _ in range(samples))
-    return summary
 
+def update_stats(n: int, samples: int, summary: Counter[int]) -> Counter[int]:
+    summary.update(sum(randint(1, 6) for d in range(n)) for _ in range(samples))
+    return summary
 
 
 def gather_stats_good(
@@ -55,9 +54,7 @@ def gather_stats_good(
 ) -> Counter[int]:
     if summary is None:
         summary = Counter()
-    summary.update(
-        sum(randint(1, 6)
-            for d in range(n)) for _ in range(samples))
+    summary.update(sum(randint(1, 6) for d in range(n)) for _ in range(samples))
     return summary
 
 
@@ -75,17 +72,14 @@ False
 """
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 Summarizer = Callable[[Iterable[T]], Counter[T]]
 
+
 def gather_stats_flex(
-    n: int,
-    samples: int = 1000,
-    summary_func: Summarizer = collections.Counter
+    n: int, samples: int = 1000, summary_func: Summarizer = collections.Counter
 ) -> Counter[int]:
-    summary = summary_func(
-        sum(randint(1, 6)
-            for d in range(n)) for _ in range(samples))
+    summary = summary_func(sum(randint(1, 6) for d in range(n)) for _ in range(samples))
     return summary
 
 

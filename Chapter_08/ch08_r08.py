@@ -1,12 +1,12 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 8.
+Chapter 8, recipe 8, Creating a partial function.
 """
 
 from pprint import pprint
 from typing import Callable, List, Iterator, Iterable
 
-text_1 = """\
+text_1 = """
 10	8.04
 8	6.95
 13	7.58
@@ -20,7 +20,7 @@ text_1 = """\
 5	5.68
 """
 
-text_2 = """\
+text_2 = """
 10	9.14
 8	8.14
 13	8.74
@@ -34,10 +34,15 @@ text_2 = """\
 5	4.74
 """
 
-LineBreaker = Callable[[str], Iterator[List[str]]]
-text_parse: LineBreaker = lambda text: (r.split() for r in text.splitlines())
+# LineBreaker = Callable[[str], Iterator[List[str]]]
+# text_parse: LineBreaker = lambda text: (r.split() for r in filter(None, text.splitlines()))
 
-# from types import SimpleNamespace as Row
+
+def text_parse(text: str) -> Iterator[List[str]]:
+    non_empty = filter(None, text.splitlines())
+    return (r.split() for r in non_empty)
+
+
 from dataclasses import dataclass
 
 
@@ -47,11 +52,16 @@ class Row:
     y: float
 
 
-RowBuilder = Callable[[Iterable[List[str]]], Iterator[Row]]
-row_build: RowBuilder = lambda rows: (Row(x=float(x), y=float(y)) for x, y in rows)
+# RowBuilder = Callable[[Iterable[List[str]]], Iterator[Row]]
+# row_build: RowBuilder = lambda rows: (Row(x=float(x), y=float(y)) for x, y in rows)
 
-data_1 = list(row_build(text_parse(text_1)))
-data_2 = list(row_build(text_parse(text_2)))
+
+def make_row(rows: Iterable[List[str]]) -> Iterator[Row]:
+    return (Row(x=float(x), y=float(y)) for x, y in rows)
+
+
+data_1 = list(make_row(text_parse(text_1)))
+data_2 = list(make_row(text_parse(text_2)))
 
 
 def standardize(mean: float, stdev: float, x: float) -> float:
@@ -81,8 +91,7 @@ def prepare_z(data: List[Row]) -> Callable[[float], float]:
 z_4 = prepare_z(data_1)
 
 
-__test__ = {
-    "parse": """
+test_parse = """
 >>> pprint(list(text_parse(text_1)))
 [['10', '8.04'],
  ['8', '6.95'],
@@ -95,9 +104,10 @@ __test__ = {
  ['12', '10.84'],
  ['7', '4.82'],
  ['5', '5.68']]
-""",
-    "parse and cleanse": """
->>> pprint(list(row_build(text_parse(text_1))))
+"""
+
+test_parse_cleanse = """
+>>> pprint(list(make_row(text_parse(text_1))))
 [Row(x=10.0, y=8.04),
  Row(x=8.0, y=6.95),
  Row(x=13.0, y=7.58),
@@ -109,8 +119,9 @@ __test__ = {
  Row(x=12.0, y=10.84),
  Row(x=7.0, y=4.82),
  Row(x=5.0, y=5.68)]
-""",
-    "standardize": """
+"""
+
+test_standardize = """
 >>> for row in data_1:
 ...     z_x = standardize(mean_x, stdev_x, row.x)
 ...     print(row, round(z_x,2))
@@ -125,8 +136,9 @@ Row(x=4.0, y=4.26) -1.51
 Row(x=12.0, y=10.84) 0.9
 Row(x=7.0, y=4.82) -0.6
 Row(x=5.0, y=5.68) -1.21
-""",
-    "z_1": """
+"""
+
+test_z_1 = """
 >>> for row in data_1:
 ...     print(row, round(z_1(row.x), 2))
 Row(x=10.0, y=8.04) 0.3
@@ -140,8 +152,9 @@ Row(x=4.0, y=4.26) -1.51
 Row(x=12.0, y=10.84) 0.9
 Row(x=7.0, y=4.82) -0.6
 Row(x=5.0, y=5.68) -1.21
-""",
-    "z_2": """
+"""
+
+test_z_2 = """
 >>> for row in data_1:
 ...     print(row, round(z_2(row.x), 2))
 Row(x=10.0, y=8.04) 0.3
@@ -155,8 +168,9 @@ Row(x=4.0, y=4.26) -1.51
 Row(x=12.0, y=10.84) 0.9
 Row(x=7.0, y=4.82) -0.6
 Row(x=5.0, y=5.68) -1.21
-""",
-    "z_3": """
+"""
+
+test_z_3 = """
 >>> for row in data_1:
 ...     print(row, round(z_3(row.x), 2))
 Row(x=10.0, y=8.04) 0.3
@@ -170,8 +184,9 @@ Row(x=4.0, y=4.26) -1.51
 Row(x=12.0, y=10.84) 0.9
 Row(x=7.0, y=4.82) -0.6
 Row(x=5.0, y=5.68) -1.21
-""",
-    "z_4": """
+"""
+
+test_z_4 = """
 >>> for row in data_1:
 ...     print(row, round(z_4(row.x), 2))
 Row(x=10.0, y=8.04) 0.3
@@ -185,5 +200,6 @@ Row(x=4.0, y=4.26) -1.51
 Row(x=12.0, y=10.84) 0.9
 Row(x=7.0, y=4.82) -0.6
 Row(x=5.0, y=5.68) -1.21
-""",
-}
+"""
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

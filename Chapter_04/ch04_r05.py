@@ -6,9 +6,9 @@ Chapter 4, recipe 5, Writing list-related type hints
 from typing import List, Tuple, Union
 
 scheme = [
-    ('Brick_Red', (198, 45, 66)),
-    ('color1', (198.00, 100.50, 45.00)),
-    ('color2', (198.00, 45.00, 142.50)),
+    ("Brick_Red", (198, 45, 66)),
+    ("color1", (198.00, 100.50, 45.00)),
+    ("color2", (198.00, 45.00, 142.50)),
 ]
 
 RGB_I = Tuple[int, int, int]
@@ -18,20 +18,22 @@ ColorRGBList = List[ColorRGB]
 
 BadIdea = List[Tuple[str, Union[Tuple[int, int, int], Tuple[float, float, float]]]]
 
+
 def hexify(r: float, g: float, b: float) -> str:
     """
     >>> hexify(198, 45, 66)
     '#C62D42'
     """
-    return f'#{int(r)<<16 | int(g)<<8 | int(b):X}'
+    return f"#{int(r)<<16 | int(g)<<8 | int(b):X}"
+
 
 ColorCode = Tuple[str, str]
 ColorCodeList = List[ColorCode]
 
+
 def source_to_hex(src: ColorRGBList) -> ColorCodeList:
-    return [
-        (n, hexify(*color)) for n, color in src
-    ]
+    return [(n, hexify(*color)) for n, color in src]
+
 
 test_list = """
 >>> scheme

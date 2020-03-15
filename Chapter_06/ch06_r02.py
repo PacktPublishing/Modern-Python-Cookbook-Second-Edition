@@ -5,6 +5,7 @@ Chapter 6, recipe 2, Essential type hints for class definitions
 import random
 from typing import Set, List
 
+
 class Dice:
     RNG = random.Random()
 
@@ -15,10 +16,7 @@ class Dice:
         self.roll_number = 0
 
     def __str__(self) -> str:
-        return ", ".join(
-            f"{i}: {self.faces[i]}"
-            for i in range(len(self.faces))
-        )
+        return ", ".join(f"{i}: {self.faces[i]}" for i in range(len(self.faces)))
 
     def total(self) -> int:
         return sum(self.faces)
@@ -28,10 +26,7 @@ class Dice:
 
     def first_roll(self) -> List[int]:
         self.roll_number = 0
-        self.faces = [
-            self.RNG.randint(1, self.sides)
-            for _ in range(self.n_dice)
-        ]
+        self.faces = [self.RNG.randint(1, self.sides) for _ in range(self.n_dice)]
         return self.faces
 
     def reroll(self, positions: Set[int]) -> List[int]:
@@ -40,9 +35,11 @@ class Dice:
             self.faces[p] = self.RNG.randint(1, self.sides)
         return self.faces
 
+
 # The following example has type checking disabled.
 # To see the effect of using a wrong type, remove the type: ignore comments,
 # and run mypy on this module.
+
 
 def example_mypy_failure() -> None:
     d = Dice(2.5)  # type: ignore

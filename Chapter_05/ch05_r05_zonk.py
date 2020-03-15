@@ -49,9 +49,7 @@ class Dice:
         position_set = set(positions)
         bad_values = position_set - set(range(len(self.dice)))
         if bad_values:
-            raise ValueError(
-                f"Invalid positions: {bad_values}"
-            )
+            raise ValueError(f"Invalid positions: {bad_values}")
         self.frozen |= position_set
 
     def unfreeze(self, *positions: int) -> None:
@@ -71,6 +69,7 @@ class Dice:
 
 class Zonk(Cmd):
     """A handy tool for rolling a number of dice, used in a variety of games."""
+
     use_rawinput = False  # sys.stdout.write() and sys.stdin.readline() are used
 
     prompt = "] "
@@ -150,6 +149,7 @@ if __name__ == "__main__":
 
 from unittest.mock import Mock, call
 
+
 def test_command(capsys):
     mock_input = Mock(readline=Mock(side_effect=["roll", "save 0 3", "roll", "quit"]))
     mock_output = Mock()
@@ -164,12 +164,11 @@ def test_command(capsys):
         call("] "),
     ]
     out, err = capsys.readouterr()
-    assert out.splitlines() ==  [
-        'Rolling... ',
-        '[6, 1, 1, 6, 3, 2] (roll 1)',
-        '[6, 1, 1, 6, 3, 2] (roll 1)',
-        'Saving {0, 3}',
-        'Rerolling...',
-        '[6, 2, 2, 6, 6, 1] (roll 2)'
+    assert out.splitlines() == [
+        "Rolling... ",
+        "[6, 1, 1, 6, 3, 2] (roll 1)",
+        "[6, 1, 1, 6, 3, 2] (roll 1)",
+        "Saving {0, 3}",
+        "Rerolling...",
+        "[6, 2, 2, 6, 6, 1] (roll 2)",
     ]
-

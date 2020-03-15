@@ -9,7 +9,7 @@ from typing import Tuple
 class Dice:
     def __init__(self) -> None:
         # No value provided, only a type hint.
-        self.faces: Tuple[int, int] = 0, 0
+        self.faces: Tuple[int, int] = (0, 0)
 
     def roll(self) -> None:
         self.faces = (randint(1, 6), randint(1, 6))
