@@ -17,10 +17,11 @@ class RawLog(NamedTuple):
 
 def parse_line_iter(source: Iterable[str]) -> Iterator[RawLog]:
     pattern = re.compile(
-        r"\[(?P<timestamp>.*?)\]\s+"
-        r"(?P<level>\w+)\s+"
+        r"\[   (?P<date>.*?)  \]\s+"
+        r"     (?P<level>\w+)   \s+"
         r"in\s+(?P<module>\w+)"
-        r":\s+(?P<message>.+)"
+        r":\s+ (?P<message>.+)",
+        re.X
     )
     for line in source:
         if match := pattern.match(line):

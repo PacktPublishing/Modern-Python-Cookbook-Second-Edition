@@ -154,6 +154,25 @@ test_row_merge = """
  CombinedRow(date='10/26/13', engine_on_time='09:12:00 AM', engine_on_fuel_height='27', filler_1='', engine_off_time='06:25:00 PM', engine_off_fuel_height='22', filler_2='', other_notes="choppy -- anchor in jackson's creek", filler_3='')]
 """
 
+test_goal = """
+>>> row_gen = row_merge(log_rows)
+>>> tail_gen = skip_header_date(row_gen)
+>>> datetime_gen = (convert_datetime(row) for row in tail_gen)
+>>> total_time = datetime.timedelta(0) 
+>>> total_fuel = 0
+>>> for row in datetime_gen: 
+...     total_time += row.engine_off-row.engine_on
+...     total_fuel += (
+...         float(row.engine_on_fuel_height)-
+...         float(row.engine_off_fuel_height)
+...    )
+>>> print(
+...     f"{total_time.total_seconds()/60/60 =:.2f}, "
+...     f"{total_fuel =:.2f}")
+total_time.total_seconds()/60/60 =14.07, total_fuel =7.00
+
+"""
+
 test_skip_header_1 = """
 >>> row_gen = row_merge(log_rows)
 >>> tail_gen = skip_header_1(row_gen)

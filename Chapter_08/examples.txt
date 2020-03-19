@@ -161,6 +161,19 @@ StopIteration
 >>> factorial(5)
 120
 
+>>> from functools import reduce, partial
+>>> from operator import mul
+>>> prod = partial(reduce(mul, initializer=1))
+Traceback (most recent call last):
+   ...
+TypeError: reduce() takes no keyword arguments
+
+>>> prod = lambda x: reduce(mul, x, 1)
+>>> factorial = lambda x: prod(range(2, x+1))
+>>> factorial(5)
+120
+
+
 # Simplifying complex algorithms with immutable data structures
 
 >>> from Chapter_08.ch08_r09 import rank_by_y, cleanse, text_parse, text_1

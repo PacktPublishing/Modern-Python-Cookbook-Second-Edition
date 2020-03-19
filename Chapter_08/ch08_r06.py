@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 6, Combining map and reduce transformations
+Chapter 8, recipe 6, Combining map and reduce transformations.
 
 """
 import datetime
