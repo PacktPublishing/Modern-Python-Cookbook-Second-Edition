@@ -29,6 +29,17 @@ def find_path(
 import math
 
 
+def factor_list_recursion(x: int) -> List[int]:
+    def factors(x: int, n: int) -> List[int]:
+        if n >= int(math.sqrt(x) + 1):
+            return [x]
+        q, r = divmod(x, n)
+        if r == 0:
+            return [n] + factors(q, 2)
+        else:
+            return factors(x, n+1)
+    return factors(x, 2)
+
 def factor_list(x: int) -> List[int]:
     limit = int(math.sqrt(x) + 1)
     for n in range(2, limit):
@@ -77,13 +88,23 @@ test_find_value = """
 """
 
 test_factor_list_factor_iter = """
+>>> factor_list_recursion(255255)
+[3, 5, 7, 11, 13, 17]
+
 >>> factor_list(255255)
 [3, 5, 7, 11, 13, 17]
+
 >>> list(factor_iter(255255))
 [3, 5, 7, 11, 13, 17]
+
 >>> from collections import Counter
 >>> Counter(factor_iter(384))
 Counter({2: 7, 3: 1})
+>>> list(factor_iter(384))
+[2, 2, 2, 2, 2, 2, 2, 3]
+>>> list(factor_list_recursion(384))
+[2, 2, 2, 2, 2, 2, 2, 3]
+
 """
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

@@ -19,7 +19,7 @@ def parse_line_iter(source: Iterable[str]) -> Iterator[RawLog]:
     pattern = re.compile(
         r"\[   (?P<date>.*?)  \]\s+"
         r"     (?P<level>\w+)   \s+"
-        r"in\s+(?P<module>\w+)"
+        r"in\s+(?P<module>.+?)"
         r":\s+ (?P<message>.+)",
         re.X
     )
