@@ -215,4 +215,3 @@ test_show_xml = """
 """
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
-

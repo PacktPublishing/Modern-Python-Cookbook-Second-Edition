@@ -9,24 +9,23 @@ import xml.etree.ElementTree as XML
 from pathlib import Path
 from typing import cast
 
+
 def race_summary(source_path: Path) -> None:
-    source_text = source_path.read_text(encoding='UTF-8')
+    source_text = source_path.read_text(encoding="UTF-8")
     document = XML.fromstring(source_text)
 
-    legs = cast(XML.Element, document.find('legs'))
-    teams = cast(XML.Element, document.find('teams'))
+    legs = cast(XML.Element, document.find("legs"))
+    teams = cast(XML.Element, document.find("teams"))
 
-    for leg in legs.findall('leg'):
+    for leg in legs.findall("leg"):
         print(cast(str, leg.text).strip())
-        n = leg.attrib['n']
+        n = leg.attrib["n"]
 
-        for team in teams.findall('team'):
+        for team in teams.findall("team"):
             position_leg = cast(XML.Element, team.find(f"position/leg[@n='{n}']"))
-            name = cast(XML.Element, team.find('name'))
-            print(
-                cast(str, name.text).strip(),
-                cast(str, position_leg.text).strip()
-            )
+            name = cast(XML.Element, team.find("name"))
+            print(cast(str, name.text).strip(), cast(str, position_leg.text).strip())
+
 
 test_summary = """
 >>> race_summary(source_path=Path("data") / "race_result.xml")  # doctest: +ELLIPSIS

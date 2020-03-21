@@ -73,6 +73,7 @@ PosixPath('data/ch09_file2.yaml')
 1464445185.0
 >>> file2_path.stat().st_mtime  # doctest: +SKIP
 1466209804.0
+
 >>> import datetime
 >>> mtime_1 = file1_path.stat().st_mtime
 >>> datetime.datetime.fromtimestamp(mtime_1)  # doctest: +SKIP
@@ -112,13 +113,13 @@ PureWindowsPath('C:/Users/slott/filename.ini')
 # Reading complex formats using regular expressions
 
 >>> import re
->>> pattern_text = (r'\[(\d+-\d+-\d+ \d+:\d+:\d+,\d+)\]'
-...     '\s+(\w+)'
-...     '\s+in'
-...     '\s+([\w_\.]+):'
-...     '\s+(.*)')
-
->>> pattern = re.compile(pattern_text)
+>>> pattern_text = (
+...        r"\[   (?P<date>.*?)  \]\s+"
+...        r"     (?P<level>\w+)   \s+"
+...        r"in\s+(?P<module>.+?)"
+...        r":\s+ (?P<message>.+)"
+... )
+>>> pattern = re.compile(pattern_text, re.X)
 
 >>> sample_data = '[2016-05-08 11:08:18,651] INFO in ch09_r09: Sample Message One'
 >>> match = pattern.match(sample_data)

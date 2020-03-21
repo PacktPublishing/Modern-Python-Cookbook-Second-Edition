@@ -11,36 +11,30 @@ from pathlib import Path
 from pprint import pprint
 from typing import Iterable, Iterator, Dict, Any, TypedDict, Tuple, cast
 
+
 def raw(data_path: Path) -> None:
     with data_path.open() as data_file:
         data_reader = csv.DictReader(data_file)
         for row in data_reader:
             pprint(row)
 
+
 Raw = Dict[str, Any]
 Waypoint = Dict[str, Any]
 
+
 def clean_row(source_row: Raw) -> Waypoint:
-    ts_date = datetime.datetime.strptime(
-        source_row["date"], "%Y-%m-%d"
-    ).date()
-    ts_time = datetime.datetime.strptime(
-        source_row["time"], "%H:%M:%S"
-    ).time()
+    ts_date = datetime.datetime.strptime(source_row["date"], "%Y-%m-%d").date()
+    ts_time = datetime.datetime.strptime(source_row["time"], "%H:%M:%S").time()
     return dict(
         date=source_row["date"],
         time=source_row["time"],
         lat=source_row["lat"],
         lon=source_row["lon"],
-        lat_lon=(
-            float(source_row["lat"]),
-            float(source_row["lon"])
-        ),
+        lat_lon=(float(source_row["lat"]), float(source_row["lon"])),
         ts_date=ts_date,
         ts_time=ts_time,
-        timestamp = datetime.datetime.combine(
-            ts_date, ts_time
-        )
+        timestamp=datetime.datetime.combine(ts_date, ts_time),
     )
 
 
@@ -104,11 +98,13 @@ test_clean = """
 
 # Alternative Definitions
 
+
 class Raw_TD(TypedDict):
     date: str
     time: str
     lat: str
     lon: str
+
 
 class Waypoint_TD(TypedDict):
     date: str
@@ -120,28 +116,21 @@ class Waypoint_TD(TypedDict):
     ts_time: datetime.time
     timestamp: datetime.datetime
 
+
 def clean_row_td(source_row: Raw_TD) -> Waypoint_TD:
-    ts_date = datetime.datetime.strptime(
-        source_row["date"], "%Y-%m-%d"
-    ).date()
-    ts_time = datetime.datetime.strptime(
-        source_row["time"], "%H:%M:%S"
-    ).time()
+    ts_date = datetime.datetime.strptime(source_row["date"], "%Y-%m-%d").date()
+    ts_time = datetime.datetime.strptime(source_row["time"], "%H:%M:%S").time()
     return Waypoint_TD(
         date=source_row["date"],
         time=source_row["time"],
         lat=source_row["lat"],
         lon=source_row["lon"],
-        lat_lon=(
-            float(source_row["lat"]),
-            float(source_row["lon"])
-        ),
+        lat_lon=(float(source_row["lat"]), float(source_row["lon"])),
         ts_date=ts_date,
         ts_time=ts_time,
-        timestamp = datetime.datetime.combine(
-            ts_date, ts_time
-        )
+        timestamp=datetime.datetime.combine(ts_date, ts_time),
     )
+
 
 def cleanse_td(reader: csv.DictReader) -> Iterator[Waypoint_TD]:
     for row in reader:

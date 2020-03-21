@@ -18,19 +18,20 @@ class Quotient:
 
 
 def save_data(output_path: Path, data: Quotient) -> None:
-    with output_path.open('w', newline='') as output_file:
+    with output_path.open("w", newline="") as output_file:
         headers = [f.name for f in fields(Quotient)]
         writer = csv.DictWriter(output_file, headers)
         writer.writeheader()
         writer.writerow(asdict(data))
 
+
 def safe_write(output_path: Path, data: Quotient) -> None:
     ext = output_path.suffix
-    output_new_path = output_path.with_suffix(f'{ext}.new')
+    output_new_path = output_path.with_suffix(f"{ext}.new")
     save_data(output_new_path, data)
 
     # Clear any previous .{ext}.old
-    output_old_path = output_path.with_suffix(f'{ext}.old')
+    output_old_path = output_path.with_suffix(f"{ext}.old")
     try:
         output_old_path.unlink()
     except FileNotFoundError as ex:
@@ -50,6 +51,7 @@ def safe_write(output_path: Path, data: Quotient) -> None:
     except IOError as ex:
         # Possible recovery...
         output_old_path.rename(output_path)
+
 
 test_step1 = """
 >>> d1 = Quotient(355, 113)
@@ -73,14 +75,15 @@ from typing import Callable
 
 Writer = Callable[..., None]
 
+
 def safe(function: Writer) -> Writer:
     def concrete_function(output_path: Path, *args):
         ext = output_path.suffix
-        output_new_path = output_path.with_suffix(f'{ext}.new')
+        output_new_path = output_path.with_suffix(f"{ext}.new")
 
         function(output_path, *args)
 
-        output_old_path = output_path.with_suffix(f'{ext}.old')
+        output_old_path = output_path.with_suffix(f"{ext}.old")
         try:
             output_old_path.unlink()
         except FileNotFoundError as ex:
@@ -95,14 +98,17 @@ def safe(function: Writer) -> Writer:
             output_new_path.rename(output_path)
         except IOError as ex:
             output_old_path.rename(output_path)
+
     return concrete_function
+
 
 @safe
 def write_quotient(output_path: Path, data: Quotient) -> None:
-    with output_path.open('w', newline='') as output_file:
+    with output_path.open("w", newline="") as output_file:
         headers = [f.name for f in fields(Quotient)]
         writer = csv.DictWriter(output_file, headers)
         writer.writeheader()
         writer.writerow(asdict(data))
+
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

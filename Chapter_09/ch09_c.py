@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 9, recipe c.
+Chapter 9, Bonus Material c.
 
 Note: Output from this is used in Chapter 4 examples.
 """

@@ -11,12 +11,13 @@ from pprint import pprint
 from typing import Dict, Any, cast, Match, NamedTuple
 
 pattern_text = (
-    r"\[(?P<date>\d+-\d+-\d+ \d+:\d+:\d+,\d+)\]"
-    r"\s+(?P<level>\w+)"
-    r"\s+in\s+(?P<module>[\w_\.]+):"
-    r"\s+(?P<message>.*)"
+    r"\[   (?P<date>.*?)  \]\s+"
+    r"     (?P<level>\w+)   \s+"
+    r"in\s+(?P<module>.+?)"
+    r":\s+ (?P<message>.+)"
 )
-pattern = re.compile(pattern_text)
+pattern = re.compile(pattern_text, re.X)
+
 
 class LogLine(NamedTuple):
     date: str

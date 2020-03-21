@@ -8,13 +8,15 @@ Note: Output from this is used in Chapter 4 examples.
 import json
 from pathlib import Path
 
+
 def race_summary(source_path: Path) -> None:
     document = json.loads(source_path.read_text())
 
-    for n, leg in enumerate(document['legs']):
+    for n, leg in enumerate(document["legs"]):
         print(leg)
-        for team_finishes in document['teams']:
-            print(team_finishes['name'], team_finishes['position'][n])
+        for team_finishes in document["teams"]:
+            print(team_finishes["name"], team_finishes["position"][n])
+
 
 test_summary = """
 >>> race_summary(source_path=Path("data") / "race_result.json")  # doctest: +ELLIPSIS
@@ -41,10 +43,12 @@ Team Vestas Wind 6
 from typing import Any, Union, Dict
 import datetime
 
+
 def default_date(object: Any) -> Union[Any, Dict[str, Any]]:
     if isinstance(object, datetime.datetime):
         return {"$date": object.isoformat()}
     return object
+
 
 test_default_date = """
 >>> example_date = datetime.datetime(2014, 6, 7, 8, 9, 10)
@@ -58,11 +62,12 @@ test_default_date = """
 }
 """
 
+
 def as_date(object: Dict[str, Any]) -> Union[Any, Dict[str, Any]]:
-    if {'$date'} == set(object.keys()):
-        return datetime.datetime.strptime(
-           object['$date'], '%Y-%m-%dT%H:%M:%S')
+    if {"$date"} == set(object.keys()):
+        return datetime.datetime.strptime(object["$date"], "%Y-%m-%dT%H:%M:%S")
     return object
+
 
 test_as_date = """
 >>> source = '''{"date": {"$date": "2014-06-07T08:09:10"}}'''
@@ -72,4 +77,3 @@ test_as_date = """
 
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
-
