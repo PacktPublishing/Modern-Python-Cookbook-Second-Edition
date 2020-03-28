@@ -20,6 +20,25 @@ def clean_leg(text: str) -> str:
     return leg_soup.text
 
 
+def get_legs(soup: BeautifulSoup) -> List[str]:
+    legs = []
+    thead = soup.table.thead.tr
+    for tag in thead.find_all('th'):
+        if 'data-title' in tag.attrs:
+            leg_description_text = clean_leg(tag.attrs['data-title'])
+            legs.append(leg_description_text)
+    return legs
+
+def get_legs_comprehension(soup: BeautifulSoup) -> List[str]:
+    thead = soup.table.thead.tr
+    legs = [
+        clean_leg(tag.attrs['data-title'])
+          for tag in thead.find_all('th')
+            if 'data-title' in tag.attrs
+    ]
+    return legs
+
+
 def race_extract(source_path: Path) -> Dict[str, Any]:
     with source_path.open(encoding="utf8") as source_file:
         soup = BeautifulSoup(source_file, "html.parser")
@@ -212,6 +231,17 @@ test_show_xml = """
 >>> show_xml(document)
 <?xml version="1.0"?>
 <results><legs><leg n="1">ALICANTE - CAPE TOWN</leg><leg n="2">CAPE TOWN - ABU DHABI</leg><leg n="3">ABU DHABI - SANYA</leg><leg n="4">SANYA - AUCKLAND</leg><leg n="5">AUCKLAND - ITAJAÍ</leg><leg n="6">ITAJAÍ - NEWPORT</leg><leg n="7">NEWPORT - LISBON</leg><leg n="8">LISBON - LORIENT</leg><leg n="9">LORIENT - GOTHENBURG</leg></legs><teams><team><name>Abu Dhabi Ocean Racing</name><position><leg n="1">1</leg><leg n="2">3</leg><leg n="3">2</leg><leg n="4">2</leg><leg n="5">1</leg><leg n="6">2</leg><leg n="7">5</leg><leg n="8">3</leg><leg n="9">5</leg></position></team><team><name>Team Brunel</name><position><leg n="1">3</leg><leg n="2">1</leg><leg n="3">5</leg><leg n="4">5</leg><leg n="5">4</leg><leg n="6">3</leg><leg n="7">1</leg><leg n="8">5</leg><leg n="9">2</leg></position></team><team><name>Dongfeng Race Team</name><position><leg n="1">2</leg><leg n="2">2</leg><leg n="3">1</leg><leg n="4">3</leg><leg n="5">None</leg><leg n="6">1</leg><leg n="7">4</leg><leg n="8">7</leg><leg n="9">4</leg></position></team><team><name>MAPFRE</name><position><leg n="1">7</leg><leg n="2">4</leg><leg n="3">4</leg><leg n="4">1</leg><leg n="5">2</leg><leg n="6">4</leg><leg n="7">2</leg><leg n="8">4</leg><leg n="9">3</leg></position></team><team><name>Team Alvimedica</name><position><leg n="1">5</leg><leg n="2">None</leg><leg n="3">3</leg><leg n="4">4</leg><leg n="5">3</leg><leg n="6">5</leg><leg n="7">3</leg><leg n="8">6</leg><leg n="9">1</leg></position></team><team><name>Team SCA</name><position><leg n="1">6</leg><leg n="2">6</leg><leg n="3">6</leg><leg n="4">6</leg><leg n="5">5</leg><leg n="6">6</leg><leg n="7">6</leg><leg n="8">1</leg><leg n="9">7</leg></position></team><team><name>Team Vestas Wind</name><position><leg n="1">4</leg><leg n="2">None</leg><leg n="3">None</leg><leg n="4">None</leg><leg n="5">None</leg><leg n="6">None</leg><leg n="7">None</leg><leg n="8">2</leg><leg n="9">6</leg></position></team></teams></results>
+"""
+
+test_get_legs = """
+>>> source_path = Path.cwd() / "data" / "Volvo Ocean Race.html"
+>>> with source_path.open(encoding="utf8") as source_file:
+...     soup = BeautifulSoup(source_file, "html.parser")
+>>> get_legs(soup)
+['ALICANTE - CAPE TOWN', 'CAPE TOWN - ABU DHABI', 'ABU DHABI - SANYA', 'SANYA - AUCKLAND', 'AUCKLAND - ITAJAÍ', 'ITAJAÍ - NEWPORT', 'NEWPORT - LISBON', 'LISBON - LORIENT', 'LORIENT - GOTHENBURG']
+>>> get_legs_comprehension(soup)
+['ALICANTE - CAPE TOWN', 'CAPE TOWN - ABU DHABI', 'ABU DHABI - SANYA', 'SANYA - AUCKLAND', 'AUCKLAND - ITAJAÍ', 'ITAJAÍ - NEWPORT', 'NEWPORT - LISBON', 'LISBON - LORIENT', 'LORIENT - GOTHENBURG']
+
 """
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

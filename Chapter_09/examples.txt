@@ -89,6 +89,8 @@ PosixPath('/path/to/some/file.csv')
 ...     print("File already deleted")
 File already deleted
 
+>>> Path(options.file1)
+PosixPath('data/ch09_file1.yaml')
 >>> directory_path = Path(options.file1).parent
 >>> directory_path
 PosixPath('data')
@@ -125,6 +127,12 @@ PureWindowsPath('C:/Users/slott/filename.ini')
 >>> match = pattern.match(sample_data)
 >>> match.groups()
 ('2016-05-08 11:08:18,651', 'INFO', 'ch09_r09', 'Sample Message One')
+>>> match.groupdict()  # doctest: +NORMALIZE_WHITESPACE
+{'date': '2016-05-08 11:08:18,651',
+'level': 'INFO',
+'module': 'ch09_r09',
+'message': 'Sample Message One'}
+
 
 # Reading JSON and YAML documents
 
