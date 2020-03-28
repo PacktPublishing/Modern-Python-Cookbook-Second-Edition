@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 7.
+Chapter B, Bonus, recipe 7.
 """
 
 from pathlib import Path
@@ -61,8 +61,7 @@ def examine_anscombe(source_path: Path) -> None:
         print()
 
 
-__test__ = {
-    "demo": """
+test_demo = """
 >>> source_path = Path('data') / 'anscombe.json'
 >>> raw_data = json.loads(source_path.read_text())
 >>> data = {series['series']: series['data'] for series in raw_data}
@@ -88,15 +87,16 @@ Traceback (most recent call last):
     exec(compile(example.source, filename, "single",
   File "<doctest ch10_r07.__test__.demo[13]>", line 1, in <module>
     list(pass_outliers([item['x'] for item in series]))
-  File "Chapter_10/ch10_r07.py", line 34, in <genexpr>
+  File "Chapter_B/ch10_r07.py", line 34, in <genexpr>
     return itertools.compress(data, (z >= 3.5 for z in z_mod(data)))
-  File "Chapter_10/ch10_r07.py", line 27, in <genexpr>
+  File "Chapter_B/ch10_r07.py", line 27, in <genexpr>
     0.6745*(x - median)/mad for x in data
 ZeroDivisionError: float division by zero
 >>> list(pass_outliers([item['y'] for item in series]))  # IV
 []
-""",
-}
+"""
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
 
 if __name__ == "__main__":
     source_path = Path("data") / "anscombe.json"

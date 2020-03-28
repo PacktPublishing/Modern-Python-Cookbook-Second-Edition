@@ -1,11 +1,11 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 4.
+Chapter B, Bonus, recipe 4.
 """
 
 import statistics
 from typing import Iterable, Dict, Tuple
-from Chapter_10.ch10_r03 import correlation
+from Chapter_B.chB_r03 import correlation
 
 
 def regression(data: Iterable[Dict[str, float]]) -> Tuple[float, float]:
@@ -53,8 +53,7 @@ import json
 
 source_path = Path("data") / "anscombe.json"
 
-__test__ = {
-    "regression": """
+test_regression = """
 # old: object_pairs_hook=OrderedDict)
 >>> data = json.loads(source_path.read_text())
 >>> for series in data:
@@ -64,8 +63,9 @@ I y= 3.0 + 0.5 *x
 II y= 3.0 + 0.5 *x
 III y= 3.0 + 0.5 *x
 IV y= 3.0 + 0.5 *x
-""",
-    "regr2": """
+"""
+
+test_regr2 = """
 >>> data = json.loads(source_path.read_text())
 >>> for series in data:
 ...    a, b = regr2(series['data'])
@@ -74,5 +74,6 @@ I y= 3.0 + 0.5 *x
 II y= 3.0 + 0.5 *x
 III y= 3.0 + 0.5 *x
 IV y= 3.0 + 0.5 *x
-""",
-}
+"""
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

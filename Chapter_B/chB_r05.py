@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 5.
+Chapter B, Bonus, recipe 5.
 
 Raw data source: ftp://ftp.cmdl.noaa.gov/ccg/co2/trends/co2_mm_mlo.txt
 
@@ -72,9 +72,11 @@ def get_data(source_file: TextIO) -> Iterator[Sample]:
     return cleansed_data
 
 
-from Chapter_10.ch10_r03 import correlation
-from Chapter_10.ch10_r04 import regression
+from Chapter_B.chB_r03 import correlation
+from Chapter_B.chB_r04 import regression
 from statistics import mean, median
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
 
 if __name__ == "__main__":
     source_path = Path("data") / "co2_mm_mlo.txt"

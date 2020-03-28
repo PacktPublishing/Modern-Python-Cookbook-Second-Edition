@@ -1,13 +1,15 @@
 """Python Cookbook 2nd ed.
 
-Chapter 11, recipe 6 and 7. Pytest and Doctest.
+Chapter 10, recipe 6 and 7. Unit testing with the pytest module, Combining pytest and doctest tests
+
+A more conventional name would be test_ch10_r01.py
+
 """
 
-from Chapter_11.ch11_r01 import Summary
-
-from pytest import *  # type: ignore
 import random
 
+from pytest import *  # type: ignore
+from Chapter_10.ch10_r01 import Summary
 
 @fixture  # type: ignore
 def flat_data():
@@ -23,6 +25,19 @@ def test_flat(flat_data):
     assert summary.mean == 500
     assert summary.median == 500
 
+@fixture  # type: ignore
+def summary_object(flat_data):
+    summary = Summary()
+    for sample in flat_data:
+        summary.add(sample)
+    return summary
+
+def test_mean(summary_object):
+    assert summary_object.mean == 500
+
+def test_median(summary_object):
+    assert summary_object.median == 500
+
 
 @fixture  # type: ignore
 def biased_data():
@@ -33,7 +48,6 @@ def biased_data():
         data += [i] * i
     random.shuffle(data)
     return data
-
 
 def test_biased(biased_data):
     summary = Summary()
@@ -46,4 +60,4 @@ def test_biased(biased_data):
 
 
 # Need to use a complex command line to combine both.
-# pytest Chapter_11/ch11_r06.py --doctest-modules Chapter_11/ch11_r01.py
+# pytest Chapter_10/ch10_r06.py --doctest-modules Chapter_10/ch10_r01.py

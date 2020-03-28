@@ -1,15 +1,18 @@
 """Python Cookbook 2nd ed.
 
-Chapter 11, recipe 4 and 5. Unittest and Doctest.
-"""
+Chapter 10, recipe 4 and 5. Unit testing with the unittest module, Combining Unittest and Doctest.
 
-from Chapter_11.ch11_r01 import Summary
+A more conventional name would be test_ch10_r01.py
+"""
 
 import unittest
 import random
 
+from Chapter_10.ch10_r01 import Summary
 
-class GIVEN_data_WHEN_1k_samples_THEN_mean_median(unittest.TestCase):
+
+class GIVEN_data_WHEN_1k_samples_THEN_mean_median(
+        unittest.TestCase):
     def setUp(self):
         self.summary = Summary()
         self.data = list(range(1001))
@@ -23,7 +26,8 @@ class GIVEN_data_WHEN_1k_samples_THEN_mean_median(unittest.TestCase):
         self.assertEqual(500, self.summary.median)
 
 
-class GIVEN_Summary_WHEN_1k_samples_THEN_mean_median(unittest.TestCase):
+class GIVEN_Summary_WHEN_1k_samples_THEN_mean_median(
+        unittest.TestCase):
     def setUp(self):
         self.summary = Summary()
         self.data = list(range(1001))
@@ -54,14 +58,18 @@ class GIVEN_Summary_WHEN_1k_samples_THEN_mode(unittest.TestCase):
         self.assertListEqual([(500, 97), (42, 42), (41, 41)], top_3)
 
 
-# Recipe 5 -- combining. Requires unittest.
+# Recipe 5 -- Combining Unittest and Doctest.
 
-import Chapter_11.ch11_r01
+import Chapter_10.ch10_r01
 
 
 def load_tests(loader, standard_tests, pattern):
     import doctest
 
-    dt = doctest.DocTestSuite(Chapter_11.ch11_r01)
+    dt = doctest.DocTestSuite(Chapter_10.ch10_r01)
     standard_tests.addTests(dt)
     return standard_tests
+
+
+if __name__ == "__main__":
+    unittest.main()

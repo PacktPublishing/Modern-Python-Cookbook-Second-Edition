@@ -1,11 +1,12 @@
 """Python Cookbook 2nd ed.
 
-Chapter 11, recipe 10, Spike.
+Chapter 10, recipe 10, Mocking external resources like databases or the cloud
+Spike.
 
 Database hosting on orchestrate.io.
 This is a technical spike to understand three of the service endpoints.
 """
-from Chapter_11.ch11_r10_load import log_data_iter
+from Chapter_10.ch10_r10_load import log_data_iter
 
 import urllib.request
 import base64
@@ -14,22 +15,22 @@ service = "https://api.orchestrate.io"
 api_key = "REDACTED"
 
 
-def basic_header(username, password):
+def basic_header(username: str, password: str) -> str:
     combined_bytes = (username + ":" + password).encode("utf-8")
     encoded_bytes = base64.b64encode(combined_bytes)
     return "Basic " + encoded_bytes.decode("ascii")
 
 
-headers = {
-    "Accept": "application/json",
-    "Content-Type": "application/json",
-    "Authorization": basic_header(api_key, ""),
-}
-
 if __name__ == "__main__":
 
     #
     # 1. Check the API Key
+
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": basic_header(api_key, ""),
+    }
 
     request = urllib.request.Request(
         url=service + "/v0/", headers=headers, method="HEAD"
@@ -51,15 +52,15 @@ if __name__ == "__main__":
     data_document = {
         "timestamp": "2016-06-15T17:57:54.715",
         "levelname": "INFO",
-        "module": "ch09_r10",
+        "module": "ch10_r10",
         "message": "Sample Message One",
     }
 
     request = urllib.request.Request(
         url=service + "/v0/eventlog",
         headers=headers,
-        method="POST",
         data=json.dumps(data_document).encode("utf-8"),
+        method="POST",
     )
 
     with urllib.request.urlopen(request) as response:

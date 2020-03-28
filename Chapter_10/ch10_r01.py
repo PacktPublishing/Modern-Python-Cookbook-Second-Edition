@@ -1,308 +1,135 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 1.
+Chapter 10, recipes 1 and 2, Using docstrings for testing and
+Testing functions that raise exceptions
 """
-from pathlib import Path
-from typing import Iterable, Dict, Any, Iterator, Callable, cast
+
+from math import factorial
+from typing import List, Tuple
 
 
-def data_iter(
-    series: Dict[str, Iterable[Dict[str, Any]]], variable_name: str
-) -> Iterable[Any]:
-    return (item[variable_name] for item in series["data"])
+def binom(n: int, k: int) -> int:
+    """
+    Computes the binomial coefficient.
+    This shows how many combinations of
+    *n* things taken in groups of size *k*.
+
+    :param n: size of the universe
+    :param k: size of each subset
+
+    :returns: the number of combinations
+
+    >>> binom(52, 5)
+    2598960
+    >>> binom(52, 0)
+    1
+    >>> binom(52, 52)
+    1
+    """
+    return factorial(n) // (factorial(k) * factorial(n - k))
 
 
-Summary_Func = Callable[[Iterable[float]], float]
+test_GIVEN_n_5_k_52_THEN_ValueError = """
+GIVEN n=5, k=52 WHEN binom(n, k) THEN exception
+>>> binom(5, 52)  # doctest: +IGNORE_EXCEPTION_DETAIL 
+Traceback (most recent call last):
+  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
+    compileflags, 1), test.globs)
+  File "<doctest __main__.__test__.GIVEN_binom_WHEN_wrong_relationship_THEN_error[0]>", line 1, in <module>
+    binom(5, 52)
+  File "/Users/slott/Documents/Python/Python Cookbook 2e/Code/ch11_r01.py", line 24, in binom
+    return factorial(n) // (factorial(k) * factorial(n-k))
+ValueError: factorial() not defined for negative values
+"""
+
+test_GIVEN_negative_THEN_ValueError = """
+GIVEN n=52, k=-5 WHEN binom(n, k) THEN exception
+>>> binom(52, -5)  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+...
+ValueError: factorial() not defined for negative values
+"""
+
+test_GIVEN_str_THEN_TypeError = """
+GIVEN n='a', k='b' WHEN binom(n, k) THEN exception
+>>> binom('a', 'b')  # doctest: +IGNORE_EXCEPTION_DETAIL 
+Traceback (most recent call last):
+  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
+    exec(compile(example.source, filename, "single",
+  File "<doctest ch11_r01.__test__.GIVEN n='a', k='b' WHEN binom(n, k) THEN exception[0]>", line 1, in <module>
+    binom('a', 'b')
+  File "Chapter_10/ch10_r01.py", line 24, in binom
+    return factorial(n) // (factorial(k) * factorial(n-k))
+TypeError: 'str' object cannot be interpreted as an integer
+"""
+
+import collections
+from statistics import median
+from typing import Counter
 
 
-def set_summary(data: Iterable[Dict[str, Any]], summary: Summary_Func) -> None:
-    for series in data:
-        for variable_name in "x", "y":
-            samples = data_iter(series, variable_name)
-            series[summary.__name__ + "_" + variable_name] = summary(samples)
+class Summary:
+    """
+    Computes summary statistics.
 
+    >>> s = Summary()
+    >>> s.add(8)
+    >>> s.add(9)
+    >>> s.add(9)
+    >>> round(s.mean, 2)
+    8.67
+    >>> s.median
+    9
+    >>> print(str(s))
+    mean = 8.67
+    median = 9
+    """
 
-from pathlib import Path
-import json
+    def __init__(self) -> None:
+        self.counts: Counter[int] = collections.Counter()
 
-# No longer needed
-# from collections import OrderedDict
+    def __str__(self) -> str:
+        return f"mean = {self.mean:.2f}\nmedian = {self.median:d}"
 
+    def add(self, value: int) -> None:
+        """
+        Adds a value to be summarized.
 
-def summarize(source_path: Path):
-    data = json.loads(
-        source_path.read_text(),
-        # Old: object_pairs_hook=OrderedDict)
-        object_pairs_hook=dict,
-    )
+        :param value: Adds a new value to the collection.
+        """
+        self.counts[value] += 1
 
-    import statistics
+    @property
+    def mean(self) -> float:
+        """
+        Returns the mean of the collection.
+        """
+        s0 = sum(f for v, f in self.counts.items())
+        s1 = sum(v * f for v, f in self.counts.items())
+        return s1 / s0
 
-    for function in (
-        statistics.mean,
-        statistics.median,
-        min,
-        max,
-        statistics.variance,
-        statistics.stdev,
-    ):
-        # reveal_type(function)  # shows builtins.function
-        set_summary(data, cast(Summary_Func, function))
+    @property
+    def median(self) -> float:
+        """
+        Returns the median of the collection.
+        """
+        return median(self.counts.elements())
 
-    print(json.dumps(data, indent=2))
+    @property
+    def count(self) -> int:
+        s0 = sum(f for v, f in self.counts.items())
+        return s0
+
+    @property
+    def mode(self) -> List[Tuple[int, int]]:
+        """Returns the items in the collection in decreasing
+        order by frequency.
+        """
+        return self.counts.most_common()
 
 
 __test__ = {
-    "summarize": """
->>> summarize(source_path = Path('data/anscombe.json'))
-[
-  {
-    "series": "I",
-    "data": [
-      {
-        "x": 10.0,
-        "y": 8.04
-      },
-      {
-        "x": 8.0,
-        "y": 6.95
-      },
-      {
-        "x": 13.0,
-        "y": 7.58
-      },
-      {
-        "x": 9.0,
-        "y": 8.81
-      },
-      {
-        "x": 11.0,
-        "y": 8.33
-      },
-      {
-        "x": 14.0,
-        "y": 9.96
-      },
-      {
-        "x": 6.0,
-        "y": 7.24
-      },
-      {
-        "x": 4.0,
-        "y": 4.26
-      },
-      {
-        "x": 12.0,
-        "y": 10.84
-      },
-      {
-        "x": 7.0,
-        "y": 4.82
-      },
-      {
-        "x": 5.0,
-        "y": 5.68
-      }
-    ],
-    "mean_x": 9.0,
-    "mean_y": 7.500909090909091,
-    "median_x": 9.0,
-    "median_y": 7.58,
-    "min_x": 4.0,
-    "min_y": 4.26,
-    "max_x": 14.0,
-    "max_y": 10.84,
-    "variance_x": 11.0,
-    "variance_y": 4.127269090909091,
-    "stdev_x": 3.3166247903554,
-    "stdev_y": 2.031568135925815
-  },
-  {
-    "series": "II",
-    "data": [
-      {
-        "x": 10.0,
-        "y": 9.14
-      },
-      {
-        "x": 8.0,
-        "y": 8.14
-      },
-      {
-        "x": 13.0,
-        "y": 8.74
-      },
-      {
-        "x": 9.0,
-        "y": 8.77
-      },
-      {
-        "x": 11.0,
-        "y": 9.26
-      },
-      {
-        "x": 14.0,
-        "y": 8.1
-      },
-      {
-        "x": 6.0,
-        "y": 6.13
-      },
-      {
-        "x": 4.0,
-        "y": 3.1
-      },
-      {
-        "x": 12.0,
-        "y": 9.13
-      },
-      {
-        "x": 7.0,
-        "y": 7.26
-      },
-      {
-        "x": 5.0,
-        "y": 4.74
-      }
-    ],
-    "mean_x": 9.0,
-    "mean_y": 7.500909090909091,
-    "median_x": 9.0,
-    "median_y": 8.14,
-    "min_x": 4.0,
-    "min_y": 3.1,
-    "max_x": 14.0,
-    "max_y": 9.26,
-    "variance_x": 11.0,
-    "variance_y": 4.127629090909091,
-    "stdev_x": 3.3166247903554,
-    "stdev_y": 2.0316567355016177
-  },
-  {
-    "series": "III",
-    "data": [
-      {
-        "x": 10.0,
-        "y": 7.46
-      },
-      {
-        "x": 8.0,
-        "y": 6.77
-      },
-      {
-        "x": 13.0,
-        "y": 12.74
-      },
-      {
-        "x": 9.0,
-        "y": 7.11
-      },
-      {
-        "x": 11.0,
-        "y": 7.81
-      },
-      {
-        "x": 14.0,
-        "y": 8.84
-      },
-      {
-        "x": 6.0,
-        "y": 6.08
-      },
-      {
-        "x": 4.0,
-        "y": 5.39
-      },
-      {
-        "x": 12.0,
-        "y": 8.15
-      },
-      {
-        "x": 7.0,
-        "y": 6.42
-      },
-      {
-        "x": 5.0,
-        "y": 5.73
-      }
-    ],
-    "mean_x": 9.0,
-    "mean_y": 7.5,
-    "median_x": 9.0,
-    "median_y": 7.11,
-    "min_x": 4.0,
-    "min_y": 5.39,
-    "max_x": 14.0,
-    "max_y": 12.74,
-    "variance_x": 11.0,
-    "variance_y": 4.12262,
-    "stdev_x": 3.3166247903554,
-    "stdev_y": 2.030423601123667
-  },
-  {
-    "series": "IV",
-    "data": [
-      {
-        "x": 8.0,
-        "y": 6.58
-      },
-      {
-        "x": 8.0,
-        "y": 5.76
-      },
-      {
-        "x": 8.0,
-        "y": 7.71
-      },
-      {
-        "x": 8.0,
-        "y": 8.84
-      },
-      {
-        "x": 8.0,
-        "y": 8.47
-      },
-      {
-        "x": 8.0,
-        "y": 7.04
-      },
-      {
-        "x": 8.0,
-        "y": 5.25
-      },
-      {
-        "x": 19.0,
-        "y": 12.5
-      },
-      {
-        "x": 8.0,
-        "y": 5.56
-      },
-      {
-        "x": 8.0,
-        "y": 7.91
-      },
-      {
-        "x": 8.0,
-        "y": 6.89
-      }
-    ],
-    "mean_x": 9.0,
-    "mean_y": 7.500909090909091,
-    "median_x": 8.0,
-    "median_y": 7.04,
-    "min_x": 8.0,
-    "min_y": 5.25,
-    "max_x": 19.0,
-    "max_y": 12.5,
-    "variance_x": 11.0,
-    "variance_y": 4.123249090909091,
-    "stdev_x": 3.3166247903554,
-    "stdev_y": 2.0305785113876023
-  }
-]
-"""
+    n: v
+    for n, v in locals().items()
+    if n.startswith("test_")
 }
-
-if __name__ == "__main__":
-    summarize(source_path=Path("data/anscombe.json"))

@@ -1,13 +1,14 @@
 """Python Cookbook 2nd ed.
 
-Chapter 11, recipe 10. Test Module.
+Chapter 10, recipe 10. Mocking external resources like databases or the cloud
+Unittest Variant.
 """
 import unittest
 from unittest.mock import Mock, patch
 import doctest
 import json
 
-import Chapter_11.ch11_r10_load as ch11_r10_load
+import Chapter_10.ch10_r10_load as ch10_r10_load
 
 
 class GIVEN_ElasticClient_WHEN_load_eventlog_THEN_request(unittest.TestCase):
@@ -35,16 +36,16 @@ class GIVEN_ElasticClient_WHEN_load_eventlog_THEN_request(unittest.TestCase):
         self.document = {
             "timestamp": "2016-06-15T17:57:54.715",
             "levelname": "INFO",
-            "module": "ch09_r10",
+            "module": "ch10_r10",
             "message": "Sample Message One",
         }
 
     def runTest(self):
 
         with patch(
-            "Chapter_11.ch11_r10_load.urllib.request.urlopen", self.mock_urlopen
+            "Chapter_10.ch10_r10_load.urllib.request.urlopen", self.mock_urlopen
         ):
-            client = ch11_r10_load.ElasticClient("Aladdin", "OpenSesame")
+            client = ch10_r10_load.ElasticClient("Aladdin", "OpenSesame")
             response = client.load_eventlog(self.document)
         self.assertEqual(self.location, response)
 
@@ -70,6 +71,6 @@ class GIVEN_ElasticClient_WHEN_load_eventlog_THEN_request(unittest.TestCase):
 
 
 def load_tests(loader, standard_tests, pattern):
-    dt = doctest.DocTestSuite(ch11_r10_load)
+    dt = doctest.DocTestSuite(ch10_r10_load)
     standard_tests.addTests(dt)
     return standard_tests

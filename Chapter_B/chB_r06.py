@@ -1,11 +1,11 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 6.
+Chapter B, Bonus, recipe 6.
 
 Raw data source: ftp://ftp.cmdl.noaa.gov/ccg/co2/trends/co2_mm_mlo.txt
 
 Output::
-    (cookbook) Code % PYTHONPATH=. python Chapter_10/ch10_r06.py
+    (cookbook) Code % PYTHONPATH=. python Chapter_B/ch10_r06.py
     T_obs = m_1-m_2 = 2.50-2.75 = -0.25
     below 18 25.7%, above 52 74.3%
     time 0.003134122000000003
@@ -45,7 +45,7 @@ from statistics import mean
 import time
 from typing import List, Counter
 
-from Chapter_10.ch10_r05 import get_data
+from Chapter_B.chB_r05 import get_data
 
 import itertools
 
@@ -133,8 +133,7 @@ def test():
     all_combos(s1, s3)
 
 
-__test__ = {
-    "small diff": """
+test_small_diff = """
 >>> s1 = (1, 2, 3, 4)  # mean = 2.5, stdev = 1.29
 >>> s2 = (2, 2, 3, 4)  # mean = 2.75
 >>> all_combos(s1, s2)  # doctest: +ELLIPSIS
@@ -142,8 +141,9 @@ T_obs = m_1-m_2 = 2.50-2.75 = -0.25
 below 18 25.7%, above 52 74.3%
 time ...
 
-""",
-    "big diff": """
+"""
+
+test_big_diff = """
 >>> s1 = (1, 2, 3, 4)  # mean = 2.5, stdev = 1.29
 >>> s3 = (3, 4, 5, 6)  # mean = 4.5
 >>> all_combos(s1, s3)  # doctest: +ELLIPSIS
@@ -151,8 +151,7 @@ T_obs = m_1-m_2 = 2.50-4.50 = -2.00
 below 1 1.4%, above 69 98.6%
 time ...
 
-""",
-}
+"""
 
 
 def demo(source_path: Path) -> None:
@@ -181,8 +180,11 @@ def demo(source_path: Path) -> None:
     print("\n\n1959 v. 2014")
     randomized(y1959, y2014)
 
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
+
 
 if __name__ == "__main__":
     test()
     source_path = Path("data") / "co2_mm_mlo.txt"
     # demo(source_path)
+

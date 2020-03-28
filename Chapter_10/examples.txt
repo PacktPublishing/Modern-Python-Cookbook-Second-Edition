@@ -1,290 +1,178 @@
 """Python Cookbook
 
 Chapter 10, Examples from the text.
+
+•	Using docstrings for testing
+•	Testing functions that raise exceptions
+•	Handling common doctest issues
+•   Unit testing with the unittest module
+•	Combining unittest and doctest tests
+•   Unit testing with the pytest module
+•   Combining pytest and doctest tests
+•	Testing things that involve dates or times
+•	Testing things that involve randomness
+•	Mocking external resources
+
 """
 
-# Lines 25 to 29
->>> from pathlib import Path
->>> import json
->>> from collections import OrderedDict
->>> source_path = Path('data/anscombe.json')
->>> data = json.loads(source_path.read_text(),
-...     object_pairs_hook=OrderedDict)
+#  Testing functions that raise exceptions
+
+>>> from Chapter_10.ch10_r01 import binom
+
+>>> binom(52, 5)
+2598960
+
+>>> from Chapter_10.ch10_r01 import Summary
+
+>>> s = Summary()
+>>> s.add(8)
+>>> s.add(9)
+>>> s.add(9)
+>>> round(s.mean, 2)
+8.67
+>>> s.median
+9
+
+>>> print(str(s))
+mean = 8.67
+median = 9
+
+>>> binom(52, 5)
+2598960
+>>> binom(52, 0)
+1
+>>> binom(52, 52)
+1
+
+>>> binom(0, 0)
+1
+
+>>> binom(52, 5)
+2598960
+
+>>> binom(5, 52)
+Traceback (most recent call last):
+  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
+    compileflags, 1), test.globs)
+  File "<doctest examples.txt[15]>", line 1, in <module>
+    binom(5, 52)
+  File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Code/Chapter_10.ch10_r01.py", line 24, in binom
+    return factorial(n) // (factorial(k) * factorial(n-k))
+ValueError: factorial() not defined for negative values
 
 
-# Lines 34 to 36
->>> [item['series'] for item in data]
-['I', 'II', 'III', 'IV']
->>> [len(item['data']) for item in data]
-[11, 11, 11, 11]
+>>> binom(52, -5)  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: factorial() not defined for negative values
 
-# Lines 61 to 61
->>> def get_series(data, series_name):
-...     for s in data:
-...         if s['series'] == series_name:
-...             return s
+# Handling common doctest issues
+
+>>> from io import StringIO
+>>> mock_file = StringIO('''lat,lon,date,time
+... 32.8321,-79.9338,2012-11-27,09:15:00
+... ''')
+
+>>> from Chapter_10.ch10_r03 import raw_reader
+>>> row_iter = iter(raw_reader(mock_file))
+>>> row = next(row_iter)
+>>> row
+Row(date='2012-11-27', lat='32.8321', lon='-79.9338', time='09:15:00')
 
 
-# Lines 69 to 72
->>> series_1 = get_series(data, 'I')
->>> series_1['series']
-'I'
->>> len(series_1['data'])
+>>> from math import erf, sqrt
+>>> def pdf(n):
+...     """
+...     The cumulative distribution function for the standard normal
+...     distribution.
+...
+...     :param n: number of standard deviations
+...     :returns: cumulative fraction of values below n.
+...
+...     Examples:
+...     """
+...     return (1+erf(n/sqrt(2)))/2
+
+>>> round(pdf(0), 3)
+0.5
+>>> round(pdf(-1), 3)
+0.159
+>>> round(pdf(+1), 3)
+0.841
+
+# Creating separate test modules and packages
+
+>>> s = Summary()
+>>> s.add(8)
+>>> s.add(9)
+>>> s.add(9)
+>>> round(s.mean, 2)
+8.67
+>>> s.median
+9
+>>> print(str(s))
+mean = 8.67
+median = 9
+
+# Testing things that involve dates or times
+
+>>> from unittest.mock import *
+>>> dumb_function = Mock(return_value=12)
+>>> dumb_function(9)
+12
+>>> dumb_function(18)
+12
+
+>>> dumb_function.mock_calls
+[call(9), call(18)]
+
+>>> dumb_function.assert_called_with(18)
+
+>>> dumb_function.assert_has_calls([call(9), call(18)])
+
+#	Testing things that involve randomness
+
+# Lines 890 to 896
+>>> from unittest.mock import *
+>>> mocked_iterator = Mock(side_effect=[11, 13])
+>>> mocked_iterator()
 11
+>>> mocked_iterator()
+13
+>>> mocked_iterator()
+Traceback (most recent call last):
+  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
+    compileflags, 1), test.globs)
+  File "<doctest examples.txt[53]>", line 1, in <module>
+    mocked_iterator(31)
+  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/unittest/mock.py", line 965, in __call__
+    return _mock_self._mock_call(*args, **kwargs)
+  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/unittest/mock.py", line 1027, in _mock_call
+    result = next(effect)
+StopIteration
 
-# Lines 78 to 78
->>> def get_series(data, series_name):
-...     name_match = lambda series: series['series'] == series_name
-...     series = list(filter(name_match, data))[0]
-...     return series
-
-
-# Lines 85 to 88
->>> series_2 = get_series(data, 'II')
->>> series_2['series']
-'II'
->>> len(series_2['data'])
-11
-
-# Lines 92 to 92
->>> def get_series(data, series_name):
-...     series = list(
-...         s for s in data
-...            if s['series'] == series_name
-...         )[0]
-...     return series
+>>> mocked_iterator.mock_calls
+[call(), call(), call()]
 
 
-# Lines 101 to 104
->>> series_3 = get_series(data, 'III')
->>> series_3['series']
-'III'
->>> len(series_3['data'])
-11
+# Mocking external resources
 
-# Lines 111 to 111
->>> def data_iter(series, variable_name):
-...     return (item[variable_name] for item in series['data'])
+>>> a_mock = Mock(side_effect=RuntimeError)
+>>> a_mock(1)
+Traceback (most recent call last):
+...
+RuntimeError
 
+>>> b_mock = Mock(side_effect=[42, RuntimeError])
+>>> b_mock(1)
+42
+>>> b_mock(2)
+Traceback (most recent call last):
+...
+RuntimeError
 
-# Lines 114 to 116
->>> s_4 = get_series(data, 'IV')
->>> s_4_x = list(data_iter(s_4, 'x'))
->>> len(s_4_x)
-11
-
-# Lines 122 to 123
->>> import statistics
->>> for series_name in 'I', 'II', 'III', 'IV':
-...     series = get_series(data, series_name)
-...     for variable_name in 'x', 'y':
-...         samples = list(data_iter(series, variable_name))
-...         mean = statistics.mean(samples)
-...         median = statistics.median(samples)
-...         print(series_name, variable_name, round(mean,2), median)
-I x 9.0 9.0
-I y 7.5 7.58
-II x 9.0 9.0
-II y 7.5 8.14
-III x 9.0 9.0
-III y 7.5 7.11
-IV x 9.0 8.0
-IV y 7.5 7.04
-
-# Lines 141 to 142
->>> import collections
->>> for series_name in 'I', 'II', 'III', 'IV':
-...     series = get_series(data, series_name)
-...     for variable_name in 'x', 'y':
-...         samples = data_iter(series, variable_name)
-...         mode = collections.Counter(samples).most_common(1)
-...         print(series_name, variable_name, mode)
-I x [(10.0, 1)]
-I y [(8.04, 1)]
-II x [(10.0, 1)]
-II y [(9.14, 1)]
-III x [(10.0, 1)]
-III y [(7.46, 1)]
-IV x [(8.0, 10)]
-IV y [(6.58, 1)]
-
-# Lines 160 to 160
->>> for series_name in 'I', 'II', 'III', 'IV':
-...     series = get_series(data, series_name)
-...     for variable_name in 'x', 'y':
-...         samples = list(data_iter(series, variable_name))
-...         least = min(samples)
-...         most = max(samples)
-...         print(series_name, variable_name, least, most)
-I x 4.0 14.0
-I y 4.26 10.84
-II x 4.0 14.0
-II y 3.1 9.26
-III x 4.0 14.0
-III y 5.39 12.74
-IV x 8.0 19.0
-IV y 5.25 12.5
-
-# Lines 178 to 179
->>> import statistics
->>> for series_name in 'I', 'II', 'III', 'IV':
-...     series = get_series(data, series_name)
-...     for variable_name in 'x', 'y':
-...         samples = list(data_iter(series, variable_name))
-...         mean = statistics.mean(samples)
-...         variance = statistics.variance(samples, mean)
-...         stdev = statistics.stdev(samples, mean)
-...         print(series_name, variable_name,
-...            round(variance,2), round(stdev,2))
-I x 11.0 3.32
-I y 4.13 2.03
-II x 11.0 3.32
-II y 4.13 2.03
-III x 11.0 3.32
-III y 4.12 2.03
-IV x 11.0 3.32
-IV y 4.12 2.03
-
-# Lines 217 to 217
->>> statistics.mean.__name__
-'mean'
-
-# Lines 281 to 285
->>> from collections import Counter
->>> raw_data = [8, 8, 8, 8, 8, 8, 8, 19, 8, 8, 8]
->>> series_4_x = Counter(raw_data)
-
->>> series_4_x
-Counter({8: 10, 19: 1})
-
-# Lines 291 to 291
->>> def counter_sum(counter):
-...     return sum(f*c for c,f in counter.items())
-
-# Lines 298 to 298
->>> counter_sum(series_4_x)
-99
-
-# Lines 302 to 302
->>> def counter_len(counter):
-...     return sum(f for c,f in counter.items())
-
-# Lines 307 to 307
->>> counter_len(series_4_x)
-11
-
-# Lines 311 to 311
->>> def counter_mean(counter):
-...    return counter_sum(counter)/counter_len(counter)
-
-# Lines 316 to 316
->>> counter_mean(series_4_x)
-9.0
-
-# Lines 337 to 337
->>> def counter_sum_2(counter):
-...     return sum(f*c**2 for c,f in counter.items())
-
-
-# Lines 340 to 340
->>> def counter_variance(counter):
-...    n = counter_len(counter)
-...    return (counter_sum_2(counter)-(counter_sum(counter)**2)/n)/(n-1)
-
-
-# Lines 345 to 346
->>> import math
->>> def counter_stdev(counter):
-...    return math.sqrt(counter_variance(counter))
-
-
-# Lines 349 to 351
->>> counter_variance(series_4_x)
-11.0
->>> round(counter_stdev(series_4_x), 2)
-3.32
-
-# Lines 354 to 355
->>> import statistics
->>> statistics.variance(series_4_x.elements())
-11
-
-# Lines 372 to 376
->>> from pathlib import Path
->>> import json
->>> from collections import OrderedDict
->>> source_path = Path('data/anscombe.json')
->>> data = json.loads(source_path.read_text(),
-...     object_pairs_hook=OrderedDict)
-
-
-# Lines 381 to 383
->>> [item['series'] for item in data]
-['I', 'II', 'III', 'IV']
->>> [len(item['data']) for item in data]
-[11, 11, 11, 11]
-
-# Lines 495 to 499
->>> from pathlib import Path
->>> import json
->>> from collections import OrderedDict
->>> source_path = Path('data/anscombe.json')
->>> data = json.loads(source_path.read_text(),
-...     object_pairs_hook=OrderedDict)
-
-
-# Lines 504 to 506
->>> [item['series'] for item in data]
-['I', 'II', 'III', 'IV']
->>> [len(item['data']) for item in data]
-[11, 11, 11, 11]
-
-# Lines 753 to 767
->>> from Chapter_10.ch10_r05 import get_data
->>> from pathlib import Path
->>> source_path = Path('data/co2_mm_mlo.txt')
->>> with source_path.open() as source_file:
-...     all_data = list(get_data(source_file))
->>> y1959 = [r.interpolated for r in all_data if r.year == 1959]
->>> y1960 = [r.interpolated for r in all_data if r.year == 1960]
->>> y2014 = [r.interpolated for r in all_data if r.year == 2014]
-
->>> from statistics import mean
->>> round(mean(y1959), 2)
-315.97
->>> round(mean(y1960), 2)
-316.91
->>> round(mean(y2014), 2)
-398.61
-
-# Lines 779 to 782
->>> from Chapter_03.ch03_r10 import fact_s
->>> def binom(n, k):
-...     return fact_s(n)//(fact_s(k)*fact_s(n-k))
->>> binom(24, 12)
-2704156
-
-# Lines 921 to 925
->>> from pathlib import Path
->>> import json
->>> from collections import OrderedDict
->>> source_path = Path('data/anscombe.json')
->>> data = json.loads(source_path.read_text(),
-...     object_pairs_hook=OrderedDict)
-
-
-# Lines 930 to 932
->>> [item['series'] for item in data]
-['I', 'II', 'III', 'IV']
->>> [len(item['data']) for item in data]
-[11, 11, 11, 11]
-
-# Lines 1058 to 1062
->>> from pathlib import Path
->>> import json
->>> from collections import OrderedDict
->>> source_path = Path('data/anscombe.json')
->>> data = json.loads(source_path.read_text(),
-...     object_pairs_hook=OrderedDict)
-
-
+>>> from unittest.mock import sentinel
+>>> sentinel.GOOD_DATA != sentinel.CORRUPT_DATA
+True
+>>> id(sentinel.GOOD_DATA) != id(sentinel.CORRUPT_DATA)
+True
