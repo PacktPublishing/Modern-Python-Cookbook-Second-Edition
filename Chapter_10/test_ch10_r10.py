@@ -5,7 +5,7 @@ Chapter 10, recipe 10. Mocking external resources
 This exercises Chapter_09.ch09_r02 features as part of Chapter 10.
 """
 from unittest.mock import Mock, sentinel
-from pytest import *
+from pytest import *  # type: ignore
 
 from pathlib import Path
 import Chapter_09.ch09_r02
@@ -20,7 +20,7 @@ import Chapter_09.ch09_r02
 
 # Scenario: The output_new_path.rename() function raises an exception other than an IOError exception.
 
-@fixture
+@fixture  # type: ignore
 def original_file(tmpdir):
     precious_file = tmpdir/"important_data.csv"
     precious_file.write_text(
@@ -72,7 +72,7 @@ scenario_3 = {"original": None, "old": RuntimeError("3"), "new": None}
 scenario_4 = {"original": RuntimeError("4"), "old": None, "new": None}
 scenario_5 = {"original": None, "old": None, "new": RuntimeError("5")}
 
-@fixture(params=[scenario_3, scenario_4, scenario_5])
+@fixture(params=[scenario_3, scenario_4, scenario_5])  # type: ignore
 def mock_pathlib_path(request):
     """
     There are two paths created in this order: the new, and the old.
