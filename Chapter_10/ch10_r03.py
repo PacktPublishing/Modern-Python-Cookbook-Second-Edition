@@ -19,12 +19,12 @@ def raw_reader(data_file: TextIO) -> Iterator[Row]:
     """
     Read from a given file if the data has columns that match Row's definition.
     """
-    expected = set(Row._fields)
+    row_field_names = set(Row._fields)
     data_reader = csv.DictReader(data_file)
-    if not (set(data_reader.fieldnames) >= expected):
-        raise ValueError(f"Expected {expected}")
+    if not (set(data_reader.fieldnames) >= row_field_names):
+        raise ValueError(f"Expected {row_field_names}")
     for row in data_reader:
-        yield Row(**{k: row[k] for k in Row._fields})
+        yield Row(**{k: row[k] for k in row_field_names})
 
 
 test_good_reader = """
