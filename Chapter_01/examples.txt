@@ -266,11 +266,25 @@ False
 'cups'
 
 >>> ingredient_pattern = re.compile(
-... r'(?P<ingredient>\w+):\s+' # name of the ingredient up to the ":"
-... r'(?P<amount>\d+)\s+'      # amount, all digits up to a space
-... r'(?P<unit>\w+)'           # units, alphanumeric characters
+... r'(?P<ingredient>[\w\s]+):\s+' # name of the ingredient up to the ":"
+... r'(?P<amount>\d+)\s+'          # amount, all digits up to a space
+... r'(?P<unit>\w+)'               # units, alphanumeric characters
 ... )
 
+>>> ingredient2 = "Pickled Beets: 1 can"
+>>> m = ingredient_pattern.match(ingredient2)
+>>> m.groups()
+('Pickled Beets', '1', 'can')
+
+>>> ingredient_pattern_x = re.compile(r'''
+... (?P<ingredient>[\w\s]+):\s+ # name of the ingredient up to the ":"'
+... (?P<amount>\d+)\s+          # amount, all digits up to a space'
+... (?P<unit>\w+)               # units, alphanumeric characters
+... ''', re.X)
+>>> ingredient2 = "Martini Olives: 2 count"
+>>> m_x = ingredient_pattern.match(ingredient2)
+>>> m_x.groups()
+('Martini Olives', '2', 'count')
 
 # Recipe 6
 # Building complex strings with f"strings"
@@ -333,6 +347,9 @@ IAD  : Dulles Intl Airport :   32 /  13 /  0.40
 >>> ''.join(title_list)
 'prefix_Rewriting_an_Immutable_String'
 
+>>> title = "Recipe 5: Rewriting an Immutable String"
+>>> title.translate({ord(c): '_' for c in whitespace+punctuation})
+'Recipe_5__Rewriting_an_Immutable_String'
 
 # Recipe 8
 # Using the Unicode characters that aren't on our keyboards
@@ -414,10 +431,25 @@ b'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR
 # Using tuples of items
 >>> ingredient = "Kumquat: 2 cups"
 >>> import re
->>> ingredient_pattern = re.compile(r'(?P<ingredient>\w+):\s+(?P<amount>\d+)\s+(?P<unit>\w+)')
->>> match = ingredient_pattern.match( ingredient )
+>>> ingredient_pattern = re.compile(r'([\w\s]+):\s+(\d+)\s+(\w+)')
+>>> match = ingredient_pattern.match(ingredient)
 >>> match.groups()
 ('Kumquat', '2', 'cups')
+
+>>> ingredient2 = "Pickled Beets: 1 can"
+>>> match2 = ingredient_pattern.match(ingredient2)
+>>> match2.groups()
+('Pickled Beets', '1', 'can')
+
+>>> ingredient_pattern_named = re.compile(r'(?P<ingredient>[\w\s]+):\s+(?P<amount>\d+)\s+(?P<unit>\w+)')
+>>> match = ingredient_pattern_named.match(ingredient)
+>>> match.groups()
+('Kumquat', '2', 'cups')
+
+>>> ingredient2 = "Pickled Beets: 1 can"
+>>> match2 = ingredient_pattern_named.match(ingredient2)
+>>> match2.groups()
+('Pickled Beets', '1', 'can')
 
 >>> from fractions import Fraction
 >>> my_data = ('Rice', Fraction(1/4), 'cups')

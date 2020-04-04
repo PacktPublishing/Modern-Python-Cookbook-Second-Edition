@@ -145,30 +145,30 @@ several values including mantissa = 0.785398163451422 exponent = 2
 >>> for position in range(len(sample_1)):
 ...    if sample_1[position] in '=:':
 ...        break
->>> print('name=', sample_1[:position],
-...     'value=', sample_1[position+1:])
-name= some_name  value=  the_value
+>>> print(f"name={sample_1[:position]!r}",
+...     f"value={sample_1[position+1:]!r}")
+name='some_name ' value=' the_value'
 
 >>> sample_2 = "name_only"
 >>> for position in range(len(sample_2)):
 ...    if sample_2[position] in '=:':
 ...        break
->>> print('name=', sample_2[:position],
-...     'value=', sample_2[position+1:])  # doctest: +NORMALIZE_WHITESPACE
-name= name_onl value=
+>>> print(f"name={sample_2[:position]!r}",
+...     f"value={sample_2[position+1:]!r}")
+name='name_onl' value=''
 
->>> position = -1  # If it's zero length
+>>> position = -1
 >>> for position in range(len(sample_2)):
 ...    if sample_2[position] in '=:':
 ...        break
 >>> if position == -1:
-...     print("name=", None, "value=", None)
+...     print(f"name=None value=None")
 ... elif not(sample_2[position] == ':' or sample_2[position] == '='):
-...     print("name=", sample_2, "value=", None)
+...     print(f"name={sample_2!r} value=None")
 ... else:
-...    print('name=', sample_2[:position],
-...     'value=', sample_2[position+1:])
-name= name_only value= None
+...     print(f"name={sample_2[:position]!r}",
+...         f"value={sample_2[position+1:]!r}")
+name='name_only' value=None
 
 >>> if len(sample_2) > 0:
 ...     name, value = sample_2, None
@@ -178,8 +178,8 @@ name= name_only value= None
 ...     if sample_2[position] in '=:':
 ...         name, value = sample_2[:position], sample2[position:]
 ...         break
->>> print('name=', name, 'value=', value)
-name= name_only value= None
+>>> print(f"{name=} {value=}")
+name='name_only' value=None
 
 
 >>> for position in range(len(sample_2)):
@@ -191,8 +191,8 @@ name= name_only value= None
 ...         name, value = sample_2, None
 ...     else:
 ...         name, value = None, None
->>> print('name=', name, 'value=', value)
-name= name_only value= None
+>>> print(f"{name=} {value=}")
+name='name_only' value=None
 
 
 # Recipe 8
