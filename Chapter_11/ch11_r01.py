@@ -1,7 +1,8 @@
 """
 openapi: 3.0.1
 info:
-  title: Python Cookbook Chapter 12, recipe 2.
+  title: Python Cookbook Chapter 11, recipe 1.
+  description: Using the Flask framework for RESTful APIs
   version: "1.0"
 servers:
 - url: "http://127.0.0.1:5000/dealer"
@@ -17,7 +18,7 @@ paths:
           type: string
         explode: false
       responses:
-        200:
+        "200":
           description: One hand of cards with a size given by the hand value in the query string
           content:
             application/json:
@@ -35,11 +36,12 @@ paths:
 components: {}
 """
 import random
-from http import HTTPStatus
 import os
 from typing import Optional
 from flask import Flask, jsonify, request, abort, Response
-from Chapter_12.ch12_r01 import Card, Deck
+from http import HTTPStatus
+
+from Chapter_11.card_model import Card, Deck
 
 dealer = Flask("dealer")
 
@@ -85,7 +87,7 @@ https://editor.swagger.io/
 Start with this to force a particular seed to get a consistent result.
 ::
 
-    DEAL_APP_SEED=42 PYTHONPATH=. python chapter_12/ch12_r02.py
+    DEAL_APP_SEED=42 PYTHONPATH=. python Chapter_11/ch11_r01.py
 
 Note the --header for the accept is required, as are the quotes to stop zsh from looking at the ?
 ::

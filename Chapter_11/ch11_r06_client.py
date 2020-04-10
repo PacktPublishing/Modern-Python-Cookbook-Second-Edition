@@ -1,6 +1,7 @@
 """Python Cookbook
 
-Chapter 12, recipe 7 -- client.
+Chapter 11, recipe 6, Implementing authentication for web services
+Client, using urllib.
 """
 
 import base64
@@ -9,6 +10,7 @@ from pprint import pprint
 from typing import Dict, List, Any, Union, Tuple
 import urllib.request
 import urllib.parse
+import ssl
 
 from openapi_spec_validator import validate_spec  # type: ignore
 
@@ -19,23 +21,24 @@ from openapi_spec_validator import validate_spec  # type: ignore
 ResponseDoc = Dict[str, Any]
 
 
-def get_openapi_spec() -> ResponseDoc:
+
+def get_openapi_spec(opener: urllib.request.OpenerDirector) -> ResponseDoc:
     """Get the OpenAPI specification."""
 
     openapi_request = urllib.request.Request(
-        url="http://127.0.0.1:5000/dealer/openapi.json",
+        url="https://127.0.0.1:5000/dealer/openapi.json",
         method="GET",
         headers={"Accept": "application/json",},
     )
 
-    with urllib.request.urlopen(openapi_request) as response:
+    with opener.open(openapi_request) as response:
         assert (
             response.getcode() == 200
         ), f"Error getting OpenAPI Spec: {response.getcode()!r}"
         openapi_spec = json.loads(response.read().decode("utf-8"))
     validate_spec(openapi_spec)
     assert (
-        openapi_spec["info"]["title"] == "Python Cookbook Chapter 12, recipe 7."
+        openapi_spec["info"]["title"] == "Python Cookbook Chapter 11, recipe 6."
     ), f"Unepxected Server {openapi_spec['info']['title']}"
     assert (
         openapi_spec["info"]["version"] == "1.0"
@@ -59,20 +62,17 @@ def make_path_map(openapi_spec: ResponseDoc) -> Path_Map:
     return operation_ids
 
 
-def create_new_player(openapi_spec: ResponseDoc, path_map: Path_Map) -> ResponseDoc:
+def create_new_player(
+        opener: urllib.request.OpenerDirector,
+        openapi_spec: ResponseDoc,
+        path_map: Path_Map,
+        document: Dict[str, Any]
+    ) -> ResponseDoc:
     """Post to create a player."""
 
     path, operation = path_map["make_player"]
     base_url = openapi_spec["servers"][0]["url"]
     full_url = f"{base_url}{path}"
-
-    document = {
-        "name": "Noriko",
-        "email": "nori@example.com",
-        "lucky_number": 7,
-        "twitter": "https://twitter.com/PacktPub",
-        "password": "OpenSesame",
-    }
 
     request = urllib.request.Request(
         url=full_url,
@@ -85,7 +85,7 @@ def create_new_player(openapi_spec: ResponseDoc, path_map: Path_Map) -> Response
     )
 
     try:
-        with urllib.request.urlopen(request) as response:
+        with opener.open(request) as response:
             # print(response.getcode())
             assert (
                 response.getcode() == 201
@@ -94,7 +94,7 @@ def create_new_player(openapi_spec: ResponseDoc, path_map: Path_Map) -> Response
             document = json.loads(response.read().decode("utf-8"))
 
         print(document)
-        assert document["status"] == "ok"
+        assert "id" in document
         return document
     except urllib.error.HTTPError as ex:
         print(ex.getcode())
@@ -104,7 +104,10 @@ def create_new_player(openapi_spec: ResponseDoc, path_map: Path_Map) -> Response
 
 
 def get_all_players(
-    openapi_spec: ResponseDoc, path_map: Path_Map, credentials: Tuple[str, str]
+        opener: urllib.request.OpenerDirector,
+        openapi_spec: ResponseDoc,
+        path_map: Path_Map,
+        credentials: Tuple[str, str]
 ) -> List[ResponseDoc]:
     """GET to see the players."""
 
@@ -124,7 +127,7 @@ def get_all_players(
         },
     )
 
-    with urllib.request.urlopen(request) as response:
+    with opener.open(request) as response:
         assert response.getcode() == 200
         # print(response.headers)
         players = json.loads(response.read().decode("utf-8"))
@@ -132,11 +135,12 @@ def get_all_players(
 
 
 def get_one_player(
-    openapi_spec: ResponseDoc,
-    path_map: Path_Map,
-    credentials: Tuple[str, str],
-    player_id: str,
-) -> ResponseDoc:
+        opener: urllib.request.OpenerDirector,
+        openapi_spec: ResponseDoc,
+        path_map: Path_Map,
+        credentials: Tuple[str, str],
+        player_id: str,
+    ) -> ResponseDoc:
     """GET to see a specific player."""
 
     path_template, operation = path_map["get_one_player"]
@@ -159,7 +163,7 @@ def get_one_player(
     from urllib.error import HTTPError
 
     try:
-        with urllib.request.urlopen(request) as response:
+        with opener.open(request) as response:
             print(response.getcode())
             print(response.headers)
             player_response = json.loads(response.read().decode("utf-8"))
@@ -171,13 +175,30 @@ def get_one_player(
 
 
 def main():
-    spec = get_openapi_spec()
+    # SSL client setup.
+    context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+    context.check_hostname = False
+    context.verify_mode = ssl.CERT_NONE
+    opener = urllib.request.build_opener(
+        urllib.request.HTTPSHandler(context=context)
+    )
+
+    spec = get_openapi_spec(opener)
     paths = make_path_map(spec)
-    create_doc = create_new_player(spec, paths)
+
+    player = {
+        "name": "Noriko",
+        "email": "nori@example.com",
+        "lucky_number": 7,
+        "twitter": "https://twitter.com/PacktPub",
+        "password": "OpenSesame",
+    }
+
+    create_doc = create_new_player(opener, spec, paths, player)
     id = create_doc["id"]
     credentials = (id, "OpenSesame")
-    get_one_player(spec, paths, credentials, id)
-    players = get_all_players(spec, paths, credentials)
+    get_one_player(opener, spec, paths, credentials, id)
+    players = get_all_players(opener, spec, paths, credentials)
     print(players)
 
 

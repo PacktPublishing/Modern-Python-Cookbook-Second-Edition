@@ -1,17 +1,17 @@
 """Python Cookbook 2nd ed.
 
-Tests for ch12_r06_server
+Tests for ch11_r06_server
 """
 import json
 from unittest.mock import Mock
-import Chapter_12.ch12_r06_server
+import Chapter_11.ch11_r05_server
 from pytest import *  # type: ignore
 
 
 @fixture  # type: ignore
 def dealer_client(monkeypatch):
     monkeypatch.setenv("DEAL_APP_SEED", "42")
-    app = Chapter_12.ch12_r06_server.dealer
+    app = Chapter_11.ch11_r05_server.dealer
     return app.test_client()
 
 
@@ -19,7 +19,7 @@ def test_openapi_spec(dealer_client):
     spec_response = dealer_client.get("/dealer/openapi.json")
     assert (
         spec_response.get_json()["info"]["title"]
-        == "Python Cookbook Chapter 12, recipe 6."
+        == "Python Cookbook Chapter 11, recipe 5."
     )
 
 

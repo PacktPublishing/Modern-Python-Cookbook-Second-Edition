@@ -1,10 +1,14 @@
 """
 openapi: 3.0.1
+
 info:
-  title: Python Cookbook Chapter 12, recipe 3.
+  title: Python Cookbook Chapter 11, recipe 2.
+  description: Parsing the query string in a request
   version: "1.0"
+
 servers:
 - url: "http://127.0.0.1:5000/dealer"
+
 paths:
   /hands:
     get:
@@ -16,7 +20,7 @@ paths:
         schema:
           type: integer
       responses:
-        200:
+        "200":
           description: one hand of cards for each `hand` value in the query string
           content:
             application/json:
@@ -42,7 +46,7 @@ paths:
               type: string
               default: "5"
       responses:
-        200:
+        "200":
           description: One hand of cards with a size given by the hand value in
             the query string
           content:
@@ -51,6 +55,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Card"
+
 components:
   schemas:
     Card:
@@ -73,12 +78,14 @@ from typing import Optional
 
 from flask import Flask, jsonify, request, abort, Response
 import yaml
-from Chapter_12.ch12_r01 import Card, Deck
+
+from Chapter_11.card_model import Card, Deck
 
 dealer = Flask("dealer")
 dealer.DEBUG = True
 dealer.TESTING = True
 
+# Build a Python structure from the YAML source.
 specification = yaml.load(__doc__, Loader=yaml.SafeLoader)
 
 deck: Optional[Deck] = None
@@ -108,9 +115,11 @@ def check_json() -> Optional[Response]:
 from flask import send_file
 
 # @dealer.route('/dealer/openapi.yaml')
-def swagger1() -> Response:
+def openapi_1() -> Response:
     # Note. No IANA registered standard as of this writing.
-    response = send_file("openapi.yaml", mimetype="application/yaml")
+    response = send_file(
+        "openapi.yaml",
+        mimetype="application/yaml")
     return response
 
 
@@ -118,8 +127,10 @@ from flask import make_response
 
 
 @dealer.route("/dealer/openapi.yaml")
-def swagger2() -> Response:
-    response = make_response(yaml.dump(specification).encode("utf-8"))
+def openapi_2() -> Response:
+    response = make_response(
+        yaml.dump(specification).encode("utf-8")
+    )
     # Note. No IANA registered standard as of this writing.
     response.headers["Content-Type"] = "application/yaml"
     return response
@@ -130,10 +141,8 @@ import json
 
 
 @dealer.route("/dealer/openapi.json")
-def swagger3() -> Response:
-    response = make_response(json.dumps(specification, indent=2).encode("utf-8"))
-    response.headers["Content-Type"] = "application/json"
-    return response
+def openapi_3() -> Response:
+    return jsonify(specification)
 
 
 @dealer.route("/dealer/hand")
@@ -151,22 +160,29 @@ def deal() -> Response:
 
 @dealer.route("/dealer/hands")
 def multi_hand() -> Response:
+    dealer.logger.debug(f"Request: {request.args}")
     try:
-        dealer.logger.info(f"Request: {request.args}")
-        hand_sizes = request.args.getlist("cards", type=int)
-        dealer.logger.info(f"{hand_sizes=}")
-        if len(hand_sizes) == 0:
-            hand_sizes = [13, 13, 13, 13]
-        assert all(1 <= hand_size < 53 for hand_size in hand_sizes)
-        assert sum(hand_sizes) < 53
-    except (AssertionError, ValueError) as ex:
-        dealer.logger.exception(ex)
+        hand_sizes = request.args.getlist(
+            "cards", type=int)
+    except ValueError as ex:
+        abort(HTTPStatus.BAD_REQUEST)
+    dealer.logger.info(f"{hand_sizes=}")
+    if len(hand_sizes) == 0:
+        hand_sizes = [13, 13, 13, 13]
+    if not(1 <= sum(hand_sizes) < 53):
         abort(HTTPStatus.BAD_REQUEST)
     deck = get_deck()
-    hands = [deck.deal(hand_size) for hand_size in hand_sizes]
+    hands = [
+        deck.deal(hand_size) for hand_size in hand_sizes]
     response = jsonify(
         [
-            {"hand": i, "cards": [card.to_json() for card in hand]}
+            {
+                "hand": i,
+                "cards": [
+                    card.to_json()
+                    for card in hand
+                ]
+            }
             for i, hand in enumerate(hands)
         ]
     )
@@ -179,7 +195,7 @@ if __name__ == "__main__":
 Start with this to force a particular seed to get a consistent result.
 ::
 
-    DEAL_APP_SEED=42 PYTHONPATH=. python chapter_12/ch12_r03.py
+    DEAL_APP_SEED=42 PYTHONPATH=. python Chapter_11/ch11_r03.py
 
 Get the OpenAPI spec
 ::

@@ -1,18 +1,22 @@
 """Python Cookbook
 
-Chapter 12, recipe 5 -- server.
+Chapter 11, recipe 4, Parsing the URL path
+Server.
 """
-import random
-from http import HTTPStatus
 import os
+import random
 import logging
 import sys
-from typing import Optional, Dict
 import yaml
-from flask import Flask, jsonify, request, abort, url_for, Response
-from Chapter_12.ch12_r01 import Card, Deck
+from typing import Optional, Dict
 
-dealer = Flask("ch12_r05")
+from http import HTTPStatus
+from flask import (
+    Flask, jsonify, request, abort, url_for, Response
+    )
+from Chapter_11.card_model import Card, Deck
+
+dealer = Flask("ch11_r04")
 dealer.DEBUG = True
 dealer.TESTING = True
 
@@ -21,7 +25,8 @@ dealer.TESTING = True
 spec_yaml = """
 openapi: 3.0.1
 info:
-  title: Python Cookbook Chapter 12, recipe 5.
+  title: Python Cookbook Chapter 11, recipe 4.
+  description: Parsing the URL path
   version: "1.0"
 servers:
 - url: http://127.0.0.1:5000/dealer
@@ -37,7 +42,7 @@ paths:
           type: integer
           default: 1
       responses:
-        200:
+        "201":
           description: Create and shuffle a deck. Returns a unique deck id.
           content:
             application/json:
@@ -51,7 +56,7 @@ paths:
                     description: response status
                     type: string
                     enum: ["ok", "problem"]
-        400:
+        "400":
           description: Request doesn't accept a JSON response or size invalid
           content: {}
   /decks/{id}:
@@ -60,7 +65,7 @@ paths:
       parameters:
       - $ref: "#/components/parameters/deck_id"
       responses:
-        200:
+        "200":
           description: the requested deck
           content:
             application/json:
@@ -68,10 +73,10 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Card"
-        400:
+        "400":
           description: Request doesn't accept a JSON response
           content: {}
-        404:
+        "404":
           description: ID not found.
           content: {}
   /decks/{id}/hands:
@@ -98,7 +103,7 @@ paths:
           type: integer
           default: 0
       responses:
-        200:
+        "200":
           description: One hand of cards for each `hand` ID in the query string
           content:
             application/json:
@@ -111,10 +116,10 @@ paths:
                     type: array
                     items: 
                       $ref: "#/components/schemas/Card"
-        400:
+        "400":
           description: Request doesn't accept a JSON response
           content: {}
-        404:
+        "404":
           description: ID not found.
           content: {}
           
@@ -157,7 +162,8 @@ def get_decks() -> Dict[str, Deck]:
 
 @dealer.before_request
 def check_json() -> Optional[Response]:
-    if request.path in ("/dealer/openapi.yaml", "/dealer/openapi.json"):
+    exceptions = {"/dealer/openapi.yaml", "/dealer/openapi.json"}
+    if request.path in exceptions:
         return None
     if "json" in request.headers.get("Accept", "*/*"):
         return None
@@ -172,7 +178,8 @@ import json
 
 @dealer.route("/dealer/openapi.json")
 def openapi3_json() -> Response:
-    response = make_response(json.dumps(specification, indent=2).encode("utf-8"))
+    response = make_response(
+        json.dumps(specification, indent=2).encode("utf-8"))
     response.headers["Content-Type"] = "application/json"
     return response
 
@@ -201,48 +208,56 @@ def make_deck() -> Response:
     decks = get_decks()
     id = str(uuid.uuid1())
     decks[id] = Deck(n=n_decks)
+
     response_json = jsonify(status="ok", id=id)
-    response = make_response(response_json, HTTPStatus.CREATED)
-    response.headers["Location"] = url_for("get_deck", id=str(id))
+    response = make_response(
+        response_json, HTTPStatus.CREATED)
+    response.headers["Location"] = url_for(
+        "get_deck", id=str(id))
     return response
 
 
 @dealer.route("/dealer/decks/<id>", methods=["GET"])
-def get_deck(id) -> Response:
+def get_deck(id: str) -> Response:
     decks = get_decks()
     if id not in decks:
         dealer.logger.error(id)
         dealer.logger.debug(list(decks.keys()))
-        abort(HTTPStatus.NOT_FOUND)
+        abort(HTTPStatus.BAD_REQUEST)
     response = jsonify([c.to_json() for c in decks[id].cards])
     return response
 
 
-from werkzeug.exceptions import BadRequest
-
-
 @dealer.route("/dealer/decks/<id>/hands", methods=["GET"])
-def get_hands(id):
+def get_hands(id: str) -> Response:
     decks = get_decks()
     if id not in decks:
         dealer.logger.error(id)
-        return make_response(f"ID {id} not found", HTTPStatus.NOT_FOUND)
+        abort(
+            HTTPStatus.NOT_FOUND,
+            description=f"deck {id!r} not found")
     try:
         cards = int(request.args.get("cards", 13))
         top = int(request.args.get("$top", 1))
         skip = int(request.args.get("$skip", 0))
-        assert skip * cards + top * cards <= len(
-            decks[id].cards
+        assert (
+            skip * cards + top * cards <= len(decks[id].cards)
         ), "$skip, $top, and cards larger than the deck"
     except ValueError as ex:
         dealer.logger.error(ex)
-        return BadRequest(repr(ex))
-    subset = decks[id].cards[skip * cards : (skip + top) * cards]
-    hands = [subset[h * cards : (h + 1) * cards] for h in range(top)]
+        abort(HTTPStatus.BAD_REQUEST)
+    subset = decks[id].cards[
+         skip * cards : (skip + top) * cards]
+    hands = [
+        subset[h * cards : (h + 1) * cards]
+        for h in range(top)]
+
     response = jsonify(
         [
-            {"hand": i, "cards": [card.to_json() for card in hand]}
-            for i, hand in enumerate(hands)
+            {
+                "hand": i,
+                "cards": [card.to_json() for card in hand]
+            } for i, hand in enumerate(hands)
         ]
     )
     return response

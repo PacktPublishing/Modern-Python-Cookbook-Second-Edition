@@ -1,23 +1,25 @@
 """Python Cookbook
 
-Chapter 12, recipe 7 -- server.
+Chapter 11, recipe 6, Implementing authentication for web services
+Server.
 """
-from http import HTTPStatus
 import logging
 import random
 import os
 import sys
 from typing import Dict, Optional, Any, Callable, Union
 
+from http import HTTPStatus
 from flask import Flask, jsonify, request, abort, url_for, Response
 import yaml
-from Chapter_12.ch12_r07_user import User, asdict
-from Chapter_12.ch12_r01 import Card, Deck
+from Chapter_11.ch11_r06_user import User, asdict
+from Chapter_11.card_model import Card, Deck
 
 
-dealer = Flask("ch12_r07")
+dealer = Flask("ch11_r07")
 dealer.DEBUG = True
 dealer.TESTING = True
+dealer.logger.setLevel(logging.INFO)
 
 # Following https://www.oasis-open.org
 # http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html
@@ -25,10 +27,10 @@ dealer.TESTING = True
 spec_yaml = """
 openapi: 3.0.1
 info:
-  title: Python Cookbook Chapter 12, recipe 7.
+  title: Python Cookbook Chapter 11, recipe 6.
   version: "1.0"
 servers:
-- url: http://127.0.0.1:5000/dealer
+- url: https://127.0.0.1:5000/dealer
 paths:
   /decks:
     post:
@@ -43,10 +45,10 @@ paths:
           type: integer
           default: 1
       responses:
-        200:
+        "200":
           description: Create and shuffle a deck. Returns a unique deck id.
           content: {}
-        400:
+        "400":
           description: Request doesn't accept a JSON response
           content: {}
   /decks/{id}/$count:
@@ -55,7 +57,7 @@ paths:
       parameters:
       - $ref: "#/components/parameters/deck_id"
       responses:
-        200:
+        "200":
           description: Summary of the deck size
           content:
             application/json:
@@ -66,7 +68,7 @@ paths:
                     type: string
                   cards:
                     type: integer
-        404:
+        "404":
           description: ID not found.
           content: {}
   /decks/{id}/hands:
@@ -95,13 +97,13 @@ paths:
           type: integer
           default: 0
       responses:
-        200:
+        "200":
           description: One hand of cards for each `hand` value in the query string
           content: {}
-        400:
+        "400":
           description: Request doesn't accept a JSON response
           content: {}
-        404:
+        "404":
           description: ID not found.
           content: {}
   /players:
@@ -110,7 +112,7 @@ paths:
       security: 
       - http: []
       responses:
-        200:
+        "200":
           description: All of the players defined so far
           content: {}
     post:
@@ -122,7 +124,7 @@ paths:
               $ref: '#/components/schemas/Player'
         required: false
       responses:
-        201:
+        "201":
           description: Player created
           content:
             application/json:
@@ -134,7 +136,7 @@ paths:
                   id:
                     type:
                         string
-        403:
+        "403":
           description: Player is invalid or a duplicate
           content: {}
   /players/{id}:
@@ -145,7 +147,7 @@ paths:
       parameters:
       - $ref: "#/components/parameters/player_id"
       responses:
-        200:
+        "200":
           description: The details of a specific player
           content:
             application/json:
@@ -160,7 +162,7 @@ paths:
                     name: example
                     twitter: https://twitter.com/PacktPub
                     lucky_number: 13
-        404:
+        "404":
           description: Player ID not found
           content: {}
 components:
@@ -236,33 +238,59 @@ def get_users() -> Dict[str, User]:
     return user_database
 
 
+# Errors come from abort
+# HTTPStatus.UNAUTHORIZED, HTTPStatus.BAD_REQUEST, and HTTPStatus.NOT_FOUND, HTTPStatus.FORBIDDEN
+# We can create more useful JSON documents
+@dealer.errorhandler(HTTPStatus.UNAUTHORIZED)
+def unuathorized_error(ex):
+    return jsonify(
+        error=str(ex)
+    ), HTTPStatus.UNAUTHORIZED
+
+@dealer.errorhandler(HTTPStatus.BAD_REQUEST)
+def bad_request_error(ex):
+    return jsonify(
+        error=str(ex)
+    ), HTTPStatus.BAD_REQUEST
+
+@dealer.errorhandler(HTTPStatus.FORBIDDEN)
+def forbidden_error(ex):
+    return jsonify(
+        error=str(ex)
+    ), HTTPStatus.FORBIDDEN
+
+
 from functools import wraps
 import base64
 from flask import g
 
+ViewFunction = Union[Callable[[Any], Response], Callable[[], Response]]
+
+
 DEFAULT_USER = User(name="", email="", twitter="", lucky_number=-1)
 
-ViewFunction = Union[Callable[[Any], Response], Callable[[], Response]]
 
 
 def authorization_required(view_function: ViewFunction) -> ViewFunction:
     @wraps(view_function)
     def decorated_function(*args, **kwargs):
         # If no Authorization header, provide a default which fails
-        header_value = request.headers.get("Authorization", b"BASIC :")
+        header_value = request.headers.get("Authorization", "BASIC :")
         kind, data = header_value.split()
         # If not BASIC, provide a username:password which will (eventually) fail
-        if kind == "BASIC":
+        if kind.upper() == "BASIC":
             credentials = base64.b64decode(data)
         else:
-            credentials = base64.b64decode(b"Og==")
-        username_bytes, _, password_bytes = credentials.partition(b":")
-        username = username_bytes.decode("ascii")
-        password = password_bytes.decode("ascii")
+            credentials = base64.b64decode("Og==")
+        usr_bytes, _, pwd_bytes = credentials.partition(b":")
+        username = usr_bytes.decode("ascii")
+        password = pwd_bytes.decode("ascii")
         user_database = get_users()
         user = user_database.get(username, DEFAULT_USER)
         if not user.check_password(password):
-            abort(HTTPStatus.UNAUTHORIZED)
+            abort(
+                HTTPStatus.UNAUTHORIZED,
+                description="Invalid credentials")
         g.user = user_database[username]
         return view_function(*args, **kwargs)
 
@@ -277,8 +305,10 @@ def check_json() -> Optional[Response]:
         return None
     if "json" == request.args.get("$format", "html"):
         return None
-    return abort(HTTPStatus.BAD_REQUEST)
-
+    abort(
+        HTTPStatus.BAD_REQUEST,
+        description="Invalid Accept header or $format query"
+    )
 
 from flask import make_response
 import json
@@ -310,23 +340,31 @@ def make_player() -> Response:
     except Exception as ex:
         # Document wasn't even JSON.
         # We can fine-tune the error message here.
-        abort(HTTPStatus.BAD_REQUEST)
+        abort(
+            HTTPStatus.BAD_REQUEST,
+            description=ex
+        )
     player_schema = specification["components"]["schemas"]["Player"]
     try:
         validate(document, player_schema)
     except ValidationError as ex:
-        return make_response(ex.message, HTTPStatus.FORBIDDEN)
+        abort(HTTPStatus.FORBIDDEN, description=ex.message)
 
     user_database = get_users()
-    id = hashlib.md5(document["twitter"].encode("utf-8")).hexdigest()
+    id = hashlib.md5(
+        document["twitter"].encode("utf-8")).hexdigest()
     if id in user_database:
-        return make_response("Duplicate player", HTTPStatus.FORBIDDEN)
+        abort(HTTPStatus.FORBIDDEN, description="Duplicate player")
 
     new_user = User(**document)
+    new_user.set_password(document['password'])
     user_database[id] = new_user
 
     response = make_response(
-        jsonify(player=redacted_asdict(new_user), id=id,), HTTPStatus.CREATED
+        jsonify(
+            player=redacted_asdict(new_user),
+            id=id),
+        HTTPStatus.CREATED
     )
     response.headers["Location"] = url_for("get_player", id=str(id))
     return response
@@ -337,7 +375,11 @@ def make_player() -> Response:
 def get_players() -> Response:
     user_database = get_users()
     response = make_response(
-        jsonify(players={k: redacted_asdict(v) for k, v in user_database.items()})
+        jsonify(
+            players={
+                k: redacted_asdict(v)
+                for k, v in user_database.items()}
+        )
     )
     response.headers["Content-Type"] = "application/json;charset=utf-8"
     return response
@@ -348,10 +390,17 @@ def get_players() -> Response:
 def get_player(id) -> Response:
     user_database = get_users()
     if id not in user_database:
-        return make_response(f"{id} not found", HTTPStatus.NOT_FOUND)
+        abort(
+            HTTPStatus.NOT_FOUND,
+            description=f"{id} not found"
+        )
 
-    response = make_response(jsonify(player=redacted_asdict(user_database[id])))
-    response.headers["Content-Type"] = "application/json;charset=utf-8"
+    response = make_response(
+        jsonify(
+            player=redacted_asdict(user_database[id])
+        )
+    )
+    response.headers["Content-Type"] = "application/json"
     return response
 
 
@@ -366,7 +415,10 @@ def make_deck() -> Response:
         n_decks = request.get_json()["decks"]
         dealer.logger.info(f"make_deck {request.args}")
     except Exception as ex:
-        abort(HTTPStatus.BAD_REQUEST)
+        abort(
+            HTTPStatus.BAD_REQUEST,
+            description=ex
+        )
 
     decks = get_decks()
     id = str(uuid.uuid1())
@@ -385,7 +437,10 @@ def get_one_deck_count(id) -> Response:
     if id not in decks:
         dealer.logger.debug(id)
         dealer.logger.debug(list(decks.keys()))
-        abort(HTTPStatus.NOT_FOUND)
+        abort(
+            HTTPStatus.NOT_FOUND,
+            description=f"Unknown /dealer/decks/{id}"
+        )
     response = jsonify(id=id, cards=len(decks[id].cards))
     return response
 
@@ -399,7 +454,7 @@ def get_hands(id) -> Response:
     decks = get_decks()
     if id not in decks:
         dealer.logger.debug(id)
-        return make_response(f"ID {id} not found", HTTPStatus.NOT_FOUND)
+        abort(HTTPStatus.NOT_FOUND, description=f"ID {id} not found")
     try:
         cards = int(request.args.get("cards", 13))
         top = int(request.args.get("$top", 1))
@@ -408,7 +463,7 @@ def get_hands(id) -> Response:
             decks[id].cards
         ), "$skip, $top, and cards larger than the deck"
     except ValueError as ex:
-        return make_response(ex, HTTPStatus.BAD_REQUEST)
+        abort(HTTPStatus.BAD_REQUEST, description=ex)
     subset = decks[id].cards[skip * cards : (skip + top) * cards]
     hands = [subset[h * cards : (h + 1) * cards] for h in range(top)]
     response = jsonify(

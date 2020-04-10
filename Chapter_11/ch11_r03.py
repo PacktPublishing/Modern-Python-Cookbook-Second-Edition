@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 4.
+Chapter 11, recipe 3, Making REST requests with urllib.
 """
 
 import urllib.request
@@ -22,7 +22,7 @@ def get_openapi_spec() -> Dict[str, Any]:
     return openapi_spec
 
 
-def query_build_1(openapi_spec: Dict[str, Any]) -> None:
+def query_build_1() -> None:
     """Build and execute a query in pieces."""
     query = {"hand": 5}
     full_url = urllib.parse.ParseResult(
@@ -47,7 +47,7 @@ def query_build_1(openapi_spec: Dict[str, Any]) -> None:
 
 
 def query_build_2(openapi_spec: Dict[str, Any]) -> None:
-    """Simpler alternative wth more assumptions"""
+    """Simpler alternative from OpenAPI Spec"""
     query = [("cards", 2), ("cards", 1), ("cards", 1), ("cards", 1)]
     query_text = urllib.parse.urlencode(query)
     request3 = urllib.request.Request(
@@ -61,21 +61,40 @@ def query_build_2(openapi_spec: Dict[str, Any]) -> None:
         print(json.loads(response.read().decode("utf-8")))
 
 
-__test__ = {
-    "example": """
+test_example = """
 Start the server
 >>> import subprocess, time, os, pathlib
 >>> env = os.environ.copy()
 >>> env['PYTHONPATH'] = str(pathlib.Path(__file__).parent.parent)
 >>> env['DEAL_APP_SEED'] = '42'
->>> server = subprocess.Popen(["python", "Chapter_12/ch12_r03.py"], env=env)
+>>> server = subprocess.Popen(["python", "Chapter_11/ch11_r02.py"], env=env)
 >>> time.sleep(0.5)
 
 Make the client request
 >>> spec = get_openapi_spec()
 openapi.json is valid
 >>> spec['info']['title']
-'Python Cookbook Chapter 12, recipe 3.'
+'Python Cookbook Chapter 11, recipe 2.'
+
+>>> query_build_1()  # doctest: +ELLIPSIS
+200
+Content-Type: application/json
+Content-Length: 235
+Server: Werkzeug/1.0.0 Python/3.8.0
+Date: ...
+<BLANKLINE>
+<BLANKLINE>
+[{'__class__': 'Card', 'rank': 10, 'suit': '♡'}, {'__class__': 'Card', 'rank': 4, 'suit': '♡'}, {'__class__': 'Card', 'rank': 7, 'suit': '♠'}, {'__class__': 'Card', 'rank': 11, 'suit': '♢'}, {'__class__': 'Card', 'rank': 12, 'suit': '♡'}]
+
+>>> query_build_2(spec)  # doctest: +ELLIPSIS
+200
+Content-Type: application/json
+Content-Length: 318
+Server: Werkzeug/1.0.0 Python/3.8.0
+Date: ...
+<BLANKLINE>
+<BLANKLINE>
+[{'cards': [{'__class__': 'Card', 'rank': 3, 'suit': '♣'}, {'__class__': 'Card', 'rank': 10, 'suit': '♠'}], 'hand': 0}, {'cards': [{'__class__': 'Card', 'rank': 9, 'suit': '♠'}], 'hand': 1}, {'cards': [{'__class__': 'Card', 'rank': 13, 'suit': '♣'}], 'hand': 2}, {'cards': [{'__class__': 'Card', 'rank': 5, 'suit': '♣'}], 'hand': 3}]
 
 Terminate the server
 >>> server.terminate()
@@ -86,9 +105,10 @@ Terminate the server
 >>> server.returncode
 0
 """
-}
+
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
 
 if __name__ == "__main__":
     spec = get_openapi_spec()
-    query_build_1(spec)
+    query_build_1()
     query_build_2(spec)

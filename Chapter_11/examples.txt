@@ -1,10 +1,20 @@
 """Python Cookbook
 
-Chapter 12, Examples from the text.
+Chapter 11, Examples from the text.
+
+•	Using the Flask framework for RESTful APIs
+•	Parsing the query string in a request
+•	Making REST requests with urllib
+•	Parsing the URL path
+•	Parsing a JSON request
+•	Implementing authentication for web services
+
+
 """
 
-# Lines 121 to 127
->>> from Chapter_12.ch12_r01 import Deck
+# The Card Model
+
+>>> from Chapter_11.card_model import Deck
 >>> import random
 >>> random.seed(2)
 >>> deck = Deck()
@@ -13,8 +23,6 @@ Chapter 12, Examples from the text.
 [Card(rank=4, suit='♣'), Card(rank=8, suit='♡'), Card(rank=3, suit='♡'), Card(rank=6, suit='♡'), Card(rank=2, suit='♠')]
 
 >>> import json
-
-# Lines 133 to 134
 >>> json_cards = list(card.to_json() for card in deck.deal(5))
 >>> print(json.dumps(json_cards, indent=2, sort_keys=True))
 [
@@ -45,10 +53,22 @@ Chapter 12, Examples from the text.
   }
 ]
 
-# Lines 565 to 568
+# Parsing the query string in a request
+
 >>> from urllib.parse import urlencode
->>> urlencode( {'n':355,'d':113} )
+>>> urlencode({'n':355,'d':113})
 'n=355&d=113'
->>> urlencode( {'n':355,'d':113,'note':'this&that'} )
+>>> urlencode({'n':355,'d':113,'note':'this&that'})
 'n=355&d=113&note=this%26that'
+
+# Implementing authentication for web services
+
+>>> from werkzeug.security import generate_password_hash, check_password_hash
+>>> pw = generate_password_hash("OpenSesame", method="md5")
+>>>
+>>> fixed_pw = 'md5$gPz8aSmF$e58f7dd2eae658fd30f1acc804ba4c07'
+>>> check_password_hash(fixed_pw, "a bad guess")
+False
+>>> check_password_hash(fixed_pw, "OpenSesame")
+True
 

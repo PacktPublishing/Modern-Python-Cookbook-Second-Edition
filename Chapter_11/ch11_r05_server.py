@@ -1,18 +1,19 @@
 """Python Cookbook
 
-Chapter 12, recipe 6 -- server.
+Chapter 11, recipe 5, Parsing a JSON request
+Server.
 """
 import random
-from http import HTTPStatus
 import logging
 import os
 import sys
 from typing import Dict, Any, Optional
+from http import HTTPStatus
 from flask import Flask, jsonify, request, abort, url_for, Response
 import yaml
-from Chapter_12.ch12_r01 import Card, Deck
+from Chapter_11.card_model import Card, Deck
 
-dealer = Flask("ch12_r06")
+dealer = Flask("ch11_r05")
 dealer.DEBUG = True
 dealer.TESTING = True
 
@@ -21,7 +22,8 @@ dealer.TESTING = True
 spec_yaml = """
 openapi: 3.0.1
 info:
-  title: Python Cookbook Chapter 12, recipe 6.
+  title: Python Cookbook Chapter 11, recipe 5.
+  description: Parsing a JSON request
   version: "1.0"
 servers:
 - url: http://127.0.0.1:5000/dealer
@@ -35,7 +37,7 @@ paths:
             schema:
               $ref: '#/components/schemas/decks'
       responses:
-        200:
+        "201":
           description: Create and shuffle a deck. Returns a unique deck id.
           content:
             application/json:
@@ -49,16 +51,17 @@ paths:
                     description: response status
                     type: string
                     enum: ["ok", "problem"]
-        400:
+        "400":
           description: Request doesn't accept a JSON response or request invalid
           content: {}
+          
   /decks/{id}/$count:
     get:
       operationId: get_deck_size
       parameters:
       - $ref: "#/components/parameters/deck_id"
       responses:
-        200:
+        "200":
           description: Summary of the deck size
           content:
             application/json:
@@ -69,7 +72,7 @@ paths:
                     type: string
                   cards:
                     type: integer
-        404:
+        "404":
           description: ID not found.
           content: {}
 
@@ -97,7 +100,7 @@ paths:
           type: integer
           default: 0
       responses:
-        200:
+        "200":
           description: One hand of cards for each `hand` ID in the query string
           content:
             application/json:
@@ -110,28 +113,14 @@ paths:
                     type: array
                     items: 
                       $ref: "#/components/schemas/Card"
-        400:
+        "400":
           description: Request doesn't accept a JSON response
           content: {}
-        404:
+        "404":
           description: ID not found.
           content: {}
           
   /players:
-    get:
-      operationId: get_all_players
-      responses:
-        200:
-          description: One hand of cards for each `hand` ID in the query string
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  players:
-                    type: array
-                    items: 
-                      $ref: "#/components/schemas/Player"
     post:
       operationId: make_player
       requestBody:
@@ -140,7 +129,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Player'
       responses:
-        201:
+        "201":
           description: Player created
           content:
             application/json:
@@ -152,16 +141,32 @@ paths:
                   id:
                     type:
                         string
-        403:
+        "403":
           description: Player is invalid or a duplicate
           content: {}
+          
+    get:
+      operationId: get_all_players
+      responses:
+        "200":
+          description: One hand of cards for each `hand` ID in the query string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  players:
+                    type: array
+                    items: 
+                      $ref: "#/components/schemas/Player"
+
   /players/{id}:
     get:
       operationId: get_one_player
       parameters:
       - $ref: "#/components/parameters/player_id"
       responses:
-        200:
+        "200":
           description: The details of a specific player
           content:
             application/json:
@@ -176,9 +181,10 @@ paths:
                     name: example
                     twitter: https://twitter.com/PacktPub
                     lucky_number: 13
-        404:
+        "404":
           description: Player ID not found
           content: {}
+          
 components:
   schemas:
     Card:
@@ -230,8 +236,6 @@ components:
 specification = yaml.load(spec_yaml, Loader=yaml.SafeLoader)
 
 
-JSON_Doc = Dict[str, Any]
-
 decks: Optional[Dict[str, Deck]] = None
 
 
@@ -243,6 +247,7 @@ def get_decks() -> Dict[str, Deck]:
     return decks
 
 
+JSON_Doc = Dict[str, Any]
 players: Optional[Dict[str, JSON_Doc]] = None
 
 
@@ -274,6 +279,13 @@ def openapi3() -> Response:
     response.headers["Content-Type"] = "application/json"
     return response
 
+# This can be used to show what a bad OpenAPI specification looks like.
+# @dealer.route("/dealer/openapi.json")
+# def openapi3x() -> Response:
+#     response = make_response(json.dumps({"um": "nope"}, indent=2).encode("utf-8"))
+#     response.headers["Content-Type"] = "application/json"
+#     return response
+
 
 from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
@@ -281,24 +293,25 @@ import hashlib
 
 
 @dealer.route("/dealer/players", methods=["POST"])
-def make_player():
+def make_player() -> Response:
     try:
         document = request.get_json()
     except Exception as ex:
         # Document wasn't proper JSON.
         # We can fine-tune an error message here.
         abort(HTTPStatus.BAD_REQUEST)
-    player_schema = specification["components"]["schemas"]["Player"]
+    player_schema = (
+        specification["components"]["schemas"]["Player"]
+    )
     try:
         validate(document, player_schema)
     except ValidationError as ex:
-        return make_response(ex.message, HTTPStatus.BAD_REQUEST)
+        abort(HTTPStatus.BAD_REQUEST, description=ex.message)
 
-    id = hashlib.md5(document["twitter"].encode("utf-8")).hexdigest()
     players = get_players()
-
+    id = hashlib.md5(document["twitter"].encode("utf-8")).hexdigest()
     if id in players:
-        return make_response("Duplicate player", HTTPStatus.BAD_REQUEST)
+        abort(HTTPStatus.BAD_REQUEST, description="Duplicate player")
 
     players[id] = document
     response = make_response(jsonify(player=document, id=id), HTTPStatus.CREATED)
@@ -308,7 +321,7 @@ def make_player():
 
 
 @dealer.route("/dealer/players", methods=["GET"])
-def get_all_players():
+def get_all_players() -> Response:
     players = get_players()
     response = make_response(jsonify(players=players))
     response.headers["Content-Type"] = "application/json;charset=utf-8"
@@ -316,10 +329,10 @@ def get_all_players():
 
 
 @dealer.route("/dealer/players/<id>", methods=["GET"])
-def get_one_player(id):
+def get_one_player(id: str) -> Response:
     players = get_players()
     if id not in players:
-        return make_response(f"Player {id} not found", HTTPStatus.NOT_FOUND)
+        abort(HTTPStatus.NOT_FOUND, description=f"Player {id} not found")
 
     response = make_response(jsonify(player=players[id]))
     response.headers["Content-Type"] = "application/json;charset=utf-8"
@@ -331,7 +344,7 @@ import uuid
 
 
 @dealer.route("/dealer/decks", methods=["POST"])
-def make_deck():
+def make_deck() -> Response:
     try:
         n_decks = request.get_json()["decks"]
         dealer.logger.info(f"make_deck {request.args}")
@@ -341,15 +354,18 @@ def make_deck():
     decks = get_decks()
     id = str(uuid.uuid1())
     decks[id] = Deck(n=n_decks)
+
     response_json = jsonify(status="ok", id=id)
-    response = make_response(response_json, HTTPStatus.CREATED)
-    response.headers["Location"] = url_for("get_one_deck_count", id=str(id))
+    response = make_response(
+        response_json, HTTPStatus.CREATED)
+    response.headers["Location"] = url_for(
+        "get_one_deck_count", id=str(id))
     response.headers["Content-Type"] = "application/json;charset=utf-8"
     return response
 
 
 @dealer.route("/deaker/decks/<id>/$count", methods=["GET"])
-def get_one_deck_count(id):
+def get_one_deck_count(id: str) -> Response:
     decks = get_decks()
     if id not in decks:
         dealer.logger.debug(id)
@@ -359,15 +375,12 @@ def get_one_deck_count(id):
     return response
 
 
-from werkzeug.exceptions import BadRequest
-
-
 @dealer.route("/dealer/decks/<id>/hands", methods=["GET"])
-def get_hands(id):
+def get_hands(id: str) -> Response:
     decks = get_decks()
     if id not in decks:
         dealer.logger.debug(id)
-        return make_response("Deck {id} not found", HTTPStatus.NOT_FOUND)
+        abort(HTTPStatus.NOT_FOUND, description="Deck {id} not found")
     try:
         cards = int(request.args.get("cards", 13))
         top = int(request.args.get("$top", 1))
@@ -376,7 +389,7 @@ def get_hands(id):
             decks[id].cards
         ), "$skip, $top, and cards larger than the deck"
     except ValueError as ex:
-        return BadRequest(repr(ex))
+        abort(HTTPStatus.BAD_REQUEST)
     subset = decks[id].cards[skip * cards : (skip + top) * cards]
     hands = [subset[h * cards : (h + 1) * cards] for h in range(top)]
     response = jsonify(

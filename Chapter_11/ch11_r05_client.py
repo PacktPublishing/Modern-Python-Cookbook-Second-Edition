@@ -1,6 +1,7 @@
 """Python Cookbook
 
-Chapter 12, recipe 6 -- client.
+Chapter 11, recipe 5, Parsing a JSON request
+Client.
 """
 
 from pprint import pprint
@@ -33,7 +34,7 @@ def get_openapi_spec() -> ResponseDoc:
         openapi_spec = json.loads(response.read().decode("utf-8"))
     validate_spec(openapi_spec)
     assert (
-        openapi_spec["info"]["title"] == "Python Cookbook Chapter 12, recipe 6."
+        openapi_spec["info"]["title"] == "Python Cookbook Chapter 11, recipe 5."
     ), f"Unepxected Server {openapi_spec['info']['title']}"
     assert (
         openapi_spec["info"]["version"] == "1.0"
@@ -51,7 +52,9 @@ def make_path_map(openapi_spec: ResponseDoc) -> Path_Map:
         openapi_spec["paths"][path][operation]["operationId"]: (path, operation)
         for path in openapi_spec["paths"]
         for operation in openapi_spec["paths"][path]
-        if "operationId" in openapi_spec["paths"][path][operation]
+        if (
+            "operationId" in openapi_spec["paths"][path][operation]
+        )
     }
     return operation_ids
 
@@ -62,17 +65,6 @@ def create_new_player(openapi_spec: ResponseDoc, path_map: Path_Map) -> Response
     path, operation = path_map["make_player"]
     base_url = openapi_spec["servers"][0]["url"]
     full_url = f"{base_url}{path}"
-
-    # full_url = urllib.parse.urlunparse(
-    #     urllib.parse.ParseResult(
-    #         scheme="http",
-    #         netloc="127.0.0.1:5000",
-    #         path="/dealer" + "/players",
-    #         params="",
-    #         query="",
-    #         fragment=""
-    #     )
-    # )
 
     document = {
         "name": "Noriko",
@@ -117,17 +109,6 @@ def get_all_players(openapi_spec: ResponseDoc, path_map: Path_Map) -> List[Respo
     base_url = openapi_spec["servers"][0]["url"]
     full_url = f"{base_url}{path}"
 
-    # full_url = urllib.parse.urlunparse(
-    #     urllib.parse.ParseResult(
-    #         scheme="http",
-    #         netloc="127.0.0.1:5000",
-    #         path="/dealer" + "/players",
-    #         params="",
-    #         query="",
-    #         fragment=""
-    #     )
-    # )
-
     request = urllib.request.Request(
         url=full_url, method="GET", headers={"Accept": "application/json",}
     )
@@ -148,17 +129,6 @@ def get_one_player(
     base_url = openapi_spec["servers"][0]["url"]
     path_instance = path_template.replace("{id}", player_id)
     full_url = f"{base_url}{path_instance}"
-
-    # full_url = urllib.parse.urlunparse(
-    #     urllib.parse.ParseResult(
-    #         scheme="http",
-    #         netloc="127.0.0.1:5000",
-    #         path="/dealer" + f"/players/{id}",
-    #         params="",
-    #         query="",
-    #         fragment=""
-    #     )
-    # )
 
     request = urllib.request.Request(
         url=full_url, method="GET", headers={"Accept": "application/json",}

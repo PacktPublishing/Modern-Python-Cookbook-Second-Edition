@@ -1,10 +1,10 @@
 """Python Cookbook 2nd ed.
 
-Tests for ch12_r01
+Tests for ch11_wsgi
 """
 import json
 from unittest.mock import Mock
-import Chapter_12.ch12_r01
+import Chapter_11.ch11_wsgi
 
 
 def test_deal_cards():
@@ -12,7 +12,7 @@ def test_deal_cards():
     mock_start = Mock()
     environ = {"HAND_SIZE": 6, "DEAL_APP_SEED": 42}
     response = b"".join(
-        Chapter_12.ch12_r01.deal_cards(environ, start_response=mock_start)
+        Chapter_11.ch11_wsgi.deal_cards(environ, start_response=mock_start)
     )
     assert json.loads(response) == [
         {"__class__": "Card", "rank": 3, "suit": "♡"},
@@ -29,7 +29,7 @@ def test_deal_cards():
 
 def test_DeaLCards():
     """Without the werkzeug.test.Client: must check the mock start response."""
-    dealer = Chapter_12.ch12_r01.DealCards(hand_size=6, seed=42)
+    dealer = Chapter_11.ch11_wsgi.DealCards(hand_size=6, seed=42)
     mock_start = Mock()
     environ = {}
     response = b"".join(dealer(environ, start_response=mock_start))
@@ -50,8 +50,8 @@ from werkzeug.test import Client
 
 
 def test_json_filter_good_1():
-    dealer = Chapter_12.ch12_r01.DealCards(hand_size=6, seed=42)
-    json_wrapper = Chapter_12.ch12_r01.JSON_Filter(dealer)
+    dealer = Chapter_11.ch11_wsgi.DealCards(hand_size=6, seed=42)
+    json_wrapper = Chapter_11.ch11_wsgi.JSON_Filter(dealer)
     client = Client(json_wrapper)
     response, status, headers = client.get(headers={"Accept": "application/json"})
     assert status == "200 OK"
@@ -68,8 +68,8 @@ def test_json_filter_good_1():
 
 
 def test_json_filter_reject():
-    dealer = Chapter_12.ch12_r01.DealCards(hand_size=6, seed=42)
-    json_wrapper = Chapter_12.ch12_r01.JSON_Filter(dealer)
+    dealer = Chapter_11.ch11_wsgi.DealCards(hand_size=6, seed=42)
+    json_wrapper = Chapter_11.ch11_wsgi.JSON_Filter(dealer)
     client = Client(json_wrapper)
     response, status, headers = client.get(headers={"Accept": "*/*"})
     assert status == "400 Bad Request"
@@ -82,8 +82,8 @@ def test_json_filter_reject():
 
 
 def test_json_filter_good_2():
-    dealer = Chapter_12.ch12_r01.DealCards(hand_size=6, seed=42)
-    json_wrapper = Chapter_12.ch12_r01.JSON_Filter(dealer)
+    dealer = Chapter_11.ch11_wsgi.DealCards(hand_size=6, seed=42)
+    json_wrapper = Chapter_11.ch11_wsgi.JSON_Filter(dealer)
     client = Client(json_wrapper)
     response, status, headers = client.get(query_string={"$format": "json"})
     print(response)

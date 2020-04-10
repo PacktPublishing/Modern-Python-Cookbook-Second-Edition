@@ -1,13 +1,13 @@
 """Python Cookbook 2nd ed.
 
-Tests for ch12_r06_client
+Tests for ch11_r06_client
 """
 import json
 from unittest.mock import Mock
 import urllib.request
 from pytest import *  # type: ignore
-import Chapter_12.ch12_r06_client
-from Chapter_12.ch12_r06_server import specification
+import Chapter_11.ch11_r05_client
+from Chapter_11.ch11_r05_server import specification
 
 
 @fixture  # type: ignore
@@ -72,28 +72,28 @@ def mock_urllib(monkeypatch):
         wraps=urllib.request, urlopen=Mock(side_effect=response_maker)
     )
     monkeypatch.setattr(
-        Chapter_12.ch12_r06_client.urllib, "request", mock_urllib_request
+        Chapter_11.ch11_r05_client.urllib, "request", mock_urllib_request
     )
 
 
 def test_get_openapi_spec(mock_urllib):
-    spec = Chapter_12.ch12_r06_client.get_openapi_spec()
-    assert spec["info"]["title"] == "Python Cookbook Chapter 12, recipe 6."
-    paths = Chapter_12.ch12_r06_client.make_path_map(spec)
+    spec = Chapter_11.ch11_r05_client.get_openapi_spec()
+    assert spec["info"]["title"] == "Python Cookbook Chapter 11, recipe 5."
+    paths = Chapter_11.ch11_r05_client.make_path_map(spec)
     assert "make_player" in paths
     assert "get_all_players" in paths
     assert "get_one_player" in paths
 
 
 def test_create_new_player(mock_urllib):
-    paths = Chapter_12.ch12_r06_client.make_path_map(specification)
-    response = Chapter_12.ch12_r06_client.create_new_player(specification, paths)
+    paths = Chapter_11.ch11_r05_client.make_path_map(specification)
+    response = Chapter_11.ch11_r05_client.create_new_player(specification, paths)
     assert response == {"status": "ok", "id": "mock_id"}
 
 
 def test_get_one_player(mock_urllib):
-    paths = Chapter_12.ch12_r06_client.make_path_map(specification)
-    response = Chapter_12.ch12_r06_client.get_one_player(
+    paths = Chapter_11.ch11_r05_client.make_path_map(specification)
+    response = Chapter_11.ch11_r05_client.get_one_player(
         specification, paths, "mock_id"
     )
     assert response == {
@@ -105,8 +105,8 @@ def test_get_one_player(mock_urllib):
 
 
 def test_get_all_players(mock_urllib):
-    paths = Chapter_12.ch12_r06_client.make_path_map(specification)
-    response = Chapter_12.ch12_r06_client.get_all_players(specification, paths)
+    paths = Chapter_11.ch11_r05_client.make_path_map(specification)
+    response = Chapter_11.ch11_r05_client.get_all_players(specification, paths)
     assert response == {
         "players": [
             {
