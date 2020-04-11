@@ -5,6 +5,7 @@ Chapter 10, recipe 4 and 5. Unit testing with the unittest module, Combining Uni
 A more conventional name would be test_ch10_r01.py
 """
 
+import doctest
 import unittest
 import random
 
@@ -64,8 +65,6 @@ import Chapter_10.ch10_r01
 
 
 def load_tests(loader, standard_tests, pattern):
-    import doctest
-
     dt = doctest.DocTestSuite(Chapter_10.ch10_r01)
     standard_tests.addTests(dt)
     return standard_tests

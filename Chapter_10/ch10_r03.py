@@ -155,6 +155,21 @@ test_phi = """
 1.0
 """
 
+test_phi_approx = """
+>>> from math import isclose
+>>> isclose(phi(0), 0.5)
+True
+>>> isclose(phi(1), 0.8413, rel_tol=.0001)
+True
+>>> isclose(phi(2), 0.9772, rel_tol=1e-4)
+True
+>>> isclose(phi(3), 0.9987, rel_tol=1e-4)
+True
+>>> isclose(phi(4), 1.0, rel_tol=1e-4)
+True
+"""
+
+
 
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

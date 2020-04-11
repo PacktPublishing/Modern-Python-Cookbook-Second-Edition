@@ -4,3 +4,5 @@
 .mypy_cache/*
 .tox/*
 backup/*
+*.cert
+*.key

@@ -27,12 +27,12 @@ def original_file(tmpdir):
         hex(id(sentinel.ORIGINAL_DATA)), encoding="utf-8")
     return precious_file
 
-def write_data_good(path, content):
+def save_data_good(path, content):
     path.write_text(
         hex(id(sentinel.GOOD_DATA)), encoding="utf-8")
 
 def test_safe_write_happy(original_file, monkeypatch):
-    mock_save_data = Mock(side_effect=write_data_good)
+    mock_save_data = Mock(side_effect=save_data_good)
     monkeypatch.setattr(
         Chapter_09.ch09_r02, 'save_data', mock_save_data)
 
@@ -46,7 +46,7 @@ def test_safe_write_happy(original_file, monkeypatch):
     assert actual == hex(id(sentinel.GOOD_DATA))
 
 
-def write_data_failure(path, content):
+def save_data_failure(path, content):
     path.write_text(
         hex(id(sentinel.CORRUPT_DATA)), encoding="utf-8")
     raise RuntimeError("mock exception")
@@ -54,7 +54,7 @@ def write_data_failure(path, content):
 
 
 def test_safe_write_scenario_2(original_file, monkeypatch):
-    mock_save_data = Mock(side_effect=write_data_failure)
+    mock_save_data = Mock(side_effect=save_data_failure)
     monkeypatch.setattr(
         Chapter_09.ch09_r02, 'save_data', mock_save_data)
 
@@ -90,7 +90,7 @@ def mock_pathlib_path(request):
 
 def test_safe_write_scenarios(
         original_file, mock_pathlib_path, monkeypatch):
-    mock_save_data = Mock(side_effect=write_data_good)
+    mock_save_data = Mock(side_effect=save_data_good)
     monkeypatch.setattr(
         Chapter_09.ch09_r02, 'save_data', mock_save_data)
 
