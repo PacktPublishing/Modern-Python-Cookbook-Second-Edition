@@ -8,8 +8,10 @@ from decimal import Decimal
 
 
 def temperature(
-    *, f_temp: Optional[float] = None, c_temp: Optional[float] = None
-) -> Dict[str, float]:
+        *,
+        f_temp: Optional[float] = None,
+        c_temp: Optional[float] = None
+    ) -> Dict[str, float]:
     """Convert between Fahrenheit temperature and
     Celsius temperature.
 
@@ -25,7 +27,7 @@ def temperature(
     elif c_temp is not None:
         f_temp = 32 + 9 * c_temp / 5
     else:
-        raise Exception("Logic Design Problem")
+        raise TypeError("One of f_temp or c_temp must be provided")
     result: Dict[str, float] = {"c_temp": c_temp, "f_temp": f_temp}
     return result
 
@@ -33,19 +35,18 @@ def temperature(
 def temperature_bad(
     *, f_temp: Optional[float] = None, c_temp: Optional[float] = None
 ) -> float:
-
     if f_temp is not None:
         c_temp = 5 * (f_temp - 32) / 9
     elif f_temp is not None:
         f_temp = 32 + 9 * c_temp / 5
     else:
-        raise Exception("Logic Design Problem")
+        raise TypeError("One of f_temp or c_temp must ve provided")
     result = {"c_temp": c_temp, "f_temp": f_temp}
     return result  # type: ignore
 
 
 # Without the type: ignore, we'll get mypy errors.
-# Chapter_03/ch03_r07.py:43: error: Incompatible return value type (got "Dict[str, float]", expected "float")
+# Chapter_03/ch03_r07.py:45: error: Incompatible return value type (got "Dict[str, float]", expected "float")
 
 from pytest import approx  # type: ignore
 
@@ -78,6 +79,6 @@ def temperature_d(
     elif c_temp is not None:
         f_temp = 32 + 9 * c_temp / 5
     else:
-        raise Exception("Logic Design Problem")
+        raise TypeError("One of f_temp or c_temp must ve provided")
     result: TempDict = {"c_temp": c_temp, "f_temp": f_temp}
     return result

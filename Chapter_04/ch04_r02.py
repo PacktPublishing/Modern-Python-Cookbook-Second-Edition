@@ -76,7 +76,7 @@ test_list_extend = """
 >>> len(final)
 28
 >>> sum(final)
-59383
+61089
 
 >>> final_ex = []
 >>> final_ex.extend(ch3)
@@ -84,7 +84,7 @@ test_list_extend = """
 >>> len(final_ex)
 28
 >>> sum(final_ex)
-59383
+61089
 """
 
 test_insert = """

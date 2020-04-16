@@ -5,11 +5,11 @@ Chapter 3, recipe 6, Defining position-only parameters with the / separator
 """
 
 
-def F(c, /) -> float:
+def F(c: float, /) -> float:
     return 32 + c * (9 / 5)
 
 
-def C(f, /, truncate=False) -> float:
+def C(f: float, /, truncate: bool=False) -> float:
     c = 5 * (f - 32) / 9
     if truncate:
         return round(c, 0)
