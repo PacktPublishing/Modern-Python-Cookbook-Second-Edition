@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 13, recipe 1.
+Chapter 12, recipe 1, Finding configuration files.
 """
 from pathlib import Path
 import collections
@@ -18,7 +18,7 @@ def load_config_file(config_path: Path) -> Dict[str, Any]:
 
 
 def get_config() -> ChainMap[str, Any]:
-    system_path = Path("/etc/profile")
+    system_path = Path("/etc") / "profile"
     local_paths = [
         Path.home() / ".bash_profile",
         Path.home() / ".bash_login",
@@ -34,12 +34,15 @@ def get_config() -> ChainMap[str, Any]:
     ]
 
     if system_path.exists():
-        configuration_items.append(load_config_file(system_path))
+        configuration_items.append(
+            load_config_file(system_path))
 
     for config_path in local_paths:
         if config_path.exists():
-            configuration_items.append(load_config_file(config_path))
+            configuration_items.append(
+                load_config_file(config_path))
             break
 
-    configuration = collections.ChainMap(*reversed(configuration_items))
+    configuration = collections.ChainMap(
+        *reversed(configuration_items))
     return configuration

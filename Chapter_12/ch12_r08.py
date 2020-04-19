@@ -1,11 +1,11 @@
 """Python Cookbook
 
-Chapter 13, recipe 8
+Chapter 12, recipe 8, Combining many applications using the Command design pattern
 """
 import argparse
 from pathlib import Path
 import sys
-from typing import Type
+from typing import Type, Optional, Any
 
 
 class Command:
@@ -16,29 +16,32 @@ class Command:
         pass
 
 
-import Chapter_13.ch13_r05 as ch13_r05
+import Chapter_12.ch12_r05 as ch12_r05
 
 
 class Simulate(Command):
-    def __init__(self, seed: int = None) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.seed = seed
+        self.seed: Optional[Any] = None
+        self.game_path: Path
 
     def execute(self, options: argparse.Namespace) -> None:
         self.game_path = Path(options.game_file)
-        data = ch13_r05.roll_iter(options.games, self.seed)
-        ch13_r05.write_rolls(self.game_path, data)
-        print("Created", self.game_path)
+        if 'seed' in options:
+            self.seed = options.seed
+        data = ch12_r05.roll_iter(options.games, self.seed)
+        ch12_r05.write_rolls(self.game_path, data)
+        print(f"Created {str(self.game_path)}")
 
 
-import Chapter_13.ch13_r06 as ch13_r06
+import Chapter_12.ch12_r06 as ch12_r06
 
 
 class Summarize(Command):
     def execute(self, options: argparse.Namespace) -> None:
         self.summary_path = Path(options.summary_file)
         with self.summary_path.open("w") as result_file:
-            ch13_r06.process_all_files(result_file, options.game_files)
+            ch12_r06.process_all_files(result_file, options.game_files)
 
 
 class Sequence(Command):
@@ -56,9 +59,13 @@ class SimSum(Sequence):
         super().__init__(Simulate, Summarize)
 
     def execute(self, options: argparse.Namespace) -> None:
-        intermediate = Path("data") / "ch13_r08_temporary.yaml"
+        self.intermediate = (
+            Path("data") / "ch12_r08_temporary.yaml"
+        )
         new_namespace = Namespace(
-            game_file=str(intermediate), game_files=[str(intermediate)], **vars(options)
+            game_file=str(self.intermediate),
+            game_files=[str(self.intermediate)],
+            **vars(options)
         )
         super().execute(new_namespace)
 
@@ -66,7 +73,7 @@ class SimSum(Sequence):
 from argparse import Namespace
 
 
-def demo_three_alternatives() -> None:
+def main() -> None:
     options_1 = Namespace(games=100, game_file="x.yaml")
     command1 = Simulate()
     command1.execute(options_1)
@@ -75,16 +82,25 @@ def demo_three_alternatives() -> None:
     command2 = Summarize()
     command2.execute(options_2)
 
+def main_2() -> None:
+    # Without thinking about how the two commands interaction
     options = Namespace(
-        games=100, game_file="x.yaml", summary_file="y.yaml", game_files=["x.yaml"]
+        games=100,
+        game_file="x.yaml",
+        summary_file="y.yaml",
+        game_files=["x.yaml"]
     )
     both_command = Sequence(Simulate, Summarize)
     both_command.execute(options)
 
-    better_options = Namespace(games=100, summary_file="y.yaml")
+def main_3() -> None:
+    # Better design reflecting the file shared between commands.
+    better_options = Namespace(
+        games=100,
+        summary_file="y.yaml")
     sim_sum_command = SimSum()
     sim_sum_command.execute(better_options)
 
 
 if __name__ == "__main__":
-    demo_three_alternatives()
+    main()

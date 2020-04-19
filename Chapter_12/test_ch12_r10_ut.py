@@ -1,11 +1,12 @@
 """Python Cookbook
 
-Chapter 13, recipe 10
+Chapter 12, recipe 10, Wrapping and combining CLI applications
 """
+from pathlib import Path
+import subprocess
 import unittest
 from unittest.mock import Mock, patch, call
-import subprocess
-import Chapter_13.ch13_r10
+import Chapter_12.ch12_r10
 
 
 class GIVEN_make_files_WHEN_call_THEN_run(unittest.TestCase):
@@ -13,14 +14,14 @@ class GIVEN_make_files_WHEN_call_THEN_run(unittest.TestCase):
         self.mock_subprocess_run = Mock()
 
     def runTest(self):
-        with patch("Chapter_13.ch13_r10.subprocess.run", self.mock_subprocess_run):
-            Chapter_13.ch13_r10.make_files(files=3)
+        with patch("Chapter_12.ch12_r10.subprocess.run", self.mock_subprocess_run):
+            Chapter_12.ch12_r10.make_files_clean(Path("data"), files=3)
         self.mock_subprocess_run.assert_has_calls(
             [
                 call(
                     [
-                        "python3",
-                        "ch13_r05.py",
+                        "python",
+                        "Chapter_12/ch12_r05.py",
                         "--samples",
                         "10",
                         "--output",
@@ -30,8 +31,8 @@ class GIVEN_make_files_WHEN_call_THEN_run(unittest.TestCase):
                 ),
                 call(
                     [
-                        "python3",
-                        "ch13_r05.py",
+                        "python",
+                        "Chapter_12/ch12_r05.py",
                         "--samples",
                         "10",
                         "--output",
@@ -41,8 +42,8 @@ class GIVEN_make_files_WHEN_call_THEN_run(unittest.TestCase):
                 ),
                 call(
                     [
-                        "python3",
-                        "ch13_r05.py",
+                        "python",
+                        "Chapter_12/ch12_r05.py",
                         "--samples",
                         "10",
                         "--output",
@@ -57,27 +58,38 @@ class GIVEN_make_files_WHEN_call_THEN_run(unittest.TestCase):
 class GIVEN_make_files_exception_WHEN_call_THEN_run(unittest.TestCase):
     def setUp(self):
         self.mock_subprocess_run = Mock(
-            side_effect=[None, subprocess.CalledProcessError(2, "ch13_r05")]
+            side_effect=[None, subprocess.CalledProcessError(2, "ch12_r05")]
         )
-        self.mock_path_glob_instance = Mock()
-        self.mock_path_instance = Mock(
+        self.mock_path_glob_instance = Mock(
+            name="data/file*"
+        )
+        self.mock_file_path_instance = Mock(
+            name="data/file"
+        )
+        self.mock_base_path_instance = Mock(
+            name="data",
             glob=Mock(return_value=[self.mock_path_glob_instance])
         )
-        self.mock_path_class = Mock(return_value=self.mock_path_instance)
+        self.mock_base_path_instance.__truediv__ = Mock(
+            side_effect=lambda n: f"data/{n}"
+        )
 
     def runTest(self):
         with patch(
-            "Chapter_13.ch13_r10.subprocess.run", self.mock_subprocess_run
-        ), patch("Chapter_13.ch13_r10.Path", self.mock_path_class):
+            "Chapter_12.ch12_r10.subprocess.run", self.mock_subprocess_run
+        ):
             self.assertRaises(
-                subprocess.CalledProcessError, Chapter_13.ch13_r10.make_files, files=3
+                subprocess.CalledProcessError,
+                Chapter_12.ch12_r10.make_files_clean,
+                self.mock_base_path_instance,
+                files=3
             )
         self.mock_subprocess_run.assert_has_calls(
             [
                 call(
                     [
-                        "python3",
-                        "ch13_r05.py",
+                        "python",
+                        "Chapter_12/ch12_r05.py",
                         "--samples",
                         "10",
                         "--output",
@@ -87,8 +99,8 @@ class GIVEN_make_files_exception_WHEN_call_THEN_run(unittest.TestCase):
                 ),
                 call(
                     [
-                        "python3",
-                        "ch13_r05.py",
+                        "python",
+                        "Chapter_12/ch12_r05.py",
                         "--samples",
                         "10",
                         "--output",
@@ -99,6 +111,5 @@ class GIVEN_make_files_exception_WHEN_call_THEN_run(unittest.TestCase):
             ]
         )
         self.assertEqual(2, self.mock_subprocess_run.call_count)
-        self.mock_path_class.assert_called_once_with("data")
-        self.mock_path_instance.glob.assert_called_once_with("game_*.yaml")
+        self.mock_base_path_instance.glob.assert_called_once_with("game_*.yaml")
         self.mock_path_glob_instance.unlink.assert_called_once_with()

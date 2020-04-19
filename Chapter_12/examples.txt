@@ -1,11 +1,26 @@
 """Python Cookbook
 
-Chapter 13, Examples from the text.
+Chapter 12, Examples from the text.
+
+•	Finding configuration files
+•	Using YAML for configuration files
+•	Using Python for configuration files
+•	Using class-as-namespace for configuration values
+•	Designing scripts for composition
+•	Using logging for control and audit output
+•	Combining two applications into one
+•	Combining many applications using the Command design pattern
+•	Managing arguments and configuration in composite applications
+•	Wrapping and combining CLI applications
+•	Wrapping a program and checking the output
+•	Controlling complex sequences of steps
+
 """
 
-# Lines 118 to 119
->>> from collections import ChainMap
->>> config = ChainMap(
+# Finding configuration files
+
+>>> import collections
+>>> config = collections.ChainMap(
 ...     {'another_setting': 2},
 ...     {'some_setting': 1},
 ...     {'some_setting': 'Default Value',
@@ -13,7 +28,6 @@ Chapter 13, Examples from the text.
 ...      'some_option': 'Built-In Choice'})
 
 
-# Lines 127 to 131
 >>> config['another_setting']
 2
 >>> config['some_setting']
@@ -21,7 +35,10 @@ Chapter 13, Examples from the text.
 >>> config['some_option']
 'Built-In Choice'
 
-# Lines 354 to 355
+
+# Using YAML for configuration files
+
+
 >>> import yaml
 >>> yaml_text = '''
 ... ---
@@ -32,7 +49,6 @@ Chapter 13, Examples from the text.
 ... text: "Different Words."
 ... '''
 
-# Lines 363 to 368
 >>> document_iterator = iter(yaml.load_all(yaml_text, Loader=yaml.SafeLoader))
 >>> document_1 = next(document_iterator)
 >>> document_1['id']
@@ -41,16 +57,17 @@ Chapter 13, Examples from the text.
 >>> document_2['text']
 'Different Words.'
 
-# Lines 375 to 375
->>> yaml.load('''
+
+>>> mapping_text = '''
 ... ? !!python/tuple ["a", "b"]
 ... : "value"
-... ''', Loader=yaml.UnsafeLoader)
+... '''
+>>> yaml.load(mapping_text, Loader=yaml.UnsafeLoader)
 {('a', 'b'): 'value'}
 
-# Lines 385 to 386
+
 >>> import yaml
->>> yaml_text = '''
+>>> set_text = '''
 ... document:
 ...     id: 3
 ...     data_values:
@@ -60,14 +77,13 @@ Chapter 13, Examples from the text.
 ...       ? words
 ... '''
 
-# Lines 395 to 398
->>> some_document = yaml.load(yaml_text, Loader=yaml.SafeLoader)
+>>> some_document = yaml.load(set_text, Loader=yaml.SafeLoader)
 >>> some_document['document']['id']
 3
 >>> some_document['document']['data_values'] == {'some', 'more', 'words'}
 True
 
-# Lines 405 to 406
+
 >>> import yaml
 >>> yaml_text = '''
 ... !!omap
@@ -76,23 +92,29 @@ True
 ... - denominator: 113
 ... '''
 
-# Lines 412 to 412
+
 >>> yaml.load(yaml_text, Loader=yaml.SafeLoader)
 [('key1', 'string value'), ('numerator', 355), ('denominator', 113)]
 
 
->>> from Chapter_13.ch13_r04 import load_config_module
 
-# Lines 615 to 620
->>> configuration = load_config_module('Chapter_13.settings.Chesapeake')
+
+# Using class-as-namespace for configuration values
+
+>>> from pprint import pprint
+>>> import Chapter_12.ch12_r04
+>>> configuration = Chapter_12.ch12_r04.load_config_module(
+...     'Chapter_12.settings.Chesapeake')
 >>> configuration.__doc__.strip()
-'Weather for Cheaspeake Bay'
+'Weather for Chesapeake Bay'
 >>> configuration.query
 {'mz': ['ANZ532']}
 >>> configuration.url['netloc']
 'forecast.weather.gov'
 
-# Lines 625 to 625
 >>> print(configuration)
-<class 'Chapter_13.settings.Chesapeake'>
-
+<class 'Chapter_12.settings.Chesapeake'>
+>>> pprint(vars(configuration))
+mappingproxy({'__doc__': '\n    Weather for Chesapeake Bay\n    ',
+              '__module__': 'Chapter_12.settings',
+              'query': {'mz': ['ANZ532']}})

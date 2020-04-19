@@ -11,7 +11,7 @@ from openapi_spec_validator import validate_spec  # type: ignore
 
 
 def get_openapi_spec() -> Dict[str, Any]:
-    """Step 1 -- is the OpenAPI specification valid?
+    """Is the OpenAPI specification valid?
     """
     with urllib.request.urlopen(
         "http://127.0.0.1:5000/dealer/openapi.json"
@@ -80,7 +80,7 @@ openapi.json is valid
 200
 Content-Type: application/json
 Content-Length: 235
-Server: Werkzeug/1.0.0 Python/3.8.0
+Server: Werkzeug/1.0.1 Python/3.8.0
 Date: ...
 <BLANKLINE>
 <BLANKLINE>
@@ -90,7 +90,7 @@ Date: ...
 200
 Content-Type: application/json
 Content-Length: 318
-Server: Werkzeug/1.0.0 Python/3.8.0
+Server: Werkzeug/1.0.1 Python/3.8.0
 Date: ...
 <BLANKLINE>
 <BLANKLINE>

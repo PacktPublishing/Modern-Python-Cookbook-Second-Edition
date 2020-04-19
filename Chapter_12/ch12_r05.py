@@ -1,6 +1,7 @@
+#!python3
 """Python Cookbook
 
-Chapter 13, recipe 5
+Chapter 12, recipe 5, Designing scripts for composition.
 """
 import random
 import yaml
@@ -9,7 +10,7 @@ from pathlib import Path
 import argparse
 import os
 import sys
-from typing import NamedTuple, List, Iterable, Tuple, Counter, Iterator
+from typing import NamedTuple, List, Iterable, Tuple, Counter, Iterator, Optional
 
 # Roll = namedtuple('Roll', ('faces', 'total'))
 class Roll(NamedTuple):
@@ -45,7 +46,10 @@ def craps_game() -> Game_Summary:
         raise Exception("Horrifying Logic Bug")
 
 
-def roll_iter(total_games: int, seed: int = None) -> Iterator[Game_Summary]:
+def roll_iter(
+        total_games: int,
+        seed: Optional[int] = None
+    ) -> Iterator[Game_Summary]:
     random.seed(seed)
     for i in range(total_games):
         sequence = craps_game()
@@ -53,8 +57,9 @@ def roll_iter(total_games: int, seed: int = None) -> Iterator[Game_Summary]:
 
 
 def write_rolls(
-    output_path: Path, game_iterator: Iterable[Game_Summary]
-) -> Counter[int]:
+        output_path: Path,
+        game_iterator: Iterable[Game_Summary]
+    ) -> Counter[int]:
     face_count: Counter[int] = collections.Counter()
     with output_path.open("w") as output_file:
         for game_outcome in game_iterator:
@@ -66,12 +71,17 @@ def write_rolls(
     return face_count
 
 
-def summarize(configuration: argparse.Namespace, counts: Counter[int]) -> None:
+def summarize(
+        configuration: argparse.Namespace,
+        counts: Counter[int]
+    ) -> None:
     print(configuration)
     print(counts)
 
 
-def get_options(argv: List[str] = sys.argv[1:]) -> argparse.Namespace:
+def get_options(
+        argv: List[str] = sys.argv[1:]
+    ) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--samples", type=int)
     parser.add_argument("-o", "--output")

@@ -105,7 +105,7 @@ test_point = """
 >>> Point(36.8439, -76.2936)  # doctest: +SKIP
 <ch10_r03.Point object at 0x107910610>
 >>> Point(36.8439, -76.2936)  # doctest: +ELLIPSIS
-<ch10_r03.Point object at ...
+<...ch10_r03.Point object at ...
 """
 
 # Issue 3 -- float computations

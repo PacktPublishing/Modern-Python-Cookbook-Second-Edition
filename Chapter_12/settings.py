@@ -1,6 +1,7 @@
 """Python Cookbook
 
-Chapter 13, recipe 4 settings
+Chapter 12, recipe 4, Using class-as-namespace for configuration values.
+Settings.
 """
 
 
@@ -22,7 +23,7 @@ class Bahamas(Configuration):
 
 class Chesapeake(Configuration):
     """
-    Weather for Cheaspeake Bay
+    Weather for Chesapeake Bay
     """
 
     query = {"mz": ["ANZ532"]}
