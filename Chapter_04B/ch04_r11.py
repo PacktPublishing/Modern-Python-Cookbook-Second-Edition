@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 4, recipe 11, Removing from dictionaries – the pop() method and the del statement
+Chapter 5, recipe 2, Removing from dictionaries – the pop() method and the del statement
 
 This bumps into an open issue: https://github.com/python/mypy/issues/7316
 """

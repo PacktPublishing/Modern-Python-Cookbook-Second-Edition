@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 4, recipe 13, Dictionary-Related type hints
+Chapter 5, recipe 4, Dictionary-Related type hints
 """
 
 import collections

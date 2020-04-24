@@ -2,8 +2,6 @@
 
 Chapter 4, recipe 1, Choosing a data structure
 """
-from unittest.mock import Mock, patch
-
 
 def confirm() -> bool:
     yes = {"yes", "y"}
@@ -14,6 +12,7 @@ def confirm() -> bool:
 
 
 test_confirm = """
+>>> from unittest.mock import Mock, patch
 >>> mock_input = Mock(side_effect=["what", "yes"])
 >>> __builtins__['input'] = mock_input  # Patch
 >>> answer = confirm()

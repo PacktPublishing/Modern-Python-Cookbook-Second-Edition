@@ -23,8 +23,11 @@ def hexify(r: float, g: float, b: float) -> str:
     """
     >>> hexify(198, 45, 66)
     '#C62D42'
+    >>> r, g, b = 198, 45, 66
+    >>> f"#{int(r):02X}{int(g):02X}{int(b):02X}"
+    '#C62D42'
     """
-    return f"#{int(r)<<16 | int(g)<<8 | int(b):X}"
+    return f"#{int(r)<<16 | int(g)<<8 | int(b):06X}"
 
 
 ColorCode = Tuple[str, str]

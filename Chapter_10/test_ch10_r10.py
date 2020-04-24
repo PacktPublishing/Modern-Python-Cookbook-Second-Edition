@@ -105,4 +105,4 @@ def test_safe_write_scenarios(
     actual = original_file.read_text(encoding="utf-8")
     assert actual == hex(id(sentinel.ORIGINAL_DATA))
     assert mock_save_data.called_once()
-    assert mock_pathlib_path.rename.called_once()
+    assert mock_pathlib_path.glob_rename.called_once()

@@ -2,10 +2,9 @@
 
 Chapter 6, recipe 10, Using properties for lazy attributes
 """
-from Chapter_04.ch04_r07 import arrival1, samples, coupon_collector, expected
+from Chapter_B.collector import arrival1, samples, coupon_collector, expected
 import collections
 import math
-import random
 import statistics
 from typing import Counter, Iterator, Callable, Optional, cast
 
@@ -57,6 +56,7 @@ def raw_data(
     n: int = 8, limit: int = 1000, arrival_function: ArrivalF = arrival1
 ) -> Counter[int]:
     """
+    >>> import random
     >>> random.seed(1)
     >>> data = raw_data(n=2, limit=8, arrival_function=arrival1)
     >>> data

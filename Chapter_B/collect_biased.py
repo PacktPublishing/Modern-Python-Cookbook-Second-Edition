@@ -1,11 +1,11 @@
 """Python Cookbook 2nd ed.
 
-Chapter 4, recipe 10, Creating dictionaries – inserting and updating
+Coupon Collector sources of biased data.
 """
 import collections
 import random
 from typing import Dict, Iterable, DefaultDict, Counter
-from Chapter_04.ch04_r07 import samples, arrival1, arrival2
+from Chapter_B.collector import samples, arrival1, arrival2
 
 
 def example_1(source: Iterable[int]) -> Dict[int, int]:

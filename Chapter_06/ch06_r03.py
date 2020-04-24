@@ -2,10 +2,9 @@
 
 Chapter 6, recipe 3, Designing classes with lots of processing
 """
-from Chapter_04.ch04_r07 import samples, arrival1, coupon_collector
+from Chapter_B.collector import samples, arrival1, coupon_collector
 import collections
 import math
-import random
 import statistics
 from typing import Optional, Counter, Callable, Iterator
 
@@ -16,6 +15,7 @@ def raw_data(
     n: int = 8, limit: int = 1000, arrival_function: ArrivalF = arrival1
 ) -> Counter[int]:
     """
+    >>> import random
     >>> random.seed(1)
     >>> data = raw_data(n=2, limit=8, arrival_function=arrival1)
     >>> data
@@ -108,7 +108,7 @@ class UpdateableCounterStatistics:
 
 
 test_expected = """
->>> from Chapter_04.ch04_r07 import expected
+>>> from Chapter_B.collector import expected
 >>> expected(8)
 Fraction(761, 35)
 """
@@ -150,7 +150,7 @@ __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
 if __name__ == "__main__":
 
     import random
-    from Chapter_04.ch04_r07 import expected
+    from Chapter_B.collector import expected
 
     random.seed(1)
     data = raw_data(8)

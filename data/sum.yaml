@@ -1,15 +1,73 @@
 ---
-? !!python/tuple [loss, 1]
+? !!python/tuple
+- loss
+- 1
+: 10
+? !!python/tuple
+- loss
+- 2
+: 10
+? !!python/tuple
+- loss
+- 3
+: 7
+? !!python/tuple
+- loss
+- 4
+: 8
+? !!python/tuple
+- loss
+- 5
+: 4
+? !!python/tuple
+- loss
+- 6
+: 5
+? !!python/tuple
+- loss
+- 8
+: 1
+? !!python/tuple
+- loss
+- 11
+: 1
+? !!python/tuple
+- loss
+- 14
+: 1
+? !!python/tuple
+- loss
+- 17
 : 2
-? !!python/tuple [loss, 7]
-: 1
-? !!python/tuple [loss, 8]
-: 1
-? !!python/tuple [win, 2]
+? !!python/tuple
+- win
+- 1
+: 22
+? !!python/tuple
+- win
+- 2
+: 10
+? !!python/tuple
+- win
+- 3
 : 3
-? !!python/tuple [win, 4]
-: 1
-? !!python/tuple [win, 6]
-: 1
-? !!python/tuple [win, 15]
-: 1
+? !!python/tuple
+- win
+- 4
+: 8
+? !!python/tuple
+- win
+- 5
+: 2
+? !!python/tuple
+- win
+- 6
+: 2
+? !!python/tuple
+- win
+- 7
+: 2
+? !!python/tuple
+- win
+- 8
+: 2

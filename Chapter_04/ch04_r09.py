@@ -19,7 +19,8 @@ class Die(str, Enum):
 
 
 def zonk(n: int = 6) -> Tuple[Die, ...]:
-    return tuple(random.choice(list(Die)) for _ in range(n))
+    faces = list(Die)
+    return tuple(random.choice(faces) for _ in range(n))
 
 
 test_zonk = """
@@ -32,11 +33,15 @@ test_zonk = """
 
 def eval_zonk_6(hand: Tuple[Die, ...]) -> str:
     assert len(hand) == 6, "Only works for 6-dice zonk."
+    faces = list(Die)
+    small_straights = [
+        set(faces[:-1]), set(faces[1:])
+    ]
     unique: Set[Die] = set(hand)
     # print(f"{unique=}")
     if len(unique) == 6:
         return "large straight"
-    elif len(unique) == 5:
+    elif len(unique) == 5 and unique in small_straights:
         return "small straight"
     elif len(unique) == 2:
         return "three of a kind"
@@ -70,6 +75,8 @@ test_eval_zonk_6 = """
 >>> eval_zonk_6([Die.d_1, Die.d_2, Die.d_3, Die.d_2, Die.d_3, Die.d_4])
 'ace'
 >>> eval_zonk_6([Die.d_2, Die.d_2, Die.d_3, Die.d_3, Die.d_4, Die.d_4])
+'Zonk!'
+>>> eval_zonk_6([Die.d_1, Die.d_2, Die.d_3, Die.d_3, Die.d_5, Die.d_6])
 'Zonk!'
 
 """

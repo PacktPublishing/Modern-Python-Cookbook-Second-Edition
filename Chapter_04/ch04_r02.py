@@ -1,6 +1,10 @@
 """Python Cookbook 2nd ed.
 
 Chapter 4, recipe 2, Building lists – literals, appending, and comprehensions
+
+Some of these depend in other chapter source files
+of known sizes. Changes to other examples will lead to
+changes here.
 """
 from pathlib import Path
 
@@ -71,20 +75,20 @@ test_list_extend = """
 >>> len(ch3)
 12
 >>> len(ch4)
-16
+10
 >>> final = ch3 + ch4
 >>> len(final)
-28
+22
 >>> sum(final)
-61089
+45040
 
 >>> final_ex = []
 >>> final_ex.extend(ch3)
 >>> final_ex.extend(ch4)
 >>> len(final_ex)
-28
+22
 >>> sum(final_ex)
-61089
+45040
 """
 
 test_insert = """

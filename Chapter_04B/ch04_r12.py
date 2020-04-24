@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 4, recipe 12, Controlling the order of dict keys
+Chapter 5, recipe 3, Controlling the order of dict keys
 """
 
 import collections

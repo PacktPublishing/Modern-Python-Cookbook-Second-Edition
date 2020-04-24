@@ -1,0 +1,130 @@
+"""Python Cookbook
+
+Chapter 5, Examples from the text.
+
+•	Creating dictionaries – inserting and updating
+•	Removing from dictionaries – the pop() method and the del statement
+•	Controlling the order of dict keys
+•	Writing dictionary-related type hints
+•	Understanding variables, references, and assignment
+•	Making shallow and deep copies of objects
+•	Avoiding mutable default values for function parameters
+
+Note: This depends on output from other examples.
+"""
+
+# Creating dictionaries – inserting and updating
+
+>>> d = {"num": 355, "den": 113}
+>>> d
+{'num': 355, 'den': 113}
+>>> dict([('num', 355), ('den', 113)])
+{'num': 355, 'den': 113}
+>>> dict(num=355, den=113)
+{'num': 355, 'den': 113}
+
+
+# Controlling the order of dict keys.
+
+>>> row = {'columns': 42, 'data': 3.14, 'of': 2.718, 'some': 1.618}
+
+>>> import collections
+
+>>> key_order = ['some', 'columns', 'of', 'data']
+>>> collections.OrderedDict(
+...     [(name, row[name]) for name in key_order]
+... )
+OrderedDict([('some', 1.618), ('columns', 42), ('of', 2.718), ('data', 3.14)])
+
+>>> import collections
+>>> import datetime
+>>> log_rows = [
+...     {'date': '2019-11-12T13:14:15', 'path': '/path/to/resource'},
+...     {'date': '2019-11-14T15:16:17', 'path': '/path/to/resource'},
+...     {'date': '2019-11-19T20:21:11', 'path': '/path/to/resource'},
+...     {'date': '2019-11-20T21:22:23', 'path': '/path/to/resource'},
+...     {'date': '2019-11-26T07:08:09', 'path': '/path/to/resource'},
+... ]
+>>> summary = collections.Counter()
+>>> for row in log_rows:
+...     date = datetime.datetime.strptime(row['date'], "%Y-%m-%dT%H:%M:%S")
+...     summary[date.weekday()] += 1
+>>> summary
+Counter({1: 3, 3: 1, 2: 1})
+
+>>> import calendar
+>>> for k in sorted(summary):
+...      print(calendar.day_name[k], summary[k])
+Tuesday 3
+Wednesday 1
+Thursday 1
+
+# Understanding variables, references, and assignment
+
+>>> mutable = [1, 1, 2, 3, 5, 8]
+>>> immutable = (5, 8, 13, 21)
+
+>>> mutable_b = mutable
+>>> immutable_b = immutable
+
+>>> mutable_b is mutable
+True
+>>> immutable_b is immutable
+True
+
+>>> mutable += [mutable[-2] + mutable[-1]]
+
+>>> immutable += (immutable[-2] + immutable[-1],)
+
+>>> mutable_b
+[1, 1, 2, 3, 5, 8, 13]
+>>> mutable is mutable_b
+True
+
+>>> immutable_b
+(5, 8, 13, 21)
+>>> immutable
+(5, 8, 13, 21, 34)
+
+
+>>> a = 355
+>>> a += 113
+>>> a = a + 113
+
+
+# Making shallow and deep copies of objects
+
+>>> some_dict = {'a': [1, 1, 2, 3]}
+>>> another_dict = some_dict.copy()
+>>> another_dict
+{'a': [1, 1, 2, 3]}
+
+>>> some_dict['a'].append(5)
+>>> another_dict
+{'a': [1, 1, 2, 3, 5]}
+
+>>> id(some_dict['a']) == id(another_dict['a'])
+True
+
+>>> some_list = [[2, 3, 5], [7, 11, 13]]
+>>> another_list = some_list.copy()
+>>> some_list is another_list
+False
+>>> some_list[0] is another_list[0]
+True
+
+>>> import copy
+>>> some_dict = {'a': [1, 1, 2, 3]}
+>>> another_dict = copy.deepcopy(some_dict)
+>>> some_dict['a'].append(5)
+>>> some_dict
+{'a': [1, 1, 2, 3, 5]}
+>>> another_dict
+{'a': [1, 1, 2, 3]}
+
+>>> id(some_dict['a']) == id(another_dict['a'])
+False
+
+>>> copy_of_list = [item for item in some_list]
+>>> copy_of_dict = {key:value for key, value in some_dict.items()}
+

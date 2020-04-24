@@ -63,6 +63,16 @@ test_pop = """
 ['10/25/13', '08:24:00 AM', '29', '01:15:00 PM', '27']
 """
 
+test_slice_assignment = """
+>>> row = ['10/25/13', '08:24:00 AM', '29', '', '01:15:00 PM', '27']
+>>> target_position = row.index('')
+>>> target_position
+3
+>>> row[3:4] = []
+>>> row
+['10/25/13', '08:24:00 AM', '29', '01:15:00 PM', '27']
+"""
+
 
 def number_column(row, column=2):
     try:

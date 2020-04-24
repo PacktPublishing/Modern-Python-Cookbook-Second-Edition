@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 4, recipe 16, Avoiding mutable default values for function parameters
+Chapter 5, recipe 7, Avoiding mutable default values for function parameters
 
 """
 

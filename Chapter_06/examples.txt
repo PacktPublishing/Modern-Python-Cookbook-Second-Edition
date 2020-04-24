@@ -58,7 +58,7 @@ AttributeError: 'Hand' object has no attribute 'some_other_attribute'
 >>> data[len(data)//2]
 9
 
->>> from Chapter_04.ch04_r07 import arrival1, expected, coupon_collector, samples
+>>> from Chapter_B.collector import arrival1, expected, coupon_collector, samples
 >>> from collections import Counter
 >>> def raw_data(n=8, limit=1000, arrival_function=arrival1):
 ...    expected_time = float(expected(n))
