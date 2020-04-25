@@ -68,7 +68,9 @@ Start the server
 >>> env['PYTHONPATH'] = str(pathlib.Path(__file__).parent.parent)
 >>> env['DEAL_APP_SEED'] = '42'
 >>> server = subprocess.Popen(["python", "Chapter_11/ch11_r02.py"], env=env)
->>> time.sleep(0.5)
+
+Pause to let the server start
+>>> time.sleep(1.0)
 
 Make the client request
 >>> spec = get_openapi_spec()

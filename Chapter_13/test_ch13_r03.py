@@ -1,11 +1,11 @@
 """Python Cookbook
 
-Chapter 12, recipe 3, Using Python for configuration files
+Chapter 13, recipe 3, Using Python for configuration files
 """
 from pathlib import Path
 from textwrap import dedent
 from pytest import *  # type: ignore
-import Chapter_12.ch12_r03
+import Chapter_13.ch13_r03
 
 
 @fixture  # type: ignore
@@ -25,7 +25,7 @@ def settings_py_file(tmpdir):
     return filename
 
 def test_load_config_file(settings_py_file):
-    settings = Chapter_12.ch12_r03.load_config_file(Path(settings_py_file))
+    settings = Chapter_13.ch13_r03.load_config_file(Path(settings_py_file))
     expected = {
         '__doc__': 'Weather forecast for Offshore including the Bahamas\n',
         'query': {'mz': ['ANZ532', 'AMZ117', 'AMZ080']},
@@ -52,7 +52,7 @@ def settings_extra_py_file(tmpdir):
     return filename
 
 def test_load_config_file_path(settings_extra_py_file):
-    settings = Chapter_12.ch12_r03.load_config_file_xtra(Path(settings_extra_py_file))
+    settings = Chapter_13.ch13_r03.load_config_file_xtra(Path(settings_extra_py_file))
     expected = {
         '__doc__': 'Config with related paths',
         'base': Path('/var/app'),
@@ -75,7 +75,7 @@ def settings_invalid_py_file(tmpdir):
 
 def test_load_config_file_invalid(settings_invalid_py_file):
     with raises(RuntimeError) as exc_info:
-        settings = Chapter_12.ch12_r03.load_config_file_xtra(Path(settings_invalid_py_file))
+        settings = Chapter_13.ch13_r03.load_config_file_xtra(Path(settings_invalid_py_file))
     assert exc_info.type == RuntimeError
     assert exc_info.value.args == ("Operation not allowed",)
 

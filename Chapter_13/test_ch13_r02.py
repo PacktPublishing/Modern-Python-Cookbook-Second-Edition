@@ -4,7 +4,7 @@ Chapter 12, recipe 2, Using YAML for configuration files.
 """
 from pathlib import Path
 from pytest import *  # type: ignore
-import Chapter_12.ch12_r02
+import Chapter_13.ch13_r02
 
 
 config_text = """
@@ -40,7 +40,7 @@ def test_load_config_simple(config_yaml_file):
         }
     }
 
-    config = Chapter_12.ch12_r02.load_config_file(
+    config = Chapter_13.ch13_r02.load_config_file(
         Path(config_yaml_file)
     )
 

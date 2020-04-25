@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 8, Combining many applications using the Command design pattern
+Chapter 13, recipe 8, Combining many applications using the Command design pattern
 """
 import argparse
 from pathlib import Path
@@ -16,7 +16,7 @@ class Command:
         pass
 
 
-import Chapter_12.ch12_r05 as ch12_r05
+import Chapter_13.ch13_r05 as ch13_r05
 
 
 class Simulate(Command):
@@ -29,19 +29,19 @@ class Simulate(Command):
         self.game_path = Path(options.game_file)
         if 'seed' in options:
             self.seed = options.seed
-        data = ch12_r05.roll_iter(options.games, self.seed)
-        ch12_r05.write_rolls(self.game_path, data)
+        data = ch13_r05.roll_iter(options.games, self.seed)
+        ch13_r05.write_rolls(self.game_path, data)
         print(f"Created {str(self.game_path)}")
 
 
-import Chapter_12.ch12_r06 as ch12_r06
+import Chapter_13.ch13_r06 as ch13_r06
 
 
 class Summarize(Command):
     def execute(self, options: argparse.Namespace) -> None:
         self.summary_path = Path(options.summary_file)
         with self.summary_path.open("w") as result_file:
-            ch12_r06.process_all_files(result_file, options.game_files)
+            ch13_r06.process_all_files(result_file, options.game_files)
 
 
 class Sequence(Command):
@@ -60,7 +60,7 @@ class SimSum(Sequence):
 
     def execute(self, options: argparse.Namespace) -> None:
         self.intermediate = (
-            Path("data") / "ch12_r08_temporary.yaml"
+            Path("data") / "ch13_r08_temporary.yaml"
         )
         new_namespace = Namespace(
             game_file=str(self.intermediate),

@@ -3,13 +3,13 @@
 Chapter 12, recipe 9, Managing arguments and configuration in composite applications
 """
 import yaml
-import Chapter_12.ch12_r09
+import Chapter_13.ch13_r09
 
 def test_simulate(monkeypatch, tmpdir):
-    options = Chapter_12.ch12_r09.get_options(
+    options = Chapter_13.ch13_r09.get_options(
         ["simulate", "-g", "5", "-o", str(tmpdir/"x.yaml"), "--seed", "42"]
     )
-    assert options.command == Chapter_12.ch12_r09.Simulate
+    assert options.command == Chapter_13.ch13_r09.Simulate
 
     cmd_instance = options.command()
     cmd_instance.execute(options)
@@ -28,10 +28,10 @@ def test_simulate(monkeypatch, tmpdir):
 
 
 def test_simulate_summarize(monkeypatch, tmpdir):
-    options_1 = Chapter_12.ch12_r09.get_options(
+    options_1 = Chapter_13.ch13_r09.get_options(
         ["simulate", "-g", "5", "-o", str(tmpdir/"x.yaml"), "--seed", "42"]
     )
-    assert options_1.command == Chapter_12.ch12_r09.Simulate
+    assert options_1.command == Chapter_13.ch13_r09.Simulate
 
     cmd_instance = options_1.command()
     cmd_instance.execute(options_1)
@@ -48,10 +48,10 @@ def test_simulate_summarize(monkeypatch, tmpdir):
     ]
     assert expected == sim_results
 
-    options_2 = Chapter_12.ch12_r09.get_options(
+    options_2 = Chapter_13.ch13_r09.get_options(
         ["summarize", "-o", str(tmpdir/"y.yaml"), str(tmpdir/"x.yaml")]
     )
-    assert options_2.command == Chapter_12.ch12_r09.Summarize
+    assert options_2.command == Chapter_13.ch13_r09.Summarize
 
     cmd_instance = options_2.command()
     cmd_instance.execute(options_2)
@@ -68,10 +68,10 @@ def test_simulate_summarize(monkeypatch, tmpdir):
 
 
 def test_simsumm(monkeypatch, tmpdir, capsys):
-    options_1 = Chapter_12.ch12_r09.get_options(
+    options_1 = Chapter_13.ch13_r09.get_options(
         ["simsum", "-g", "5", "-o", str(tmpdir/"y.yaml"), "--seed", "42"]
     )
-    assert options_1.command == Chapter_12.ch12_r09.SimSum
+    assert options_1.command == Chapter_13.ch13_r09.SimSum
 
     cmd_instance = options_1.command()
     cmd_instance.execute(options_1)

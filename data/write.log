@@ -39,3 +39,4 @@ INFO:overview_stats.write:wrote sum.yaml
 2020-04-25 08:13:04,370//INFO//overview_stats.write//wrote PosixPath('data/y12.yaml')
 2020-04-25 08:32:19,400//INFO//overview_stats.write//wrote PosixPath('data/y12.yaml')
 2020-04-25 09:17:20,471//INFO//overview_stats.write//wrote PosixPath('data/y12.yaml')
+2020-04-25 14:33:34,731//INFO//overview_stats.write//wrote PosixPath('data/y13.yaml')

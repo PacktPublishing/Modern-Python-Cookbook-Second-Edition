@@ -1,9 +1,9 @@
 """Python Cookbook
 
-Chapter 12, recipe 11, Wrapping a program and checking the output
+Chapter 13, recipe 11, Wrapping a program and checking the output
 
 This uses an explicit `python` command
-so Chapter_12/ch12_r05.py does not have to be marked executable.
+so Chapter_13/ch13_r05.py does not have to be marked executable.
 """
 import argparse
 from pathlib import Path
@@ -25,7 +25,7 @@ def command_iter(directory: Path, files: int) -> Iterable[List[str]]:
         filename = directory / f"game_{n}.yaml"
         command = [
             "python",
-            "Chapter_12/ch12_r05.py",
+            "Chapter_13/ch13_r05.py",
             "--samples",
             "10",
             "--output",

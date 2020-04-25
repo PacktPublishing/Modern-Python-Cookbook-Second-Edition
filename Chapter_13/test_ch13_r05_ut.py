@@ -1,28 +1,28 @@
 """Python Cookbook
 
-Chapter 12, recipe 5. Designing scripts for composition
+Chapter 13, recipe 5. Designing scripts for composition
 """
 from pathlib import Path
 import os
 import unittest
 import yaml
-import Chapter_12.ch12_r05
+import Chapter_13.ch13_r05
 
 
-class GIVEN_ch12_r05_WHEN_run_app_THEN_output(unittest.TestCase):
+class GIVEN_ch13_r05_WHEN_run_app_THEN_output(unittest.TestCase):
     def setUp(self):
-        self.data_path = Path("data/ch12_r05_test.yaml")
+        self.data_path = Path("data/ch13_r05_test.yaml")
         if self.data_path.exists():
             self.data_path.unlink()
 
     def runTest(self):
         os.environ["RANDOMSEED"] = "2"
-        options = Chapter_12.ch12_r05.get_options(
-            ["--samples", "10", "--output", "data/ch12_r05_test.yaml"]
+        options = Chapter_13.ch13_r05.get_options(
+            ["--samples", "10", "--output", "data/ch13_r05_test.yaml"]
         )
-        face_count = Chapter_12.ch12_r05.write_rolls(
+        face_count = Chapter_13.ch13_r05.write_rolls(
             options.output_path,
-            Chapter_12.ch12_r05.roll_iter(options.samples, options.seed),
+            Chapter_13.ch13_r05.roll_iter(options.samples, options.seed),
         )
         self.assertDictEqual(
             {8: 8, 7: 6, 10: 5, 4: 3, 6: 3, 9: 3, 2: 2, 3: 1, 5: 1, 11: 1, 12: 1},

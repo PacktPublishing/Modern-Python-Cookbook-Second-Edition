@@ -33,7 +33,7 @@ class Card:
 
 
 card_text = """
-!!python/object/apply:Chapter_12.ch12_r02.Card
+!!python/object/apply:Chapter_13.ch13_r02.Card
 kwds:
     rank: 7
     suit: ♣︎

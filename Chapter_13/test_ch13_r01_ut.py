@@ -5,7 +5,7 @@ Chapter 12, recipe 1.
 from pathlib import Path
 import unittest
 from unittest.mock import Mock, patch, mock_open, MagicMock, call
-import Chapter_12.ch12_r01
+import Chapter_13.ch13_r01
 
 
 class GIVEN_get_config_WHEN_load_THEN_overrides_found(unittest.TestCase):
@@ -45,10 +45,10 @@ class GIVEN_get_config_WHEN_load_THEN_overrides_found(unittest.TestCase):
         )
 
     def runTest(self):
-        with patch("Chapter_12.ch12_r01.Path", self.mock_path), patch(
-            "Chapter_12.ch12_r01.load_config_file", self.mock_load_config_file
+        with patch("Chapter_13.ch13_r01.Path", self.mock_path), patch(
+            "Chapter_13.ch13_r01.load_config_file", self.mock_load_config_file
         ):
-            config = Chapter_12.ch12_r01.get_config()
+            config = Chapter_13.ch13_r01.get_config()
         # print(config)
         self.assertEqual(2, config["another_setting"])
         self.assertEqual(1, config["some_setting"])

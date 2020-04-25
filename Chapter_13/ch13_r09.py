@@ -24,7 +24,7 @@ class Command:
         pass
 
 
-import Chapter_12.ch12_r05 as ch12_r05
+import Chapter_13.ch13_r05 as ch13_r05
 
 
 class Simulate(Command):
@@ -51,11 +51,11 @@ class Simulate(Command):
         self.game_path = Path(options.game_file)
         if 'seed' in options:
             self.seed = options.seed
-        data = ch12_r05.roll_iter(options.games, self.seed)
-        ch12_r05.write_rolls(self.game_path, data)
+        data = ch13_r05.roll_iter(options.games, self.seed)
+        ch13_r05.write_rolls(self.game_path, data)
 
 
-import Chapter_12.ch12_r06 as ch12_r06
+import Chapter_13.ch13_r06 as ch13_r06
 
 
 class Summarize(Command):
@@ -73,10 +73,10 @@ class Summarize(Command):
     def execute(self, options: argparse.Namespace) -> None:
         self.summary_path = Path(options.summary_file)
         with self.summary_path.open("w") as result_file:
-            ch12_r06.process_all_files(result_file, options.game_files)
+            ch13_r06.process_all_files(result_file, options.game_files)
 
 
-import Chapter_12.ch12_r07 as ch12_r07
+import Chapter_13.ch13_r07 as ch13_r07
 
 
 class SimSum(Command):
@@ -106,8 +106,8 @@ class SimSum(Command):
             self.seed = options.seed
         if 'games' in options:
             self.games = options.games
-        data = ch12_r05.roll_iter(self.games, self.seed)
-        game_statistics = ch12_r06.gather_stats(data)
+        data = ch13_r05.roll_iter(self.games, self.seed)
+        game_statistics = ch13_r06.gather_stats(data)
         print(game_statistics)
 
 

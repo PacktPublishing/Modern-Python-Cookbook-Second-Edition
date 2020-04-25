@@ -6,7 +6,7 @@ from pathlib import Path
 import subprocess
 import unittest
 from unittest.mock import Mock, patch, call
-import Chapter_12.ch12_r10
+import Chapter_13.ch13_r10
 
 
 class GIVEN_make_files_WHEN_call_THEN_run(unittest.TestCase):
@@ -14,14 +14,14 @@ class GIVEN_make_files_WHEN_call_THEN_run(unittest.TestCase):
         self.mock_subprocess_run = Mock()
 
     def runTest(self):
-        with patch("Chapter_12.ch12_r10.subprocess.run", self.mock_subprocess_run):
-            Chapter_12.ch12_r10.make_files_clean(Path("data"), files=3)
+        with patch("Chapter_13.ch13_r10.subprocess.run", self.mock_subprocess_run):
+            Chapter_13.ch13_r10.make_files_clean(Path("data"), files=3)
         self.mock_subprocess_run.assert_has_calls(
             [
                 call(
                     [
                         "python",
-                        "Chapter_12/ch12_r05.py",
+                        "Chapter_13/ch13_r05.py",
                         "--samples",
                         "10",
                         "--output",
@@ -32,7 +32,7 @@ class GIVEN_make_files_WHEN_call_THEN_run(unittest.TestCase):
                 call(
                     [
                         "python",
-                        "Chapter_12/ch12_r05.py",
+                        "Chapter_13/ch13_r05.py",
                         "--samples",
                         "10",
                         "--output",
@@ -43,7 +43,7 @@ class GIVEN_make_files_WHEN_call_THEN_run(unittest.TestCase):
                 call(
                     [
                         "python",
-                        "Chapter_12/ch12_r05.py",
+                        "Chapter_13/ch13_r05.py",
                         "--samples",
                         "10",
                         "--output",
@@ -58,7 +58,7 @@ class GIVEN_make_files_WHEN_call_THEN_run(unittest.TestCase):
 class GIVEN_make_files_exception_WHEN_call_THEN_run(unittest.TestCase):
     def setUp(self):
         self.mock_subprocess_run = Mock(
-            side_effect=[None, subprocess.CalledProcessError(2, "ch12_r05")]
+            side_effect=[None, subprocess.CalledProcessError(2, "ch13_r05")]
         )
         self.mock_path_glob_instance = Mock(
             name="data/file*"
@@ -76,11 +76,11 @@ class GIVEN_make_files_exception_WHEN_call_THEN_run(unittest.TestCase):
 
     def runTest(self):
         with patch(
-            "Chapter_12.ch12_r10.subprocess.run", self.mock_subprocess_run
+            "Chapter_13.ch13_r10.subprocess.run", self.mock_subprocess_run
         ):
             self.assertRaises(
                 subprocess.CalledProcessError,
-                Chapter_12.ch12_r10.make_files_clean,
+                Chapter_13.ch13_r10.make_files_clean,
                 self.mock_base_path_instance,
                 files=3
             )
@@ -89,7 +89,7 @@ class GIVEN_make_files_exception_WHEN_call_THEN_run(unittest.TestCase):
                 call(
                     [
                         "python",
-                        "Chapter_12/ch12_r05.py",
+                        "Chapter_13/ch13_r05.py",
                         "--samples",
                         "10",
                         "--output",
@@ -100,7 +100,7 @@ class GIVEN_make_files_exception_WHEN_call_THEN_run(unittest.TestCase):
                 call(
                     [
                         "python",
-                        "Chapter_12/ch12_r05.py",
+                        "Chapter_13/ch13_r05.py",
                         "--samples",
                         "10",
                         "--output",

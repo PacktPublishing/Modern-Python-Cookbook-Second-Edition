@@ -1,11 +1,11 @@
 """Python Cookbook
 
-Chapter 12, recipe 1.
+Chapter 13, recipe 1.
 """
 from pathlib import Path
 from pytest import *  # type: ignore
 from unittest.mock import Mock, patch, mock_open, MagicMock, call
-import Chapter_12.ch12_r01
+import Chapter_13.ch13_r01
 
 
 @fixture  # type: ignore
@@ -15,7 +15,7 @@ def mock_path(monkeypatch, tmpdir):
         return_value=Path(tmpdir / "etc"),
         home=Mock(return_value=Path(tmpdir / "home")),
     )
-    monkeypatch.setattr(Chapter_12.ch12_r01, "Path", mocked_class)
+    monkeypatch.setattr(Chapter_13.ch13_r01, "Path", mocked_class)
 
     (tmpdir / "etc").mkdir()
     (tmpdir / "etc" / "profile").write_text(
@@ -30,7 +30,7 @@ def mock_path(monkeypatch, tmpdir):
 def mock_load_config(monkeypatch):
     mocked_load_config_file = Mock(return_value={})
     monkeypatch.setattr(
-        Chapter_12.ch12_r01,
+        Chapter_13.ch13_r01,
         "load_config_file",
         mocked_load_config_file
     )
@@ -38,7 +38,7 @@ def mock_load_config(monkeypatch):
 
 
 def test_get_config(mock_load_config, mock_path):
-    config = Chapter_12.ch12_r01.get_config()
+    config = Chapter_13.ch13_r01.get_config()
 
     assert mock_path.mock_calls == [
         call("/etc"),

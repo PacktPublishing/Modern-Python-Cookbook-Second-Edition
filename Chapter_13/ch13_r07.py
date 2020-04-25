@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 7, Combining two applications into one
+Chapter 13, recipe 7, Combining two applications into one
 """
 import argparse
 import collections
@@ -8,11 +8,11 @@ import logging
 import time
 import sys
 from typing import List, Counter, Tuple, Optional, Dict
-from Chapter_12.ch12_r05 import roll_iter
-from Chapter_12.ch12_r06 import gather_stats, Outcome
+from Chapter_13.ch13_r05 import roll_iter
+from Chapter_13.ch13_r06 import gather_stats, Outcome
 
 
-logger = logging.getLogger("ch12_r07")
+logger = logging.getLogger("ch13_r07")
 
 def summarize_games(
         total_games: int, *, seed: int = None

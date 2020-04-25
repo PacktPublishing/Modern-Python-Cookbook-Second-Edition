@@ -3,7 +3,7 @@
 Chapter 12, recipe 10, Wrapping and combining CLI applications
 
 This uses an explicit `python` command
-so Chapter_12/ch12_r05.py does not have to be marked executable.
+so Chapter_13/ch13_r05.py does not have to be marked executable.
 """
 import argparse
 from pathlib import Path
@@ -25,7 +25,7 @@ def make_files(directory: Path, files: int = 100) -> None:
         filename = directory / f"game_{n}.yaml"
         command = [
             "python",  # Can be removed if the app is executable
-            "Chapter_12/ch12_r05.py",
+            "Chapter_13/ch13_r05.py",
             "--samples",
             "10",
             "--output",

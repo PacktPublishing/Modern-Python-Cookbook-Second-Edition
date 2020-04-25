@@ -1,14 +1,14 @@
 """Python Cookbook
 
-Chapter 12, recipe 5. Designing scripts for composition
+Chapter 13, recipe 5. Designing scripts for composition
 """
 import yaml
 from pytest import *  # type: ignore
-import Chapter_12.ch12_r05
+import Chapter_13.ch13_r05
 import random
 
 def test_roll_iter():
-    actual = list(Chapter_12.ch12_r05.roll_iter(12, seed=42))
+    actual = list(Chapter_13.ch13_r05.roll_iter(12, seed=42))
     expected = [
         [[6, 1]],
         [[1, 6]],
@@ -27,14 +27,14 @@ def test_roll_iter():
 
 def test_craps_game(tmpdir, monkeypatch):
     (tmpdir / "data").mkdir()
-    tmp_output_path = tmpdir / "data" / "ch12_r05_test.yaml"
+    tmp_output_path = tmpdir / "data" / "ch13_r05_test.yaml"
     monkeypatch.setenv("RANDOMSEED", "2")
-    options = Chapter_12.ch12_r05.get_options(
+    options = Chapter_13.ch13_r05.get_options(
         ["--samples", "10", "--output", str(tmp_output_path)]
     )
-    face_count = Chapter_12.ch12_r05.write_rolls(
+    face_count = Chapter_13.ch13_r05.write_rolls(
         options.output_path,
-        Chapter_12.ch12_r05.roll_iter(options.samples, options.seed),
+        Chapter_13.ch13_r05.roll_iter(options.samples, options.seed),
     )
     assert face_count == {
         8: 8,

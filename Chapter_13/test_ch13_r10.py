@@ -6,7 +6,7 @@ from pathlib import Path
 from subprocess import CalledProcessError
 from unittest.mock import Mock, patch, call
 from pytest import *  # type: ignore
-import Chapter_12.ch12_r10
+import Chapter_13.ch13_r10
 
 
 @fixture  # type: ignore
@@ -37,18 +37,18 @@ def test_make_files_clean_good(
         monkeypatch,
         tmpdir):
     monkeypatch.setattr(
-        Chapter_12.ch12_r10.subprocess,
+        Chapter_13.ch13_r10.subprocess,
         'run',
         mock_subprocess_run_good)
 
     directory = Path(tmpdir)
-    Chapter_12.ch12_r10.make_files_clean(directory, files=3)
+    Chapter_13.ch13_r10.make_files_clean(directory, files=3)
 
     expected = [
         call(
             [
                 "python",
-                "Chapter_12/ch12_r05.py",
+                "Chapter_13/ch13_r05.py",
                 "--samples",
                 "10",
                 "--output",
@@ -59,7 +59,7 @@ def test_make_files_clean_good(
         call(
             [
                 "python",
-                "Chapter_12/ch12_r05.py",
+                "Chapter_13/ch13_r05.py",
                 "--samples",
                 "10",
                 "--output",
@@ -70,7 +70,7 @@ def test_make_files_clean_good(
         call(
             [
                 "python",
-                "Chapter_12/ch12_r05.py",
+                "Chapter_13/ch13_r05.py",
                 "--samples",
                 "10",
                 "--output",
@@ -88,19 +88,19 @@ def test_make_files_clean_fail(
         monkeypatch,
         tmpdir):
     monkeypatch.setattr(
-        Chapter_12.ch12_r10.subprocess,
+        Chapter_13.ch13_r10.subprocess,
         'run',
         mock_subprocess_run_fail)
 
     directory = Path(tmpdir)
     with raises(CalledProcessError):
-        Chapter_12.ch12_r10.make_files_clean(directory, files=3)
+        Chapter_13.ch13_r10.make_files_clean(directory, files=3)
 
     expected = [
         call(
             [
                 "python",
-                "Chapter_12/ch12_r05.py",
+                "Chapter_13/ch13_r05.py",
                 "--samples",
                 "10",
                 "--output",
@@ -111,7 +111,7 @@ def test_make_files_clean_fail(
         call(
             [
                 "python",
-                "Chapter_12/ch12_r05.py",
+                "Chapter_13/ch13_r05.py",
                 "--samples",
                 "10",
                 "--output",

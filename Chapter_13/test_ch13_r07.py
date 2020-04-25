@@ -1,15 +1,15 @@
 """Python Cookbook
 
-Chapter 12, recipe 7, Combining two applications into one
+Chapter 13, recipe 7, Combining two applications into one
 """
 from types import SimpleNamespace
 from unittest.mock import MagicMock, Mock, call, sentinel
 from pytest import *  # type: ignore
-import Chapter_12.ch12_r07
+import Chapter_13.ch13_r07
 
 
 def test_summarize_games():
-    results = Chapter_12.ch12_r07.summarize_games(10, seed=42)
+    results = Chapter_13.ch13_r07.summarize_games(10, seed=42)
     expected = {
         ('loss', 1): 2,
         ('loss', 2): 1,
@@ -30,7 +30,7 @@ def test_win_loss():
         ('win', 1): 3,
         ('win', 2): 1
     }
-    results = Chapter_12.ch12_r07.win_loss(raw_stats)
+    results = Chapter_13.ch13_r07.win_loss(raw_stats)
     expected = {'loss': 6, 'win': 4}
     assert expected == dict(results)
 
@@ -45,11 +45,11 @@ def mock_apps():
 
 
 def test_simple_composite(mock_apps, monkeypatch, capsys):
-    monkeypatch.setattr(Chapter_12.ch12_r07, 'summarize_games', mock_apps.mock_summarize_games)
-    monkeypatch.setattr(Chapter_12.ch12_r07, 'win_loss', mock_apps.mock_win_loss)
-    monkeypatch.setattr(Chapter_12.ch12_r07, 'time', mock_apps.mock_time)
+    monkeypatch.setattr(Chapter_13.ch13_r07, 'summarize_games', mock_apps.mock_summarize_games)
+    monkeypatch.setattr(Chapter_13.ch13_r07, 'win_loss', mock_apps.mock_win_loss)
+    monkeypatch.setattr(Chapter_13.ch13_r07, 'time', mock_apps.mock_time)
 
-    Chapter_12.ch12_r07.simple_composite(games=13)
+    Chapter_13.ch13_r07.simple_composite(games=13)
 
     assert mock_apps.mock_summarize_games.mock_calls == [call(13_000)]
     assert mock_apps.mock_win_loss.mock_calls == [call(mock_apps.raw_stats)]
@@ -71,12 +71,12 @@ def test_parallel_composite(mock_apps, monkeypatch, capsys):
         __enter__=Mock(return_value=mock_pool)
     )
     mock_futures = Mock(ProcessPoolExecutor=Mock(return_value=mock_pool_context))
-    monkeypatch.setattr(Chapter_12.ch12_r07, 'summarize_games', mock_apps.mock_summarize_games)
-    monkeypatch.setattr(Chapter_12.ch12_r07, 'win_loss', mock_apps.mock_win_loss)
-    monkeypatch.setattr(Chapter_12.ch12_r07, 'time', mock_apps.mock_time)
-    monkeypatch.setattr(Chapter_12.ch12_r07, 'futures', mock_futures)
+    monkeypatch.setattr(Chapter_13.ch13_r07, 'summarize_games', mock_apps.mock_summarize_games)
+    monkeypatch.setattr(Chapter_13.ch13_r07, 'win_loss', mock_apps.mock_win_loss)
+    monkeypatch.setattr(Chapter_13.ch13_r07, 'time', mock_apps.mock_time)
+    monkeypatch.setattr(Chapter_13.ch13_r07, 'futures', mock_futures)
 
-    Chapter_12.ch12_r07.parallel_composite(games=13, workers=4)
+    Chapter_13.ch13_r07.parallel_composite(games=13, workers=4)
 
     assert mock_pool.submit.mock_calls == 13*[call(mock_apps.mock_summarize_games, 1_000)]
     assert mock_apps.mock_win_loss.mock_calls == [call(mock_apps.raw_stats)]
@@ -89,10 +89,10 @@ def test_parallel_composite(mock_apps, monkeypatch, capsys):
 
 
 def test_get_options():
-    options_1 = Chapter_12.ch12_r07.get_options(["-p"])
+    options_1 = Chapter_13.ch13_r07.get_options(["-p"])
     assert options_1.parallel
     assert not options_1.serial
 
-    options_1 = Chapter_12.ch12_r07.get_options(["-s"])
+    options_1 = Chapter_13.ch13_r07.get_options(["-s"])
     assert options_1.serial
     assert not options_1.parallel

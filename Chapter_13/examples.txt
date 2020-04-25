@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, Examples from the text.
+Chapter 13, Examples from the text.
 
 •	Finding configuration files
 •	Using YAML for configuration files
@@ -102,9 +102,9 @@ True
 # Using class-as-namespace for configuration values
 
 >>> from pprint import pprint
->>> import Chapter_12.ch12_r04
->>> configuration = Chapter_12.ch12_r04.load_config_module(
-...     'Chapter_12.settings.Chesapeake')
+>>> import Chapter_13.ch13_r04
+>>> configuration = Chapter_13.ch13_r04.load_config_module(
+...     'Chapter_13.settings.Chesapeake')
 >>> configuration.__doc__.strip()
 'Weather for Chesapeake Bay'
 >>> configuration.query
@@ -113,8 +113,8 @@ True
 'forecast.weather.gov'
 
 >>> print(configuration)
-<class 'Chapter_12.settings.Chesapeake'>
+<class 'Chapter_13.settings.Chesapeake'>
 >>> pprint(vars(configuration))
 mappingproxy({'__doc__': '\n    Weather for Chesapeake Bay\n    ',
-              '__module__': 'Chapter_12.settings',
+              '__module__': 'Chapter_13.settings',
               'query': {'mz': ['ANZ532']}})

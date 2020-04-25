@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 3, Using Python for configuration files
+Chapter 13, recipe 3, Using Python for configuration files
 """
 
 from pathlib import Path

@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 11, Wrapping a program and checking the output
+Chapter 13, recipe 11, Wrapping a program and checking the output
 """
 import collections
 from pathlib import Path
@@ -8,24 +8,24 @@ import subprocess
 from unittest.mock import Mock, call, sentinel
 from pytest import *  # type: ignore
 
-import Chapter_12.ch12_r11
+import Chapter_13.ch13_r11
 
 
 def test_command_iter(tmpdir):
     results = list(
-        Chapter_12.ch12_r11.command_iter(tmpdir, files=2)
+        Chapter_13.ch13_r11.command_iter(tmpdir, files=2)
     )
     expected = [
         [
             'python',
-            'Chapter_12/ch12_r05.py',
+            'Chapter_13/ch13_r05.py',
             '--samples',
             '10',
             '--output',
             tmpdir/ 'game_0.yaml'],
         [
             'python',
-            'Chapter_12/ch12_r05.py',
+            'Chapter_13/ch13_r05.py',
             '--samples',
             '10',
             '--output',
@@ -42,9 +42,9 @@ def mock_subprocess_run():
     )
 
 def test_command_output_iter(mock_subprocess_run, monkeypatch, tmpdir):
-    monkeypatch.setattr(Chapter_12.ch12_r11.subprocess, 'run', mock_subprocess_run)
+    monkeypatch.setattr(Chapter_13.ch13_r11.subprocess, 'run', mock_subprocess_run)
     results = list(
-        Chapter_12.ch12_r11.command_output_iter(Path(tmpdir), [sentinel.CMD_1, sentinel.CMD_2])
+        Chapter_13.ch13_r11.command_output_iter(Path(tmpdir), [sentinel.CMD_1, sentinel.CMD_2])
     )
     expected = [
         "line 0", "line 1", "line 0", "line 1"
@@ -72,7 +72,7 @@ def test_collect_batches():
         "text",
     ]
     results = list(
-        Chapter_12.ch12_r11.collect_batches(source)
+        Chapter_13.ch13_r11.collect_batches(source)
     )
     assert expected == results
 
@@ -106,12 +106,12 @@ def test_main(
         monkeypatch,
         capsys,
         tmpdir):
-    monkeypatch.setattr(Chapter_12.ch12_r11, 'command_iter', mock_command_iter)
-    monkeypatch.setattr(Chapter_12.ch12_r11, 'command_output_iter', mock_command_output_iter)
-    monkeypatch.setattr(Chapter_12.ch12_r11, 'collect_batches', mock_collect_batches_iter)
-    monkeypatch.setattr(Chapter_12.ch12_r11, 'Path', mock_path)
+    monkeypatch.setattr(Chapter_13.ch13_r11, 'command_iter', mock_command_iter)
+    monkeypatch.setattr(Chapter_13.ch13_r11, 'command_output_iter', mock_command_output_iter)
+    monkeypatch.setattr(Chapter_13.ch13_r11, 'collect_batches', mock_collect_batches_iter)
+    monkeypatch.setattr(Chapter_13.ch13_r11, 'Path', mock_path)
 
-    Chapter_12.ch12_r11.summarize(
+    Chapter_13.ch13_r11.summarize(
         directory=Path(tmpdir/"data"),
         games=2,
         temporary=Path(tmpdir/"tmp")
