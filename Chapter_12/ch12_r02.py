@@ -2,7 +2,7 @@
 openapi: 3.0.3
 
 info:
-  title: Python Cookbook Chapter 11, recipe 2.
+  title: Python Cookbook Chapter 12, recipe 2.
   description: Parsing the query string in a request
   version: "1.0"
 
@@ -79,7 +79,7 @@ from typing import Optional
 from flask import Flask, jsonify, request, abort, Response
 import yaml
 
-from Chapter_11.card_model import Card, Deck
+from Chapter_12.card_model import Card, Deck
 
 dealer = Flask("dealer")
 dealer.DEBUG = True
@@ -191,11 +191,12 @@ def multi_hand() -> Response:
 
 if __name__ == "__main__":
     dealer.run(use_reloader=True, threaded=False)
+
 """
-Start with this to force a particular seed to get a consistent result.
+Start the server this to force a particular seed to get a consistent result.
 ::
 
-    DEAL_APP_SEED=42 PYTHONPATH=. python Chapter_11/ch11_r03.py
+    DEAL_APP_SEED=42 PYTHONPATH=. python Chapter_12/ch12_r02.py
 
 Get the OpenAPI spec
 ::

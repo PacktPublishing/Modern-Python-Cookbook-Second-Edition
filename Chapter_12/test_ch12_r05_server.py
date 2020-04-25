@@ -1,17 +1,17 @@
 """Python Cookbook 2nd ed.
 
-Tests for ch11_r06_server
+Tests for ch12_r06_server
 """
 import json
 from unittest.mock import Mock
-import Chapter_11.ch11_r05_server
+import Chapter_12.ch12_r05_server
 from pytest import *  # type: ignore
 
 
 @fixture  # type: ignore
 def dealer_client(monkeypatch):
     monkeypatch.setenv("DEAL_APP_SEED", "42")
-    app = Chapter_11.ch11_r05_server.dealer
+    app = Chapter_12.ch12_r05_server.dealer
     return app.test_client()
 
 

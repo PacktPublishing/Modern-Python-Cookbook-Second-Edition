@@ -41,7 +41,7 @@ from typing import Optional
 from flask import Flask, jsonify, request, abort, Response
 from http import HTTPStatus
 
-from Chapter_11.card_model import Card, Deck
+from Chapter_12.card_model import Card, Deck
 
 dealer = Flask("dealer")
 
@@ -87,7 +87,7 @@ https://editor.swagger.io/
 Start with this to force a particular seed to get a consistent result.
 ::
 
-    DEAL_APP_SEED=42 PYTHONPATH=. python Chapter_11/ch11_r01.py
+    DEAL_APP_SEED=42 PYTHONPATH=. python Chapter_12.ch12_r01.py
 
 Note the --header for the accept is required, as are the quotes to stop zsh from looking at the ?
 ::

@@ -1,14 +1,14 @@
 """Python Cookbook 2nd ed.
 
-Tests for ch11_r06_requests
+Tests for ch12_r06_requests
 """
 import base64
 import json
 from unittest.mock import Mock
 import urllib.request
 from pytest import *  # type: ignore
-import Chapter_11.ch11_r06_requests
-from Chapter_11.ch11_r06_server import specification
+import Chapter_12.ch12_r06_requests
+from Chapter_12.ch12_r06_server import specification
 
 
 @fixture  # type: ignore
@@ -66,14 +66,14 @@ def mock_requests(monkeypatch):
         post=Mock(side_effect=post_response_maker),
     )
     monkeypatch.setattr(
-        Chapter_11.ch11_r06_requests, "requests", mock_requests_module
+        Chapter_12.ch12_r06_requests, "requests", mock_requests_module
     )
 
 
 def test_get_openapi_spec(mock_requests):
-    spec = Chapter_11.ch11_r06_requests.get_openapi_spec()
+    spec = Chapter_12.ch12_r06_requests.get_openapi_spec()
     assert spec["info"]["title"] == "Python Cookbook Chapter 11, recipe 6."
-    paths = Chapter_11.ch11_r06_requests.make_path_map(spec)
+    paths = Chapter_12.ch12_r06_requests.make_path_map(spec)
     assert "make_player" in paths
     assert "get_all_players" in paths
     assert "get_one_player" in paths
@@ -87,16 +87,16 @@ def test_create_new_player(mock_requests):
         "lucky_number": 13,
         "password": "Hunter2",
     }
-    paths = Chapter_11.ch11_r06_requests.make_path_map(specification)
-    response = Chapter_11.ch11_r06_requests.create_new_player(
+    paths = Chapter_12.ch12_r06_requests.make_path_map(specification)
+    response = Chapter_12.ch12_r06_requests.create_new_player(
         specification, paths, player)
     assert response == {"status": "ok", "id": "mock_id"}
 
 
 def test_get_one_player(mock_requests):
-    paths = Chapter_11.ch11_r06_requests.make_path_map(specification)
+    paths = Chapter_12.ch12_r06_requests.make_path_map(specification)
     credentials = ("mock_id", "OpenSesame")
-    response = Chapter_11.ch11_r06_requests.get_one_player(
+    response = Chapter_12.ch12_r06_requests.get_one_player(
         specification, paths, credentials, "mock_id"
     )
     assert response == {
@@ -108,9 +108,9 @@ def test_get_one_player(mock_requests):
 
 
 def test_get_all_players(mock_requests):
-    paths = Chapter_11.ch11_r06_requests.make_path_map(specification)
+    paths = Chapter_12.ch12_r06_requests.make_path_map(specification)
     credentials = ("mock_id", "OpenSesame")
-    response = Chapter_11.ch11_r06_requests.get_all_players(
+    response = Chapter_12.ch12_r06_requests.get_all_players(
         specification, paths, credentials
     )
     assert response == {

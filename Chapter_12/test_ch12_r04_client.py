@@ -1,13 +1,13 @@
 """Python Cookbook 2nd ed.
 
-Tests for ch11_r04_client
+Tests for ch12_r04_client
 """
 import json
 from unittest.mock import Mock
 import urllib.request
 from pytest import *  # type: ignore
-import Chapter_11.ch11_r04_client
-from Chapter_11.ch11_r04_server import specification
+import Chapter_12.ch12_r04_client
+from Chapter_12.ch12_r04_server import specification
 
 
 @fixture  # type: ignore
@@ -68,27 +68,27 @@ def mock_urllib(monkeypatch):
         wraps=urllib.request, urlopen=Mock(side_effect=response_maker)
     )
     monkeypatch.setattr(
-        Chapter_11.ch11_r04_client.urllib, "request", mock_urllib_request
+        Chapter_12.ch12_r04_client.urllib, "request", mock_urllib_request
     )
 
 
 def test_get_openapi_spec(mock_urllib):
-    spec = Chapter_11.ch11_r04_client.get_openapi_spec()
+    spec = Chapter_12.ch12_r04_client.get_openapi_spec()
     assert spec["info"]["title"] == "Python Cookbook Chapter 11, recipe 4."
 
 
 def test_create_new_deck(mock_urllib):
-    response = Chapter_11.ch11_r04_client.create_new_deck(specification, 1)
+    response = Chapter_12.ch12_r04_client.create_new_deck(specification, 1)
     assert response == {"status": "ok", "id": "mock_id"}
 
 
 def test_get_new_deck(mock_urllib):
-    response = Chapter_11.ch11_r04_client.get_new_deck(specification, "mock_id")
+    response = Chapter_12.ch12_r04_client.get_new_deck(specification, "mock_id")
     assert response == [{"__class__": "Card", "rank": 1, "suit": "\u2660"}]
 
 
 def test_get_hands(mock_urllib):
-    response = Chapter_11.ch11_r04_client.get_hands(
+    response = Chapter_12.ch12_r04_client.get_hands(
         specification, "mock_id", cards=1, limit=2
     )
     assert response == [
@@ -98,17 +98,17 @@ def test_get_hands(mock_urllib):
 
 
 def test_no_spec_create_new_deck(mock_urllib):
-    response = Chapter_11.ch11_r04_client.no_spec_create_new_deck(1)
+    response = Chapter_12.ch12_r04_client.no_spec_create_new_deck(1)
     assert response == {"status": "ok", "id": "mock_id"}
 
 
 def test_no_spec_get_new_deck(mock_urllib):
-    response = Chapter_11.ch11_r04_client.no_spec_get_new_deck("mock_id")
+    response = Chapter_12.ch12_r04_client.no_spec_get_new_deck("mock_id")
     assert response == [{"__class__": "Card", "rank": 1, "suit": "\u2660"}]
 
 
 def test_no_spec_get_hands(mock_urllib):
-    response = Chapter_11.ch11_r04_client.no_spec_get_hands(
+    response = Chapter_12.ch12_r04_client.no_spec_get_hands(
         "mock_id", cards=1, limit=2
     )
     assert response == [

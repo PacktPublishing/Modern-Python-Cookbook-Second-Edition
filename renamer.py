@@ -36,6 +36,7 @@ def rename(base: Path, old_name: str, new_name: str, dry_run: bool=True) -> None
 
 if __name__ == "__main__":
     # search(Path.cwd()/"Chapter_12", "ch12")
-    rename(Path.cwd()/"Chapter_12", "ch12", "ch13", dry_run=False)
+    # rename(Path.cwd()/"Chapter_12", "ch12", "ch13", dry_run=False)
+    # rename(Path.cwd()/"Chapter_11", "ch11", "ch12", dry_run=False)
     # rename(Path.cwd()/"Chapter_04B", "ch04", "ch05", dry_run=True)
 

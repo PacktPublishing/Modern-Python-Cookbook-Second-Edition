@@ -1,60 +1,56 @@
 """Python Cookbook
 
-Chapter 11, recipe 5, Parsing a JSON request
+Chapter 11, recipe 6, Implementing authentication for web services
 Server.
 """
-import random
 import logging
+import random
 import os
 import sys
-from typing import Dict, Any, Optional
+from typing import Dict, Optional, Any, Callable, Union
+
 from http import HTTPStatus
 from flask import Flask, jsonify, request, abort, url_for, Response
 import yaml
-from Chapter_11.card_model import Card, Deck
+from Chapter_12.ch12_r06_user import User, asdict
+from Chapter_12.card_model import Card, Deck
 
-dealer = Flask("ch11_r05")
+
+dealer = Flask("ch12_r07")
 dealer.DEBUG = True
 dealer.TESTING = True
+dealer.logger.setLevel(logging.INFO)
 
 # Following https://www.oasis-open.org
 # http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html
+
 spec_yaml = """
 openapi: 3.0.3
 info:
-  title: Python Cookbook Chapter 11, recipe 5.
-  description: Parsing a JSON request
+  title: Python Cookbook Chapter 11, recipe 6.
   version: "1.0"
 servers:
-- url: http://127.0.0.1:5000/dealer
+- url: https://127.0.0.1:5000/dealer
 paths:
   /decks:
     post:
       operationId: make_deck
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/decks'
+      security: 
+      - http: []
+      parameters:
+      - name: size
+        in: query
+        description: number of decks to build and shuffle
+        schema:
+          type: integer
+          default: 1
       responses:
-        "201":
+        "200":
           description: Create and shuffle a deck. Returns a unique deck id.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    description: deck_id used for later queries
-                    type: string
-                  status:
-                    description: response status
-                    type: string
-                    enum: ["ok", "problem"]
-        "400":
-          description: Request doesn't accept a JSON response or request invalid
           content: {}
-          
+        "400":
+          description: Request doesn't accept a JSON response
+          content: {}
   /decks/{id}/$count:
     get:
       operationId: get_deck_size
@@ -75,10 +71,11 @@ paths:
         "404":
           description: ID not found.
           content: {}
-
   /decks/{id}/hands:
     get:
       operationId: get_hands
+      security: 
+      - http: []
       parameters:
       - $ref: "#/components/parameters/deck_id"
       - name: cards
@@ -101,26 +98,23 @@ paths:
           default: 0
       responses:
         "200":
-          description: One hand of cards for each `hand` ID in the query string
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  hand:
-                    type: integer
-                  cards:
-                    type: array
-                    items: 
-                      $ref: "#/components/schemas/Card"
+          description: One hand of cards for each `hand` value in the query string
+          content: {}
         "400":
           description: Request doesn't accept a JSON response
           content: {}
         "404":
           description: ID not found.
           content: {}
-          
   /players:
+    get:
+      operationId: get_all_players
+      security: 
+      - http: []
+      responses:
+        "200":
+          description: All of the players defined so far
+          content: {}
     post:
       operationId: make_player
       requestBody:
@@ -128,6 +122,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Player'
+        required: false
       responses:
         "201":
           description: Player created
@@ -144,25 +139,11 @@ paths:
         "403":
           description: Player is invalid or a duplicate
           content: {}
-          
-    get:
-      operationId: get_all_players
-      responses:
-        "200":
-          description: One hand of cards for each `hand` ID in the query string
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  players:
-                    type: array
-                    items: 
-                      $ref: "#/components/schemas/Player"
-
   /players/{id}:
     get:
       operationId: get_one_player
+      security: 
+      - http: []
       parameters:
       - $ref: "#/components/parameters/player_id"
       responses:
@@ -184,26 +165,12 @@ paths:
         "404":
           description: Player ID not found
           content: {}
-          
 components:
+  securitySchemes:
+    http:
+      type: http
+      scheme: basic
   schemas:
-    Card:
-      type: object
-      properties:
-        __class__:
-          type: string
-          example: "Card"
-        rank:
-          type: integer
-          example: 1
-        suit:
-          type: string
-          example: "\u2660"
-    decks:
-      description: Number of decks to build and deal
-      type: integer
-      minimum: 1
-      maximum: 20
     Player:
       type: object
       properties:
@@ -212,11 +179,24 @@ components:
           format: email
         name:
           type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 8
+          description: plain password on a request. Hash on a response.
         twitter:
           type: string
           format: uri
         lucky_number:
           type: integer
+          minimum: 0
+          maximum: 99
+      required:
+      - email
+      - name
+      - twitter
+      - lucky_number
+      - password
   parameters:
     deck_id:
       name: id
@@ -235,6 +215,7 @@ components:
 """
 specification = yaml.load(spec_yaml, Loader=yaml.SafeLoader)
 
+JSON_Doc = Dict[str, Any]
 
 decks: Optional[Dict[str, Deck]] = None
 
@@ -247,15 +228,73 @@ def get_decks() -> Dict[str, Deck]:
     return decks
 
 
-JSON_Doc = Dict[str, Any]
-players: Optional[Dict[str, JSON_Doc]] = None
+user_database: Optional[Dict[str, User]] = None
 
 
-def get_players() -> Dict[str, JSON_Doc]:
-    global players
-    if players is None:
-        players = {}
-    return players
+def get_users() -> Dict[str, User]:
+    global user_database
+    if user_database is None:
+        user_database = {}
+    return user_database
+
+
+# Errors come from abort
+# HTTPStatus.UNAUTHORIZED, HTTPStatus.BAD_REQUEST, and HTTPStatus.NOT_FOUND, HTTPStatus.FORBIDDEN
+# We can create more useful JSON documents
+@dealer.errorhandler(HTTPStatus.UNAUTHORIZED)
+def unuathorized_error(ex):
+    return jsonify(
+        error=str(ex)
+    ), HTTPStatus.UNAUTHORIZED
+
+@dealer.errorhandler(HTTPStatus.BAD_REQUEST)
+def bad_request_error(ex):
+    return jsonify(
+        error=str(ex)
+    ), HTTPStatus.BAD_REQUEST
+
+@dealer.errorhandler(HTTPStatus.FORBIDDEN)
+def forbidden_error(ex):
+    return jsonify(
+        error=str(ex)
+    ), HTTPStatus.FORBIDDEN
+
+
+from functools import wraps
+import base64
+from flask import g
+
+ViewFunction = Union[Callable[[Any], Response], Callable[[], Response]]
+
+
+DEFAULT_USER = User(name="", email="", twitter="", lucky_number=-1)
+
+
+
+def authorization_required(view_function: ViewFunction) -> ViewFunction:
+    @wraps(view_function)
+    def decorated_function(*args, **kwargs):
+        # If no Authorization header, provide a default which fails
+        header_value = request.headers.get("Authorization", "BASIC :")
+        kind, data = header_value.split()
+        # If not BASIC, provide a username:password which will (eventually) fail
+        if kind.upper() == "BASIC":
+            credentials = base64.b64decode(data)
+        else:
+            credentials = base64.b64decode("Og==")
+        usr_bytes, _, pwd_bytes = credentials.partition(b":")
+        username = usr_bytes.decode("ascii")
+        password = pwd_bytes.decode("ascii")
+        user_database = get_users()
+        user = user_database.get(username, DEFAULT_USER)
+        if not user.check_password(password):
+            abort(
+                HTTPStatus.UNAUTHORIZED,
+                description="Invalid credentials")
+        g.user = user_database[username]
+        return view_function(*args, **kwargs)
+
+    return decorated_function
 
 
 @dealer.before_request
@@ -266,8 +305,10 @@ def check_json() -> Optional[Response]:
         return None
     if "json" == request.args.get("$format", "html"):
         return None
-    return abort(HTTPStatus.BAD_REQUEST)
-
+    abort(
+        HTTPStatus.BAD_REQUEST,
+        description="Invalid Accept header or $format query"
+    )
 
 from flask import make_response
 import json
@@ -279,12 +320,12 @@ def openapi3() -> Response:
     response.headers["Content-Type"] = "application/json"
     return response
 
-# This can be used to show what a bad OpenAPI specification looks like.
-# @dealer.route("/dealer/openapi.json")
-# def openapi3x() -> Response:
-#     response = make_response(json.dumps({"um": "nope"}, indent=2).encode("utf-8"))
-#     response.headers["Content-Type"] = "application/json"
-#     return response
+
+def redacted_asdict(user: User) -> Dict[str, Any]:
+    """Build the dict of a User, but redact 'password'."""
+    document = asdict(user)
+    document.pop("password")
+    return document
 
 
 from jsonschema import validate  # type: ignore
@@ -295,47 +336,71 @@ import hashlib
 @dealer.route("/dealer/players", methods=["POST"])
 def make_player() -> Response:
     try:
-        document = request.get_json()
+        document = request.json
     except Exception as ex:
-        # Document wasn't proper JSON.
-        # We can fine-tune an error message here.
-        abort(HTTPStatus.BAD_REQUEST)
-    player_schema = (
-        specification["components"]["schemas"]["Player"]
-    )
+        # Document wasn't even JSON.
+        # We can fine-tune the error message here.
+        abort(
+            HTTPStatus.BAD_REQUEST,
+            description=ex
+        )
+    player_schema = specification["components"]["schemas"]["Player"]
     try:
         validate(document, player_schema)
     except ValidationError as ex:
-        abort(HTTPStatus.BAD_REQUEST, description=ex.message)
+        abort(HTTPStatus.FORBIDDEN, description=ex.message)
 
-    players = get_players()
-    id = hashlib.md5(document["twitter"].encode("utf-8")).hexdigest()
-    if id in players:
-        abort(HTTPStatus.BAD_REQUEST, description="Duplicate player")
+    user_database = get_users()
+    id = hashlib.md5(
+        document["twitter"].encode("utf-8")).hexdigest()
+    if id in user_database:
+        abort(HTTPStatus.FORBIDDEN, description="Duplicate player")
 
-    players[id] = document
-    response = make_response(jsonify(player=document, id=id), HTTPStatus.CREATED)
-    response.headers["Location"] = url_for("get_one_player", id=str(id))
-    response.headers["Content-Type"] = "application/json;charset=utf-8"
+    new_user = User(**document)
+    new_user.set_password(document['password'])
+    user_database[id] = new_user
+
+    response = make_response(
+        jsonify(
+            player=redacted_asdict(new_user),
+            id=id),
+        HTTPStatus.CREATED
+    )
+    response.headers["Location"] = url_for("get_player", id=str(id))
     return response
 
 
 @dealer.route("/dealer/players", methods=["GET"])
-def get_all_players() -> Response:
-    players = get_players()
-    response = make_response(jsonify(players=players))
+@authorization_required
+def get_players() -> Response:
+    user_database = get_users()
+    response = make_response(
+        jsonify(
+            players={
+                k: redacted_asdict(v)
+                for k, v in user_database.items()}
+        )
+    )
     response.headers["Content-Type"] = "application/json;charset=utf-8"
     return response
 
 
 @dealer.route("/dealer/players/<id>", methods=["GET"])
-def get_one_player(id: str) -> Response:
-    players = get_players()
-    if id not in players:
-        abort(HTTPStatus.NOT_FOUND, description=f"Player {id} not found")
+@authorization_required
+def get_player(id) -> Response:
+    user_database = get_users()
+    if id not in user_database:
+        abort(
+            HTTPStatus.NOT_FOUND,
+            description=f"{id} not found"
+        )
 
-    response = make_response(jsonify(player=players[id]))
-    response.headers["Content-Type"] = "application/json;charset=utf-8"
+    response = make_response(
+        jsonify(
+            player=redacted_asdict(user_database[id])
+        )
+    )
+    response.headers["Content-Type"] = "application/json"
     return response
 
 
@@ -344,43 +409,52 @@ import uuid
 
 
 @dealer.route("/dealer/decks", methods=["POST"])
+@authorization_required
 def make_deck() -> Response:
     try:
         n_decks = request.get_json()["decks"]
         dealer.logger.info(f"make_deck {request.args}")
     except Exception as ex:
-        abort(HTTPStatus.BAD_REQUEST)
+        abort(
+            HTTPStatus.BAD_REQUEST,
+            description=ex
+        )
 
     decks = get_decks()
     id = str(uuid.uuid1())
     decks[id] = Deck(n=n_decks)
-
     response_json = jsonify(status="ok", id=id)
-    response = make_response(
-        response_json, HTTPStatus.CREATED)
-    response.headers["Location"] = url_for(
-        "get_one_deck_count", id=str(id))
+    response = make_response(response_json, HTTPStatus.CREATED)
+    response.headers["Location"] = url_for("get_one_deck_count", id=str(id))
     response.headers["Content-Type"] = "application/json;charset=utf-8"
     return response
 
 
-@dealer.route("/deaker/decks/<id>/$count", methods=["GET"])
-def get_one_deck_count(id: str) -> Response:
+@dealer.route("/dealer/decks/<id>/$count", methods=["GET"])
+@authorization_required
+def get_one_deck_count(id) -> Response:
     decks = get_decks()
     if id not in decks:
         dealer.logger.debug(id)
         dealer.logger.debug(list(decks.keys()))
-        abort(HTTPStatus.NOT_FOUND)
-    response = jsonify(id=id, cards=len(decks[id]))
+        abort(
+            HTTPStatus.NOT_FOUND,
+            description=f"Unknown /dealer/decks/{id}"
+        )
+    response = jsonify(id=id, cards=len(decks[id].cards))
     return response
 
 
+from werkzeug.exceptions import BadRequest
+
+
 @dealer.route("/dealer/decks/<id>/hands", methods=["GET"])
-def get_hands(id: str) -> Response:
+@authorization_required
+def get_hands(id) -> Response:
     decks = get_decks()
     if id not in decks:
         dealer.logger.debug(id)
-        abort(HTTPStatus.NOT_FOUND, description="Deck {id} not found")
+        abort(HTTPStatus.NOT_FOUND, description=f"ID {id} not found")
     try:
         cards = int(request.args.get("cards", 13))
         top = int(request.args.get("$top", 1))
@@ -389,7 +463,7 @@ def get_hands(id: str) -> Response:
             decks[id].cards
         ), "$skip, $top, and cards larger than the deck"
     except ValueError as ex:
-        abort(HTTPStatus.BAD_REQUEST)
+        abort(HTTPStatus.BAD_REQUEST, description=ex)
     subset = decks[id].cards[skip * cards : (skip + top) * cards]
     hands = [subset[h * cards : (h + 1) * cards] for h in range(top)]
     response = jsonify(
@@ -398,10 +472,14 @@ def get_hands(id: str) -> Response:
             for i, hand in enumerate(hands)
         ]
     )
-    response.headers["Content-Type"] = "application/json;charset=utf-8"
     return response
 
 
 if __name__ == "__main__":
     logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
-    dealer.run(use_reloader=True, threaded=False)
+
+    import ssl
+
+    ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    ctx.load_cert_chain("ssl.cert", "ssl.key")
+    dealer.run(use_reloader=True, threaded=False, ssl_context=ctx)

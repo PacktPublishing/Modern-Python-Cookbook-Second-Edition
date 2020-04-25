@@ -61,56 +61,9 @@ def query_build_2(openapi_spec: Dict[str, Any]) -> None:
         print(json.loads(response.read().decode("utf-8")))
 
 
-test_example = """
-Start the server
->>> import subprocess, time, os, pathlib
->>> env = os.environ.copy()
->>> env['PYTHONPATH'] = str(pathlib.Path(__file__).parent.parent)
->>> env['DEAL_APP_SEED'] = '42'
->>> server = subprocess.Popen(["python", "Chapter_11/ch11_r02.py"], env=env)
-
-Pause to let the server start
->>> time.sleep(1.0)
-
-Make the client request
->>> spec = get_openapi_spec()
-openapi.json is valid
->>> spec['info']['title']
-'Python Cookbook Chapter 11, recipe 2.'
-
->>> query_build_1()  # doctest: +ELLIPSIS
-200
-Content-Type: application/json
-Content-Length: 235
-Server: Werkzeug/1.0.1 Python/3.8.0
-Date: ...
-<BLANKLINE>
-<BLANKLINE>
-[{'__class__': 'Card', 'rank': 10, 'suit': '♡'}, {'__class__': 'Card', 'rank': 4, 'suit': '♡'}, {'__class__': 'Card', 'rank': 7, 'suit': '♠'}, {'__class__': 'Card', 'rank': 11, 'suit': '♢'}, {'__class__': 'Card', 'rank': 12, 'suit': '♡'}]
-
->>> query_build_2(spec)  # doctest: +ELLIPSIS
-200
-Content-Type: application/json
-Content-Length: 318
-Server: Werkzeug/1.0.1 Python/3.8.0
-Date: ...
-<BLANKLINE>
-<BLANKLINE>
-[{'cards': [{'__class__': 'Card', 'rank': 3, 'suit': '♣'}, {'__class__': 'Card', 'rank': 10, 'suit': '♠'}], 'hand': 0}, {'cards': [{'__class__': 'Card', 'rank': 9, 'suit': '♠'}], 'hand': 1}, {'cards': [{'__class__': 'Card', 'rank': 13, 'suit': '♣'}], 'hand': 2}, {'cards': [{'__class__': 'Card', 'rank': 5, 'suit': '♣'}], 'hand': 3}]
-
-Terminate the server
->>> server.terminate()
->>> time.sleep(0.25)
->>> server.kill()
->>> server.wait()
-0
->>> server.returncode
-0
-"""
-
-__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
-
 if __name__ == "__main__":
+    print("Be sure the servar was started before running this.")
+    print("For example, DEAL_APP_SEED=42 PYTHONPATH=. python Chapter_12/ch12_r02.py")
     spec = get_openapi_spec()
     query_build_1()
     query_build_2(spec)

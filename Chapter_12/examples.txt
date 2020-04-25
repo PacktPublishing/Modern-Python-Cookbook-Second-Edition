@@ -14,7 +14,7 @@ Chapter 11, Examples from the text.
 
 # The Card Model
 
->>> from Chapter_11.card_model import Deck
+>>> from Chapter_12.card_model import Deck
 >>> import random
 >>> random.seed(42)
 >>> deck = Deck()

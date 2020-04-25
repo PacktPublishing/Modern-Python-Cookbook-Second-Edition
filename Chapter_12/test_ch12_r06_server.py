@@ -1,25 +1,25 @@
 """Python Cookbook 2nd ed.
 
-Tests for ch11_r06_server
+Tests for ch12_r06_server
 """
 import base64
 import json
 from unittest.mock import Mock
-import Chapter_11.ch11_r06_server
-import Chapter_11.ch11_r06_user
+import Chapter_12.ch12_r06_server
+import Chapter_12.ch12_r06_user
 from pytest import *  # type: ignore
 
 
 @fixture  # type: ignore
 def fixed_salt(monkeypatch):
     mocked_os = Mock(urandom=Mock(return_value=bytes(range(30))))
-    monkeypatch.setattr(Chapter_11.ch11_r06_user, "os", mocked_os)
+    monkeypatch.setattr(Chapter_12.ch12_r06_user, "os", mocked_os)
 
 
 @fixture  # type: ignore
 def dealer_client(monkeypatch, fixed_salt):
     monkeypatch.setenv("DEAL_APP_SEED", "42")
-    app = Chapter_11.ch11_r06_server.dealer
+    app = Chapter_12.ch12_r06_server.dealer
     return app.test_client()
 
 

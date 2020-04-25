@@ -15,7 +15,7 @@ from typing import  (
     Protocol,
     )
 
-from Chapter_11.card_model import *
+from Chapter_12.card_model import *
 
 # Copy-Pasta from wsgiref/types.pyi
 class StartResponse(Protocol):

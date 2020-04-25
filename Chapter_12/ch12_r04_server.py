@@ -14,9 +14,9 @@ from http import HTTPStatus
 from flask import (
     Flask, jsonify, request, abort, url_for, Response
     )
-from Chapter_11.card_model import Card, Deck
+from Chapter_12.card_model import Card, Deck
 
-dealer = Flask("ch11_r04")
+dealer = Flask("ch12_r04")
 dealer.DEBUG = True
 dealer.TESTING = True
 
