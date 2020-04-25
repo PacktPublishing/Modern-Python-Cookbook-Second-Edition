@@ -25,7 +25,7 @@ dealer.logger.setLevel(logging.INFO)
 # http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html
 
 spec_yaml = """
-openapi: 3.0.1
+openapi: 3.0.3
 info:
   title: Python Cookbook Chapter 11, recipe 6.
   version: "1.0"

@@ -1,5 +1,5 @@
 """
-openapi: 3.0.1
+openapi: 3.0.3
 info:
   title: Python Cookbook Chapter 11, recipe 1.
   description: Using the Flask framework for RESTful APIs

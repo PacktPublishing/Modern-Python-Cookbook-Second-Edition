@@ -16,11 +16,11 @@ Chapter 11, Examples from the text.
 
 >>> from Chapter_11.card_model import Deck
 >>> import random
->>> random.seed(2)
+>>> random.seed(42)
 >>> deck = Deck()
 >>> cards = deck.deal(5)
->>> cards  
-[Card(rank=4, suit='♣'), Card(rank=8, suit='♡'), Card(rank=3, suit='♡'), Card(rank=6, suit='♡'), Card(rank=2, suit='♠')]
+>>> cards
+[Card(rank=3, suit='♡'), Card(rank=6, suit='♣'), Card(rank=7, suit='♡'), Card(rank=1, suit='♣'), Card(rank=6, suit='♡')]
 
 >>> import json
 >>> json_cards = list(card.to_json() for card in deck.deal(5))
@@ -28,28 +28,28 @@ Chapter 11, Examples from the text.
 [
   {
     "__class__": "Card",
-    "rank": 2,
+    "rank": 10,
     "suit": "\u2662"
   },
   {
     "__class__": "Card",
-    "rank": 13,
+    "rank": 5,
+    "suit": "\u2660"
+  },
+  {
+    "__class__": "Card",
+    "rank": 10,
     "suit": "\u2663"
   },
   {
     "__class__": "Card",
-    "rank": 7,
-    "suit": "\u2662"
+    "rank": 5,
+    "suit": "\u2663"
   },
   {
     "__class__": "Card",
-    "rank": 6,
-    "suit": "\u2662"
-  },
-  {
-    "__class__": "Card",
-    "rank": 7,
-    "suit": "\u2660"
+    "rank": 3,
+    "suit": "\u2663"
   }
 ]
 
