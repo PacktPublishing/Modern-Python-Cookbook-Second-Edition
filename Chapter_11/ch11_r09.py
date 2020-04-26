@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 9. Testing things that involve randomness.
+Chapter 11, recipe 9. Testing things that involve randomness.
 """
 import random
 from typing import List, Iterator, Counter

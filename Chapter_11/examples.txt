@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 10, Examples from the text.
+Chapter 11, Examples from the text.
 
 •	Using docstrings for testing
 •	Testing functions that raise exceptions
@@ -17,12 +17,12 @@ Chapter 10, Examples from the text.
 
 #  Testing functions that raise exceptions
 
->>> from Chapter_10.ch10_r01 import binom
+>>> from Chapter_11.ch11_r01 import binom
 
 >>> binom(52, 5)
 2598960
 
->>> from Chapter_10.ch10_r01 import Summary
+>>> from Chapter_11.ch11_r01 import Summary
 
 >>> s = Summary()
 >>> s.add(8)
@@ -56,7 +56,7 @@ Traceback (most recent call last):
     compileflags, 1), test.globs)
   File "<doctest examples.txt[15]>", line 1, in <module>
     binom(5, 52)
-  File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Code/Chapter_10.ch10_r01.py", line 24, in binom
+  File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Code/Chapter_11.ch11_r01.py", line 24, in binom
     return factorial(n) // (factorial(k) * factorial(n-k))
 ValueError: factorial() not defined for negative values
 
@@ -73,7 +73,7 @@ ValueError: factorial() not defined for negative values
 ... 32.8321,-79.9338,2012-11-27,09:15:00
 ... ''')
 
->>> from Chapter_10.ch10_r03 import raw_reader
+>>> from Chapter_11.ch11_r03 import raw_reader
 >>> row_iter = iter(raw_reader(mock_file))
 >>> row = next(row_iter)
 >>> row

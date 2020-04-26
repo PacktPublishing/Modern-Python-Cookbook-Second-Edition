@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 8. Testing things that involve dates or times.
+Chapter 11, recipe 8. Testing things that involve dates or times.
 """
 
 import datetime

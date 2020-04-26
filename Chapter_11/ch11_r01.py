@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipes 1 and 2, Using docstrings for testing and
+Chapter 11, recipes 1 and 2, Using docstrings for testing and
 Testing functions that raise exceptions
 """
 
@@ -58,7 +58,7 @@ Traceback (most recent call last):
     exec(compile(example.source, filename, "single",
   File "<doctest ch11_r01.__test__.GIVEN n='a', k='b' WHEN binom(n, k) THEN exception[0]>", line 1, in <module>
     binom('a', 'b')
-  File "Chapter_10/ch10_r01.py", line 24, in binom
+  File "Chapter_11.ch11_r01.py", line 24, in binom
     return factorial(n) // (factorial(k) * factorial(n-k))
 TypeError: 'str' object cannot be interpreted as an integer
 """

@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 6 and 7. Unit testing with the pytest module, Combining pytest and doctest tests
+Chapter 11, recipe 6 and 7. Unit testing with the pytest module, Combining pytest and doctest tests
 
 A more conventional name would be test_ch10_r01.py
 
@@ -9,7 +9,7 @@ A more conventional name would be test_ch10_r01.py
 import random
 
 from pytest import *  # type: ignore
-from Chapter_10.ch10_r01 import Summary
+from Chapter_11.ch11_r01 import Summary
 
 @fixture  # type: ignore
 def flat_data():
@@ -60,4 +60,4 @@ def test_biased(biased_data):
 
 
 # Need to use a complex command line to combine both.
-# pytest Chapter_10/ch10_r06.py --doctest-modules Chapter_10/ch10_r01.py
+# pytest Chapter_11.ch11_r06.py --doctest-modules Chapter_11.ch11_r01.py

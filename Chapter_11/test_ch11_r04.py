@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 4 and 5. Unit testing with the unittest module, Combining Unittest and Doctest.
+Chapter 11, recipe 4 and 5. Unit testing with the unittest module, Combining Unittest and Doctest.
 
 A more conventional name would be test_ch10_r01.py
 """
@@ -9,7 +9,7 @@ import doctest
 import unittest
 import random
 
-from Chapter_10.ch10_r01 import Summary
+from Chapter_11.ch11_r01 import Summary
 
 
 class GIVEN_data_WHEN_1k_samples_THEN_mean_median(
@@ -61,11 +61,11 @@ class GIVEN_Summary_WHEN_1k_samples_THEN_mode(unittest.TestCase):
 
 # Recipe 5 -- Combining Unittest and Doctest.
 
-import Chapter_10.ch10_r01
+import Chapter_11.ch11_r01
 
 
 def load_tests(loader, standard_tests, pattern):
-    dt = doctest.DocTestSuite(Chapter_10.ch10_r01)
+    dt = doctest.DocTestSuite(Chapter_11.ch11_r01)
     standard_tests.addTests(dt)
     return standard_tests
 

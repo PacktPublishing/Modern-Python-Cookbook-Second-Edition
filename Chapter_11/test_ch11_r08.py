@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 8. Testing things that involve dates or times
+Chapter 11, recipe 8. Testing things that involve dates or times
 Pytest Variant.
 """
 import datetime
@@ -10,7 +10,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 from pytest import *  # type: ignore
 
-import Chapter_10.ch10_r08
+import Chapter_11.ch11_r08
 
 
 @fixture  # type: ignore
@@ -27,10 +27,10 @@ def mock_datetime():
 
 def test_save_data(mock_datetime, tmpdir, monkeypatch):
     monkeypatch.setattr(
-        Chapter_10.ch10_r08, "datetime", mock_datetime)
+        Chapter_11.ch11_r08, "datetime", mock_datetime)
 
     data = {"primes": [2, 3, 5, 7, 11, 13, 17, 19]}
-    Chapter_10.ch10_r08.save_data(Path(tmpdir), data)
+    Chapter_11.ch11_r08.save_data(Path(tmpdir), data)
 
     expected_path = (
             Path(tmpdir) / "extract_20170910111213.json")
@@ -59,10 +59,10 @@ def mock_datetime_now():
 
 def test_save_data_now(mock_datetime_now, tmpdir, monkeypatch):
     monkeypatch.setattr(
-        Chapter_10.ch10_r08, "datetime", mock_datetime_now)
+        Chapter_11.ch11_r08, "datetime", mock_datetime_now)
 
     data = {"primes": [2, 3, 5, 7, 11, 13, 17, 19]}
-    Chapter_10.ch10_r08.save_data(Path(tmpdir), data)
+    Chapter_11.ch11_r08.save_data(Path(tmpdir), data)
 
     expected_path = (
             Path(tmpdir) / "extract_20170704010203.json")

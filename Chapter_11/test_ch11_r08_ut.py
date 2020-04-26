@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 8. Testing things that involve dates or times
+Chapter 11, recipe 8. Testing things that involve dates or times
 Unittest Variant.
 """
 import datetime
@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import unittest
 from unittest.mock import Mock, patch
-import Chapter_10.ch10_r08
+import Chapter_11.ch11_r08
 
 
 class GIVEN_data_WHEN_save_data_THEN_file(unittest.TestCase):
@@ -25,8 +25,8 @@ class GIVEN_data_WHEN_save_data_THEN_file(unittest.TestCase):
             self.expected_path.unlink()
 
     def runTest(self):
-        with patch("Chapter_10.ch10_r08.datetime", self.mock_datetime):
-            Chapter_10.ch10_r08.save_data(Path("data"), self.data)
+        with patch("Chapter_11.ch11_r08.datetime", self.mock_datetime):
+            Chapter_11.ch11_r08.save_data(Path("data"), self.data)
         with self.expected_path.open() as result_file:
             result_data = json.load(result_file)
         self.assertDictEqual(self.data, result_data)

@@ -1,12 +1,12 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 9. Testing things that involve randomness
+Chapter 11, recipe 9. Testing things that involve randomness
 Unittest Variant.
 """
 
 import unittest
 from unittest.mock import Mock, patch, call
-import Chapter_10.ch10_r09
+import Chapter_11.ch11_r09
 
 
 class GIVEN_resample_WHEN_evaluated_THEN_fair(unittest.TestCase):
@@ -16,8 +16,8 @@ class GIVEN_resample_WHEN_evaluated_THEN_fair(unittest.TestCase):
         self.mock_random = Mock(choice=Mock(side_effect=self.expected_resample_data))
 
     def runTest(self):
-        with patch("Chapter_10.ch10_r09.random", self.mock_random):
-            resample_data = list(Chapter_10.ch10_r09.resample(self.data, 8))
+        with patch("Chapter_11.ch11_r09.random", self.mock_random):
+            resample_data = list(Chapter_11.ch11_r09.resample(self.data, 8))
 
         self.assertListEqual(self.expected_resample_data, resample_data)
 

@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 3, Handling common doctest issues
+Chapter 11, recipe 3, Handling common doctest issues
 """
 
 # Issue 1 -- set order
@@ -54,9 +54,9 @@ test_bad_reader_problem = """
 Traceback (most recent call last):
   File "/Applications/PyCharm CE.app/Contents/plugins/python-ce/helpers/pycharm/docrunner.py", line 138, in __run
     exec(compile(example.source, filename, "single",
-  File "<doctest ch10_r03.raw_reader[6]>", line 1, in <module>
+  File "<doctest ch11_r03.raw_reader[6]>", line 1, in <module>
     next(bad_row_iter)
-  File "Chapter_10/ch10_r03.py", line 74, in raw_reader
+  File "Chapter_11/ch11_r03.py", line 74, in raw_reader
     raise ValueError(f"Expected {expected}")
 ValueError: Expected {'lat', 'lon', 'time', 'date'}
 """
@@ -72,9 +72,9 @@ test_bad_reader = """
 Traceback (most recent call last):
   File "/Applications/PyCharm CE.app/Contents/plugins/python-ce/helpers/pycharm/docrunner.py", line 138, in __run
     exec(compile(example.source, filename, "single",
-  File "<doctest ch10_r03.raw_reader[6]>", line 1, in <module>
+  File "<doctest ch11_r03.raw_reader[6]>", line 1, in <module>
     next(bad_row_iter)
-  File "Chapter_10/ch10_r03.py", line 74, in raw_reader
+  File "Chapter_11/ch11_r03.py", line 74, in raw_reader
     raise ValueError(f"Expected {expected}")
 ValueError: Expected {...}
 """
@@ -103,9 +103,9 @@ test_point = """
 >>> Point(36.8439, -76.2936).text
 '36°50.634′N 076°17.616′W'
 >>> Point(36.8439, -76.2936)  # doctest: +SKIP
-<ch10_r03.Point object at 0x107910610>
+<ch11_r03.Point object at 0x107910610>
 >>> Point(36.8439, -76.2936)  # doctest: +ELLIPSIS
-<...ch10_r03.Point object at ...
+<...ch11_r03.Point object at ...
 """
 
 # Issue 3 -- float computations

@@ -1,8 +1,8 @@
 """Python Cookbook 2nd ed.
 
-Chapter 10, recipe 10. Mocking external resources
+Chapter 11, recipe 10. Mocking external resources
 
-This exercises Chapter_09.ch09_r02 features as part of Chapter 10.
+This exercises Chapter_09.ch09_r02 features as part of Chapter 11.
 """
 from unittest.mock import Mock, sentinel
 from pytest import *  # type: ignore
