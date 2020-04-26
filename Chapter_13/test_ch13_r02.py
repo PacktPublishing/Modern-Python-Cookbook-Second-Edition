@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 2, Using YAML for configuration files.
+Chapter 13, recipe 2, Using YAML for configuration files.
 """
 from pathlib import Path
 from pytest import *  # type: ignore

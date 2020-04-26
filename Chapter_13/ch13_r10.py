@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 10, Wrapping and combining CLI applications
+Chapter 13, recipe 10, Wrapping and combining CLI applications
 
 This uses an explicit `python` command
 so Chapter_13/ch13_r05.py does not have to be marked executable.

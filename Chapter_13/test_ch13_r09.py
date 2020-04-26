@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 9, Managing arguments and configuration in composite applications
+Chapter 13, recipe 9, Managing arguments and configuration in composite applications
 """
 import yaml
 import Chapter_13.ch13_r09

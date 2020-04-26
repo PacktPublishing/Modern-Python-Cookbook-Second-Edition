@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 6, Using logging for control and audit output
+Chapter 13, recipe 6, Using logging for control and audit output
 """
 import argparse
 import collections

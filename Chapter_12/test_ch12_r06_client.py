@@ -87,7 +87,7 @@ def mock_urllib(monkeypatch):
 
 def test_get_openapi_spec(mock_urllib):
     spec = Chapter_12.ch12_r06_client.get_openapi_spec(mock_urllib)
-    assert spec["info"]["title"] == "Python Cookbook Chapter 11, recipe 6."
+    assert spec["info"]["title"] == "Python Cookbook Chapter 12, recipe 6."
     paths = Chapter_12.ch12_r06_client.make_path_map(spec)
     assert "make_player" in paths
     assert "get_all_players" in paths

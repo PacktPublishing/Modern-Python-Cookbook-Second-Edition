@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 11, recipe 5, Parsing a JSON request
+Chapter 12, recipe 5, Parsing a JSON request
 Server.
 """
 import random
@@ -22,7 +22,7 @@ dealer.TESTING = True
 spec_yaml = """
 openapi: 3.0.3
 info:
-  title: Python Cookbook Chapter 11, recipe 5.
+  title: Python Cookbook Chapter 12, recipe 5.
   description: Parsing a JSON request
   version: "1.0"
 servers:

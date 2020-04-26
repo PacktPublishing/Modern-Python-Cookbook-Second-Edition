@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 1.
+Chapter 13, recipe 1.
 """
 from pathlib import Path
 import unittest

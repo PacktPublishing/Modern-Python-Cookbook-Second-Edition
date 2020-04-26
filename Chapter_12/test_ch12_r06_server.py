@@ -29,7 +29,7 @@ def test_openapi_spec(dealer_client):
     assert spec_response.status_code == 200
     assert (
         spec_response.get_json()["info"]["title"]
-        == "Python Cookbook Chapter 11, recipe 6."
+        == "Python Cookbook Chapter 12, recipe 6."
     )
 
 

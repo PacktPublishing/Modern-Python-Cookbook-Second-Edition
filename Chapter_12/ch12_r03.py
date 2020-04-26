@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 11, recipe 3, Making REST requests with urllib.
+Chapter 12, recipe 3, Making REST requests with urllib.
 """
 
 import urllib.request

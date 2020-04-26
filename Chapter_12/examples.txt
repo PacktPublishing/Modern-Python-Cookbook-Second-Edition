@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 11, Examples from the text.
+Chapter 12, Examples from the text.
 
 •	Using the Flask framework for RESTful APIs
 •	Parsing the query string in a request

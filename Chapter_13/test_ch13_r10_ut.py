@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 10, Wrapping and combining CLI applications
+Chapter 13, recipe 10, Wrapping and combining CLI applications
 """
 from pathlib import Path
 import subprocess

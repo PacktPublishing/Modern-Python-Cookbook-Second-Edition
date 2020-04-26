@@ -2,7 +2,7 @@
 
 Chapter 11, recipe 4 and 5. Unit testing with the unittest module, Combining Unittest and Doctest.
 
-A more conventional name would be test_ch10_r01.py
+A more conventional name would be test_ch11_r01.py
 """
 
 import doctest

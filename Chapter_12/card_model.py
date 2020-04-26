@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 11, Data Model used by many server recipes
+Chapter 12, Data Model used by many server recipes
 """
 import json
 import random

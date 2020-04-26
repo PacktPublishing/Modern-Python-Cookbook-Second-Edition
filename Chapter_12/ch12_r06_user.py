@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 11, recipe 6, Implementing authentication for web services
+Chapter 12, recipe 6, Implementing authentication for web services
 Server-side model for the user and their credentials.
 """
 import base64

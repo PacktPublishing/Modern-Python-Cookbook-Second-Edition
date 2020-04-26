@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 11, recipe 5, Parsing a JSON request
+Chapter 12, recipe 5, Parsing a JSON request
 Client.
 """
 
@@ -34,7 +34,7 @@ def get_openapi_spec() -> ResponseDoc:
         openapi_spec = json.loads(response.read().decode("utf-8"))
     validate_spec(openapi_spec)
     assert (
-        openapi_spec["info"]["title"] == "Python Cookbook Chapter 11, recipe 5."
+        openapi_spec["info"]["title"] == "Python Cookbook Chapter 12, recipe 5."
     ), f"Unepxected Server {openapi_spec['info']['title']}"
     assert (
         openapi_spec["info"]["version"] == "1.0"

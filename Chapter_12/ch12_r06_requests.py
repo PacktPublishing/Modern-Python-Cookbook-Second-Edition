@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 11, recipe 6, Implementing authentication for web services
+Chapter 12, recipe 6, Implementing authentication for web services
 Client, using requests.
 """
 from pprint import pprint
@@ -24,7 +24,7 @@ def get_openapi_spec() -> OpenAPISpec:
 
     validate_spec(openapi_spec)
     assert (
-        openapi_spec["info"]["title"] == "Python Cookbook Chapter 11, recipe 6."
+        openapi_spec["info"]["title"] == "Python Cookbook Chapter 12, recipe 6."
     ), f"Unepxected Server {openapi_spec['info']['title']}"
     assert (
         openapi_spec["info"]["version"] == "1.0"

@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 11, WSGI implementation.
+Chapter 12, WSGI implementation.
 """
 from typing import  (
     Dict,

@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 1, Finding configuration files.
+Chapter 13, recipe 1, Finding configuration files.
 """
 from pathlib import Path
 import collections

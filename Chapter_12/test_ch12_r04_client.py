@@ -74,7 +74,7 @@ def mock_urllib(monkeypatch):
 
 def test_get_openapi_spec(mock_urllib):
     spec = Chapter_12.ch12_r04_client.get_openapi_spec()
-    assert spec["info"]["title"] == "Python Cookbook Chapter 11, recipe 4."
+    assert spec["info"]["title"] == "Python Cookbook Chapter 12, recipe 4."
 
 
 def test_create_new_deck(mock_urllib):

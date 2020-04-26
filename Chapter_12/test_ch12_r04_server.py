@@ -19,7 +19,7 @@ def test_openapi_spec(dealer_client):
     spec_response = dealer_client.get("/dealer/openapi.json")
     assert (
         spec_response.get_json()["info"]["title"]
-        == "Python Cookbook Chapter 11, recipe 4."
+        == "Python Cookbook Chapter 12, recipe 4."
     )
 
 

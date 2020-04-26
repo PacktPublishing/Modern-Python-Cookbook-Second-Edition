@@ -44,3 +44,7 @@ INFO:overview_stats.write:wrote sum.yaml
 2020-04-25 16:25:40,128//INFO//overview_stats.write//wrote PosixPath('data/y13.yaml')
 2020-04-25 19:11:28,733//INFO//overview_stats.write//wrote PosixPath('data/y13.yaml')
 2020-04-25 19:21:54,403//INFO//overview_stats.write//wrote PosixPath('data/y13.yaml')
+2020-04-25 19:22:47,400//INFO//overview_stats.write//wrote PosixPath('data/y13.yaml')
+2020-04-25 20:23:14,060//INFO//overview_stats.write//wrote PosixPath('data/y13.yaml')
+2020-04-25 20:27:39,264//INFO//overview_stats.write//wrote PosixPath('data/y13.yaml')
+2020-04-25 20:29:14,618//INFO//overview_stats.write//wrote PosixPath('data/y13.yaml')

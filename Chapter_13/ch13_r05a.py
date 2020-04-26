@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 5, Designing scripts for composition.
+Chapter 13, recipe 5, Designing scripts for composition.
 class-based design alternative.
 """
 import random

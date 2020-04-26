@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 12, recipe 4, Using class-as-namespace for configuration values.
+Chapter 13, recipe 4, Using class-as-namespace for configuration values.
 """
 from pathlib import Path
 import platform

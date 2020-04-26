@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 11, recipe 6, Implementing authentication for web services
+Chapter 12, recipe 6, Implementing authentication for web services
 Server.
 """
 import logging
@@ -27,7 +27,7 @@ dealer.logger.setLevel(logging.INFO)
 spec_yaml = """
 openapi: 3.0.3
 info:
-  title: Python Cookbook Chapter 11, recipe 6.
+  title: Python Cookbook Chapter 12, recipe 6.
   version: "1.0"
 servers:
 - url: https://127.0.0.1:5000/dealer

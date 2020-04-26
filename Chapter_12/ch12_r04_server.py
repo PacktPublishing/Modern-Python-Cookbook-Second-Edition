@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 11, recipe 4, Parsing the URL path
+Chapter 12, recipe 4, Parsing the URL path
 Server.
 """
 import os
@@ -25,7 +25,7 @@ dealer.TESTING = True
 spec_yaml = """
 openapi: 3.0.3
 info:
-  title: Python Cookbook Chapter 11, recipe 4.
+  title: Python Cookbook Chapter 12, recipe 4.
   description: Parsing the URL path
   version: "1.0"
 servers:
