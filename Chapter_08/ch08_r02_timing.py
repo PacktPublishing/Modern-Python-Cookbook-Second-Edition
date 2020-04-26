@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 2, Separating concerns via multiple inheritance
+Chapter 8, recipe 2, Separating concerns via multiple inheritance
 
 Timing comparison
 """
@@ -12,7 +12,7 @@ if __name__ == "__main__":
     m1 = timeit.timeit(
         """repr(card)""",
         setup="""
-from ch07_r02 import make_card
+from Chapter_08.ch08_r02 import make_card
 card = make_card(10,'S')
     """,
     )
@@ -20,7 +20,7 @@ card = make_card(10,'S')
     m2 = timeit.timeit(
         """str(card)""",
         setup="""
-from ch07_r02 import make_card
+from Chapter_08.ch08_r02 import make_card
 card = make_card(10,'S')
     """,
     )

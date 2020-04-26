@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 8, Deleting from a list of mappings
+Chapter 8, recipe 8, Deleting from a list of mappings
 """
 from typing import (
     Iterable,
@@ -85,7 +85,7 @@ Traceback (most recent call last):
     exec(compile(example.source, filename, "single",
   File "<doctest ch07_r08.__test__.test_naive_delete[2]>", line 1, in <module>
     naive_delete(song_list, 'Lake')
-  File "Chapter_07/ch07_r08.py", line 72, in naive_delete
+  File "Chapter_08.ch08_r08.py", line 72, in naive_delete
     if 'Lake' in data[index]['writer']:
 IndexError: list index out of range
 """

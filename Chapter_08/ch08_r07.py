@@ -1,10 +1,10 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 7, Improving performance with an an ordered collection
+Chapter 8, recipe 7, Improving performance with an an ordered collection
 """
 import bisect
 from typing import Iterable, Iterator
-from Chapter_07.ch07_r06 import *
+from Chapter_08.ch08_r06 import *
 
 
 class Hand:

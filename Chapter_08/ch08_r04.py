@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 4, Managing global and singleton objects
+Chapter 8, recipe 4, Managing global and singleton objects
 """
 
 import collections
@@ -28,8 +28,8 @@ class EventCounter:
 
 
 test_module_global = """
->>> from Chapter_07.ch07_r04 import *
->>> from Chapter_07.ch07_r03 import Dice1
+>>> from Chapter_08.ch08_r04 import *
+>>> from Chapter_08.ch08_r03 import Dice1
 >>> d = Dice1(1)
 >>> for _ in range(1000):
 ...     if sum(d.roll()) == 7: count('seven')
@@ -39,7 +39,7 @@ test_module_global = """
 """
 
 test_class_variable = """
->>> from Chapter_07.ch07_r04 import *
+>>> from Chapter_08.ch08_r04 import *
 >>> c1 = EventCounter()
 >>> c1.count('input')
 >>> c2 = EventCounter()

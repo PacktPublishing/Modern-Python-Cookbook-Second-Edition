@@ -1,9 +1,9 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 6, Creating a class that has orderable objects
+Chapter 8, recipe 6, Creating a class that has orderable objects
 """
 from typing import Any, Protocol, Union, List
-from Chapter_07.ch07_r02 import AceCard, Card, FaceCard, SUITS, PointedCard
+from Chapter_08.ch08_r02 import AceCard, Card, FaceCard, SUITS, PointedCard
 
 Spades, Hearts, Diamonds, Clubs = SUITS
 
@@ -117,7 +117,7 @@ Traceback (most recent call last):
     exec(compile(example.source, filename, "single",
   File "<doctest ch07_r06b.__test__.test_card_int[2]>", line 1, in <module>
     c1 <= 10
-  File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Modern-Python-Cookbook-Second-Edition/Chapter_07/ch07_r06a.py", line 21, in __le__
+  File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Modern-Python-Cookbook-Second-Edition/Chapter_08.ch08_r06a.py", line 21, in __le__
     return (self.rank, self.suit) <= (other.rank, other.suit)
 AttributeError: 'int' object has no attribute 'rank'
 >>> c1 == 9

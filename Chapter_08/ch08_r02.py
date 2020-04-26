@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 2, Separating concerns via multiple inheritance
+Chapter 8, recipe 2, Separating concerns via multiple inheritance
 """
 import logging
 from typing import TYPE_CHECKING, Protocol
@@ -143,7 +143,7 @@ test_make_cribbage_card = """
 >>> c.__class__.__name__
 'CribbageCard'
 >>> c.__class__.mro()  # doctest: +NORMALIZE_WHITESPACE
-[<class 'Chapter_07.ch07_r02.CribbageCard'>, <class 'Chapter_07.ch07_r02.Card'>, <class 'Chapter_07.ch07_r02.CribbagePoints'>, <class 'Chapter_07.ch07_r02.PointedCard'>, <class 'typing.Protocol'>, <class 'typing.Generic'>, <class 'object'>]
+[<class 'Chapter_08.ch08_r02.CribbageCard'>, <class 'Chapter_08.ch08_r02.Card'>, <class 'Chapter_08.ch08_r02.CribbagePoints'>, <class 'Chapter_08.ch08_r02.PointedCard'>, <class 'typing.Protocol'>, <class 'typing.Generic'>, <class 'object'>]
 
 """
 
@@ -163,11 +163,11 @@ test_make_logged_card = """
 >>> c.logger.name
 'LoggedCribbageCard'
 >>> c.__class__.mro()  # doctest: +NORMALIZE_WHITESPACE
-[<class 'Chapter_07.ch07_r02.LoggedCribbageCard'>,
- <class 'Chapter_07.ch07_r02.Logged'>,
- <class 'Chapter_07.ch07_r02.Card'>,
- <class 'Chapter_07.ch07_r02.CribbagePoints'>,
- <class 'Chapter_07.ch07_r02.PointedCard'>,
+[<class 'Chapter_08.ch08_r02.LoggedCribbageCard'>,
+ <class 'Chapter_08.ch08_r02.Logged'>,
+ <class 'Chapter_08.ch08_r02.Card'>,
+ <class 'Chapter_08.ch08_r02.CribbagePoints'>,
+ <class 'Chapter_08.ch08_r02.PointedCard'>,
  <class 'typing.Protocol'>,
  <class 'typing.Generic'>,
  <class 'object'>]

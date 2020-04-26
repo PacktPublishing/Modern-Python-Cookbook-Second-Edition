@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 3, Leveraging Python's duck typing
+Chapter 8, recipe 3, Leveraging Python's duck typing
 """
 import random
 from typing import Tuple, Optional, List, Iterator, Type
@@ -44,7 +44,7 @@ def roller(
 
 
 test_roller = """
->>> from Chapter_07.ch07_r03 import roller, Dice1, Dice2
+>>> from Chapter_08.ch08_r03 import roller, Dice1, Dice2
 >>> list(roller(Dice1, 1, samples=5))
 [(1, 3), (1, 4), (4, 4), (6, 4), (2, 1)]
 >>> list(roller(Dice2, 1, samples=5))

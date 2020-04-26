@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 1, Choosing between inheritance and extension – the “is-a” question
+Chapter 8, recipe 1, Choosing between inheritance and extension – the “is-a” question
 
 """
 from typing import NamedTuple, List

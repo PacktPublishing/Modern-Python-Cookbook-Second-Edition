@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 5, Using more complex structures – maps of lists
+Chapter 8, recipe 5, Using more complex structures – maps of lists
 """
 
 import collections
