@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 9, recipe 9, Refactoring a csv DictReader to a dataclass reader
+Chapter 10, recipe 9, Refactoring a csv DictReader to a dataclass reader
 """
 
 import csv

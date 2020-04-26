@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 9, recipe 4, Using data classes to simplify working with CSV files
+Chapter 10, recipe 4, Using data classes to simplify working with CSV files
 
 Note: Output from this is used in Chapter 4 examples.
 """

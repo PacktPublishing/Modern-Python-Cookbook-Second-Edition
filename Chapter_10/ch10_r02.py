@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 9, recipe 2, Replacing a file while preserving the previous version
+Chapter 10, recipe 2, Replacing a file while preserving the previous version
 
 Note: Output from this is used in Chapter 4 examples.
 

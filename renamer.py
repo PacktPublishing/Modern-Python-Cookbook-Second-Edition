@@ -39,5 +39,7 @@ if __name__ == "__main__":
     # rename(Path.cwd()/"Chapter_12", "ch12", "ch13", dry_run=False)
     # rename(Path.cwd()/"Chapter_11", "ch11", "ch12", dry_run=False)
     # rename(Path.cwd()/"Chapter_10", "ch10", "ch11", dry_run=False)
+    # rename(Path.cwd()/"Chapter_09", "ch09", "ch10", dry_run=False)
+
     # rename(Path.cwd()/"Chapter_04B", "ch04", "ch05", dry_run=True)
 

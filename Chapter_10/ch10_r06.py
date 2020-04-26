@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 9, recipe 6, Reading JSON and YAML documents
+Chapter 10, recipe 6, Reading JSON and YAML documents
 
 Note: Output from this is used in Chapter 4 examples.
 """

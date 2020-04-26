@@ -2,13 +2,13 @@
 
 Chapter 11, recipe 10. Mocking external resources
 
-This exercises Chapter_09.ch09_r02 features as part of Chapter 11.
+This exercises Chapter_10.ch10_r02 features as part of Chapter 11.
 """
 from unittest.mock import Mock, sentinel
 from pytest import *  # type: ignore
 
 from pathlib import Path
-import Chapter_09.ch09_r02
+import Chapter_10.ch10_r02
 
 # Scenario: Everything works, sometimes called the “Happy Path.”
 
@@ -34,12 +34,12 @@ def save_data_good(path, content):
 def test_safe_write_happy(original_file, monkeypatch):
     mock_save_data = Mock(side_effect=save_data_good)
     monkeypatch.setattr(
-        Chapter_09.ch09_r02, 'save_data', mock_save_data)
+        Chapter_10.ch10_r02, 'save_data', mock_save_data)
 
     data = [
-        Chapter_09.ch09_r02.Quotient(355, 113)
+        Chapter_10.ch10_r02.Quotient(355, 113)
     ]
-    Chapter_09.ch09_r02.safe_write(
+    Chapter_10.ch10_r02.safe_write(
         Path(original_file), data)
 
     actual = original_file.read_text(encoding="utf-8")
@@ -56,13 +56,13 @@ def save_data_failure(path, content):
 def test_safe_write_scenario_2(original_file, monkeypatch):
     mock_save_data = Mock(side_effect=save_data_failure)
     monkeypatch.setattr(
-        Chapter_09.ch09_r02, 'save_data', mock_save_data)
+        Chapter_10.ch10_r02, 'save_data', mock_save_data)
 
     data = [
-        Chapter_09.ch09_r02.Quotient(355, 113)
+        Chapter_10.ch10_r02.Quotient(355, 113)
     ]
     with raises(RuntimeError) as ex:
-        Chapter_09.ch09_r02.safe_write(
+        Chapter_10.ch10_r02.safe_write(
             Path(original_file), data)
 
     actual = original_file.read_text(encoding="utf-8")
@@ -92,13 +92,13 @@ def test_safe_write_scenarios(
         original_file, mock_pathlib_path, monkeypatch):
     mock_save_data = Mock(side_effect=save_data_good)
     monkeypatch.setattr(
-        Chapter_09.ch09_r02, 'save_data', mock_save_data)
+        Chapter_10.ch10_r02, 'save_data', mock_save_data)
 
     data = [
-        Chapter_09.ch09_r02.Quotient(355, 113)
+        Chapter_10.ch10_r02.Quotient(355, 113)
     ]
     with raises(RuntimeError) as exc_info:
-        Chapter_09.ch09_r02.safe_write(mock_pathlib_path, data)
+        Chapter_10.ch10_r02.safe_write(mock_pathlib_path, data)
     assert exc_info.type == RuntimeError
     assert exc_info.value.args in {("3",), ("4",), ("5",)}
 

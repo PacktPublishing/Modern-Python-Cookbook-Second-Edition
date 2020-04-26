@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 9, recipe 8, Reading HTML documents
+Chapter 10, recipe 8, Reading HTML documents
 
 Parse the HTML file and produce the JSON and XML files.
 """

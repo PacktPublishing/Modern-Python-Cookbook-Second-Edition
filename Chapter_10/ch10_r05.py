@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 9, recipe 5, Reading complex formats using regular expressions
+Chapter 10, recipe 5, Reading complex formats using regular expressions
 
 Note: Output from this is used in Chapter 4 examples.
 """
@@ -34,7 +34,7 @@ def log_parser(source_line: str) -> LogLine:
     # match = pattern.match(source_line)
     # if match:
     if match := pattern.match(source_line):
-        # Chapter_09/ch09_r03.py:38: error: Item "None" of "Optional[Match[str]]" has no attribute "groupdict"
+        # Chapter_10/ch10_r03.py:38: error: Item "None" of "Optional[Match[str]]" has no attribute "groupdict"
         # Force non-None consideration by cast(Match, match).groupdict()
         data = cast(Match, match).groupdict()
         return LogLine(**data)
@@ -65,9 +65,9 @@ def copy(data_path: Path) -> None:
 
 test_raw = """
 >>> raw()
-LogLine(date='2016-06-15 17:57:54,715', level='INFO', module='ch09_r10', message='Sample Message One')
-LogLine(date='2016-06-15 17:57:54,715', level='DEBUG', module='ch09_r10', message='Debugging')
-LogLine(date='2016-06-15 17:57:54,715', level='WARNING', module='ch09_r10', message='Something might have gone wrong')
+LogLine(date='2016-06-15 17:57:54,715', level='INFO', module='ch10_r10', message='Sample Message One')
+LogLine(date='2016-06-15 17:57:54,715', level='DEBUG', module='ch10_r10', message='Debugging')
+LogLine(date='2016-06-15 17:57:54,715', level='WARNING', module='ch10_r10', message='Something might have gone wrong')
 """
 
 test_copy = """
@@ -81,15 +81,15 @@ test_copy = """
 [{'date': '2016-06-15 17:57:54,715',
   'level': 'INFO',
   'message': 'Sample Message One',
-  'module': 'ch09_r10'},
+  'module': 'ch10_r10'},
  {'date': '2016-06-15 17:57:54,715',
   'level': 'DEBUG',
   'message': 'Debugging',
-  'module': 'ch09_r10'},
+  'module': 'ch10_r10'},
  {'date': '2016-06-15 17:57:54,715',
   'level': 'WARNING',
   'message': 'Something might have gone wrong',
-  'module': 'ch09_r10'}]
+  'module': 'ch10_r10'}]
 """
 
 
