@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 6, Using frozen dataclasses for immutable objects
+Chapter 7, recipe 6, Using frozen dataclasses for immutable objects
 """
 
 

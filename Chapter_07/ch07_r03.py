@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 3, Designing classes with lots of processing
+Chapter 7, recipe 3, Designing classes with lots of processing
 """
 from Chapter_B.collector import samples, arrival1, coupon_collector
 import collections

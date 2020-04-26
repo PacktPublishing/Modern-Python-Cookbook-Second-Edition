@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 6, Examples from the text.
+Chapter 7, Examples from the text.
 
 •	Using a class to encapsulate data and processing
 •	Essential Type Hints for class definitions
@@ -20,7 +20,7 @@ Chapter 6, Examples from the text.
 
 # Optimizing small objects with __slots__
 
->>> from Chapter_06.ch06_r07 import Card, Hand
+>>> from Chapter_07.ch07_r07 import Card, Hand
 >>> h1 = Hand(2)
 >>> h1.deal(Card(rank=4, suit='♣'))
 >>> h1.deal(Card(rank=8, suit='♡'))
@@ -41,7 +41,7 @@ AttributeError: 'Hand' object has no attribute 'some_other_attribute'
 
 # Extending a collection – a list that does statistics
 
->>> from Chapter_06.ch06_r09 import StatsList
+>>> from Chapter_07.ch07_r09 import StatsList
 >>> subset1 = StatsList([10, 8, 13, 9, 11])
 >>> data = StatsList([14, 6, 4, 12, 7, 5])
 >>> data.extend(subset1)
@@ -68,7 +68,7 @@ AttributeError: 'Hand' object has no attribute 'some_other_attribute'
 
 
 >>> import random
->>> from Chapter_06.ch06_r10 import LazyCounterStatistics
+>>> from Chapter_07.ch07_r10 import LazyCounterStatistics
 >>> random.seed(1)
 >>> data = raw_data()
 >>> stats = LazyCounterStatistics(data)

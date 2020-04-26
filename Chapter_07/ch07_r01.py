@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 1, Using a class to encapsulate data and processing
+Chapter 7, recipe 1, Using a class to encapsulate data and processing
 """
 from random import randint
 from typing import Tuple

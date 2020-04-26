@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 11, Using settable properties to update eager attributes
+Chapter 7, recipe 11, Using settable properties to update eager attributes
 """
 import collections
 from typing import Deque, Optional

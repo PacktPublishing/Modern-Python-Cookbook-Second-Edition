@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 13, Managing multiple contexts with multiple resources
+Chapter 7, recipe 13, Managing multiple contexts with multiple resources
 """
 from Chapter_03.ch03_r08 import haversine, MI, NM, KM
 
@@ -125,12 +125,12 @@ test_make_route_file = """
 ...     Point(36.8443, -76.2922)
 ... ]
 >>> try:
-...     (Path.cwd()/"data"/"ch06_r13.csv").unlink()
+...     (Path.cwd()/"data"/"ch07_r13.csv").unlink()
 ... except FileNotFoundError:
 ...     pass
->>> make_route_file(points, Path.cwd()/"data"/"ch06_r13.csv")  # doctest: +ELLIPSIS
-Finished creating .../data/ch06_r13.csv
->>> (Path.cwd()/"data"/"ch06_r13.csv").read_text().splitlines()  # doctest: +NORMALIZE_WHITESPACE
+>>> make_route_file(points, Path.cwd()/"data"/"ch07_r13.csv")  # doctest: +ELLIPSIS
+Finished creating .../data/ch07_r13.csv
+>>> (Path.cwd()/"data"/"ch07_r13.csv").read_text().splitlines()  # doctest: +NORMALIZE_WHITESPACE
 ['start_lat,start_lon,end_lat,end_lon,distance', 
  '38.9784,-76.4922,38.3185,-76.4541,40', 
  '38.3185,-76.4541,37.5531,-76.3403,46', 
@@ -160,5 +160,5 @@ if __name__ == "__main__":
         Point(37.5531, -76.3403),
         Point(36.8443, -76.2922),
     ]
-    make_route_file(points, Path.cwd() / "data" / "ch06_r13.csv")
-    make_route_bz2(points, Path.cwd() / "data" / "ch06_r13.csv.bz2")
+    make_route_file(points, Path.cwd() / "data" / "ch07_r13.csv")
+    make_route_bz2(points, Path.cwd() / "data" / "ch07_r13.csv.bz2")

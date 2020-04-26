@@ -1,11 +1,11 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 5, Using dataclasses for mutable objects
+Chapter 7, recipe 5, Using dataclasses for mutable objects
 """
 
 from dataclasses import dataclass
 from typing import List, ClassVar, Tuple
-from Chapter_06.ch06_r04 import CardPoints
+from Chapter_07.ch07_r04 import CardPoints
 import random
 
 

@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 12, Using contexts and context managers
+Chapter 7, recipe 12, Using contexts and context managers
 """
 
 from Chapter_03.ch03_r08 import haversine, MI, NM, KM
@@ -75,8 +75,8 @@ test_bad = """
 Traceback (most recent call last):
   File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
     exec(compile(example.source, filename, "single",
-  File "<doctest Chapter_06.ch06_r12.__test__.test_bad[2]>", line 2, in <module>
-  File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Modern-Python-Cookbook-Second-Edition/Chapter_06/ch06_r12.py", line 32, in distance
+  File "<doctest Chapter_07.ch07_r12.__test__.test_bad[2]>", line 2, in <module>
+  File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Modern-Python-Cookbook-Second-Edition/Chapter_07.ch07_r12.py", line 32, in distance
     return haversine(p1.lat, p1.lon, p2.lat, p2.lon, self.r)
   File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Modern-Python-Cookbook-Second-Edition/Chapter_03/ch03_r08.py", line 30, in haversine
     return R * 2 * asin(a)

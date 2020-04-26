@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 10, Using properties for lazy attributes
+Chapter 7, recipe 10, Using properties for lazy attributes
 """
 from Chapter_B.collector import arrival1, samples, coupon_collector, expected
 import collections

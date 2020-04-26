@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 7, Optimizing small objects with __slots__
+Chapter 7, recipe 7, Optimizing small objects with __slots__
 """
 import random
 from typing import Optional

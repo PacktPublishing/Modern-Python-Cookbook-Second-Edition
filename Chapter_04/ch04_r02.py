@@ -15,7 +15,7 @@ test_raw_data = """
 1810 wc1.csv
 28 ex2_r12.csv
 1790 wc.csv
-160 ch06_r13.csv
+160 ch07_r13.csv
 215 sample.csv
 45 craps.csv
 28 output.csv

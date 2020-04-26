@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 9, Extending a built-in collection – a list that does statistics
+Chapter 7, recipe 9, Extending a built-in collection – a list that does statistics
 """
 import math
 

@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 6, recipe 2, Essential type hints for class definitions
+Chapter 7, recipe 2, Essential type hints for class definitions
 """
 import random
 from typing import Set, List

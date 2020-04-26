@@ -97,7 +97,7 @@ PosixPath('data')
 
 >>> list(directory_path.glob("*.csv"))  # doctest: +NORMALIZE_WHITESPACE
 [PosixPath('data/wc1.csv'), PosixPath('data/ex2_r12.csv'),
- PosixPath('data/wc.csv'), PosixPath('data/ch06_r13.csv'),
+ PosixPath('data/wc.csv'), PosixPath('data/ch07_r13.csv'),
  PosixPath('data/sample.csv'),
  PosixPath('data/craps.csv'), PosixPath('data/output.csv'),
  PosixPath('data/fuel.csv'), PosixPath('data/waypoints.csv'),
