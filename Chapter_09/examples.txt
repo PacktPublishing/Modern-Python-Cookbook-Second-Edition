@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 8, Examples from the text.
+Chapter 9, Examples from the text.
 
 •	Writing generator functions with the yield statement
 •	Applying transformations to a collection
@@ -16,7 +16,7 @@ Chapter 8, Examples from the text.
 Note: Output from this is used in Chapter 4 examples.
 """
 
->>> from Chapter_08.ch08_r01 import RawLog
+>>> from Chapter_09.ch09_r01 import RawLog
 
 >>> data = [
 ...    RawLog('2016-04-24 11:05:01,462', 'INFO', 'module1', 'Sample Message One'),
@@ -25,7 +25,7 @@ Note: Output from this is used in Chapter 4 examples.
 ... ]
 
 >>> from pprint import pprint
->>> from Chapter_08.ch08_r01 import parse_date_iter
+>>> from Chapter_09.ch09_r01 import parse_date_iter
 >>> for item in parse_date_iter(data):
 ...     pprint(item)
 DatedLog(date=datetime.datetime(2016, 4, 24, 11, 5, 1, 462000), level='INFO', module='module1', message='Sample Message One')
@@ -101,7 +101,7 @@ StopIteration
 >>> log_rows[-1]
 ['', "choppy -- anchor in jackson's creek", '']
 
->>> from Chapter_08.ch08_r03 import row_merge, skip_header_date, convert_datetime
+>>> from Chapter_09.ch09_r03 import row_merge, skip_header_date, convert_datetime
 >>> row_gen = row_merge(log_rows)
 >>> tail_gen = skip_header_date(row_gen)
 >>> datetime_gen = (convert_datetime(row) for row in tail_gen)
@@ -112,7 +112,7 @@ StopIteration
 
 # Picking a subset - three ways to filter
 
->>> from Chapter_08.ch08_r03 import row_merge, log_rows
+>>> from Chapter_09.ch09_r03 import row_merge, log_rows
 >>> pprint(list(row_merge(log_rows)))
 [CombinedRow(date='date', engine_on_time='engine on', engine_on_fuel_height='fuel height', filler_1='', engine_off_time='engine off', engine_off_fuel_height='fuel height', filler_2='', other_notes='Other notes', filler_3=''),
  CombinedRow(date='10/25/13', engine_on_time='08:24:00 AM', engine_on_fuel_height='29', filler_1='', engine_off_time='01:15:00 PM', engine_off_fuel_height='27', filler_2='', other_notes="calm seas -- anchor solomon's island", filler_3=''),
@@ -128,7 +128,7 @@ StopIteration
 >>> sum(typical_iterator)
 0
 
->>> from Chapter_08.ch08_r06 import (
+>>> from Chapter_09.ch09_r06 import (
 ... clean_data_iter, row_merge, total_fuel, avg_fuel_per_hour)
 
 >>> round(
@@ -176,7 +176,7 @@ TypeError: reduce() takes no keyword arguments
 
 # Simplifying complex algorithms with immutable data structures
 
->>> from Chapter_08.ch08_r09 import rank_by_y, cleanse, text_parse, text_1
+>>> from Chapter_09.ch09_r09 import rank_by_y, cleanse, text_parse, text_1
 
 >>> data = rank_by_y(cleanse(text_parse(text_1)))
 >>> pprint(list(data))
@@ -194,7 +194,7 @@ TypeError: reduce() takes no keyword arguments
 
 # Writing recursive generator functions with the yield from statement
 
->>> from Chapter_08.ch08_r10 import find_path, document
+>>> from Chapter_09.ch09_r10 import find_path, document
 
 >>> list(find_path('array_item_value2', document))
 [['array', 1, 'array_item_key2']]

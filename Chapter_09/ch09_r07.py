@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 7, Implementing "there exists" processing.
+Chapter 9, recipe 7, Implementing "there exists" processing.
 """
 from itertools import takewhile, dropwhile
 from typing import Iterable, Iterator, TypeVar, Callable

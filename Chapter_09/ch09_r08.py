@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 8, Creating a partial function.
+Chapter 9, recipe 8, Creating a partial function.
 """
 
 from pprint import pprint

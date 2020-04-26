@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 1, Writing generator functions with the yield statement
+Chapter 9, recipe 1, Writing generator functions with the yield statement
 """
 import datetime
 from pprint import pprint

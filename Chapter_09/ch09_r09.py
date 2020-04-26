@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 9, Simplifying complex algorithms with immutable data structures.
+Chapter 9, recipe 9, Simplifying complex algorithms with immutable data structures.
 
 tuple 20.013553709
 dataclass 17.221665508999997

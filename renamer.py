@@ -40,6 +40,12 @@ if __name__ == "__main__":
     # rename(Path.cwd()/"Chapter_11", "ch11", "ch12", dry_run=False)
     # rename(Path.cwd()/"Chapter_10", "ch10", "ch11", dry_run=False)
     # rename(Path.cwd()/"Chapter_09", "ch09", "ch10", dry_run=False)
+    # rename(Path.cwd() / "Chapter_08", "ch08", "ch09", dry_run=False)
 
+    # TODO:
+    # 7 -> 8
+    # 6 -> 7
+    # 5 -> 6
+    # 4B -> 5
     # rename(Path.cwd()/"Chapter_04B", "ch04", "ch05", dry_run=True)
 

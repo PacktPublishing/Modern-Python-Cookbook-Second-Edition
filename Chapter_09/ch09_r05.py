@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 5, Summarizing a collection – how to reduce.
+Chapter 9, recipe 5, Summarizing a collection – how to reduce.
 """
 from typing import Iterable
 

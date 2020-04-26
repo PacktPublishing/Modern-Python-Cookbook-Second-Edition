@@ -1,11 +1,11 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 6, Combining map and reduce transformations.
+Chapter 9, recipe 6, Combining map and reduce transformations.
 
 """
 import datetime
 from typing import List, Iterable, Iterator
-from Chapter_08.ch08_r03 import row_merge, CombinedRow, log_rows
+from Chapter_09.ch09_r03 import row_merge, CombinedRow, log_rows
 
 # from types import SimpleNamespace as Leg
 from dataclasses import dataclass, field

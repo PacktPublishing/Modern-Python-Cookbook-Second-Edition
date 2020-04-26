@@ -1,12 +1,12 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 4, Picking a subset – three ways to filter.
+Chapter 9, recipe 4, Picking a subset – three ways to filter.
 """
 import datetime
 from pprint import pprint
 import re
 from typing import Iterable, Iterator, Optional
-from Chapter_08.ch08_r02 import DatedLog
+from Chapter_09.ch09_r02 import DatedLog
 
 
 def draft_module_iter(source: Iterable[DatedLog]) -> Iterator[DatedLog]:

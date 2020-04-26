@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 10, Writing recursive generator functions with the yield from statement
+Chapter 9, recipe 10, Writing recursive generator functions with the yield from statement
 """
 from typing import List, Dict, Union, Any, Iterator, Optional
 

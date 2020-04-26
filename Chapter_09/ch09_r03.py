@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 3, Using stacked generator expressions.
+Chapter 9, recipe 3, Using stacked generator expressions.
 """
 import datetime
 from typing import Iterable, Iterator, List, Union, cast, NamedTuple

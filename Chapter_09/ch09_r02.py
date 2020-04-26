@@ -1,9 +1,9 @@
 """Python Cookbook 2nd ed.
 
-Chapter 8, recipe 2, Applying transformations to a collection
+Chapter 9, recipe 2, Applying transformations to a collection
 """
 import datetime
-from Chapter_08.ch08_r01 import RawLog, DatedLog
+from Chapter_09.ch09_r01 import RawLog, DatedLog
 from typing import Iterable, Iterator
 
 from pprint import pprint
