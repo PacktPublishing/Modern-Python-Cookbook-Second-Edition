@@ -1,8 +1,8 @@
 """Python Cookbook 2nd ed.
 
-Chapter 5, recipe 5, Using cmd for creating command-line applications
+Chapter 6, recipe 5, Using cmd for creating command-line applications
 
-This is a bit too complex for Chapter 5, but is provided as bonus material.
+This is a bit too complex for Chapter 6, but is provided as bonus material.
 """
 from cmd import Cmd
 import random

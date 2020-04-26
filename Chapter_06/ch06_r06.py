@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 5, recipe 6, Using the OS environment settings
+Chapter 6, recipe 6, Using the OS environment settings
 """
 import argparse
 import os
@@ -8,7 +8,7 @@ import sys
 from typing import List
 
 from Chapter_03.ch03_r08 import haversine, MI, NM, KM
-from Chapter_05.ch05_r04 import point_type, display
+from Chapter_06.ch06_r04 import point_type, display
 
 
 def get_options(argv: List[str] = sys.argv[1:]) -> argparse.Namespace:
@@ -19,8 +19,8 @@ def get_options(argv: List[str] = sys.argv[1:]) -> argparse.Namespace:
       File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
         compileflags, 1), test.globs)
       File "<doctest __main__.get_options[1]>", line 1, in <module>
-        get_options(['ch05_r06.py', '36.12,-86.67'])
-      File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Code/ch05_r06.py", line 49, in get_options
+        get_options(['ch06_r06.py', '36.12,-86.67'])
+      File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Code/ch06_r06.py", line 49, in get_options
         sys.exit("Neither HOME_PORT nor p2 argument provided.")
     SystemExit: Neither HOME_PORT nor p2 argument provided.
 
@@ -36,8 +36,8 @@ def get_options(argv: List[str] = sys.argv[1:]) -> argparse.Namespace:
       File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
         compileflags, 1), test.globs)
       File "<doctest __main__.get_options[5]>", line 1, in <module>
-        get_options(['ch05_r06.py', '36.12,-86.67'])
-      File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Code/ch05_r06.py", line 27, in get_options
+        get_options(['ch06_r06.py', '36.12,-86.67'])
+      File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Code/ch06_r06.py", line 27, in get_options
         sys.exit("Invalid value for UNITS, not KM, NM, or MI")
     SystemExit: Invalid value for UNITS, not KM, NM, or MI
     """

@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 5, Examples from the text.
+Chapter 6, Examples from the text.
 
 
 •	Using features of the print() function

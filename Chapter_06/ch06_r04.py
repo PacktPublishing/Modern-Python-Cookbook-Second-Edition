@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 5, recipe 4, Using argparse to get command-line input
+Chapter 6, recipe 4, Using argparse to get command-line input
 """
 
 import argparse
@@ -17,9 +17,9 @@ def point_type(text: str) -> Tuple[float, float]:
     Traceback (most recent call last):
       File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
         exec(compile(example.source, filename, "single",
-      File "<doctest ch05_r04.point_type[1]>", line 1, in <module>
+      File "<doctest ch06_r04.point_type[1]>", line 1, in <module>
         point_type('36.12, 76.abc')
-      File "Chapter_05/ch05_r04.py", line 22, in point_type
+      File "Chapter_06.ch06_r04.py", line 22, in point_type
         raise argparse.ArgumentTypeError from ex
     argparse.ArgumentTypeError: could not convert string to float: ' 76.abc'
     """

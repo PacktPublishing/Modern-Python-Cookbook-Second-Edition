@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 5, recipe 2, Using features of the print() function
+Chapter 6, recipe 2, Using features of the print() function
 """
 from pathlib import Path
 import csv

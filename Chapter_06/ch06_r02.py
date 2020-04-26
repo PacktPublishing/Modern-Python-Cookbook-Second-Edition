@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 5, recipe 2, Using input() and getpass() for user input
+Chapter 6, recipe 2, Using input() and getpass() for user input
 """
 
 from datetime import date, datetime

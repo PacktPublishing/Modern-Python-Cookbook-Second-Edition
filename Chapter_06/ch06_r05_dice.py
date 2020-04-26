@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter 5, recipe 5, Using cmd for creating command-line applications
+Chapter 6, recipe 5, Using cmd for creating command-line applications
 """
 import cmd
 import random
