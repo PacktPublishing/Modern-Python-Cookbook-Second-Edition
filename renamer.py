@@ -36,6 +36,7 @@ def rename(base: Path, old_name: str, new_name: str, dry_run: bool=True) -> None
 
 if __name__ == "__main__":
     # search(Path.cwd() / "Chapter_12", "ch12")
+    # Refactoring Chapter 4...
     # rename(Path.cwd() / "Chapter_12", "ch12", "ch13", dry_run=False)
     # rename(Path.cwd() / "Chapter_11", "ch11", "ch12", dry_run=False)
     # rename(Path.cwd() / "Chapter_10", "ch10", "ch11", dry_run=False)
@@ -43,9 +44,5 @@ if __name__ == "__main__":
     # rename(Path.cwd() / "Chapter_08", "ch08", "ch09", dry_run=False)
     # rename(Path.cwd() / "Chapter_07", "ch07", "ch08", dry_run=False)
     # rename(Path.cwd() / "Chapter_06", "ch06", "ch07", dry_run=False)
-    rename(Path.cwd() / "Chapter_05", "ch05", "ch06", dry_run=False)
-
-    # TODO:
-    # 4B -> 5
-    # rename(Path.cwd()/"Chapter_04B", "ch04", "ch05", dry_run=True)
-
+    # rename(Path.cwd() / "Chapter_05", "ch05", "ch06", dry_run=False)
+    # rename(Path.cwd() / "Chapter_04B", "ch04", "ch05", dry_run=False)

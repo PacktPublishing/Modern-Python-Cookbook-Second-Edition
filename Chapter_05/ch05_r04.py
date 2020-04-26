@@ -98,6 +98,6 @@ test_get_fuel_history_namedtyple = """
 """
 
 result: History = {"date": 42}  # type: ignore
-# Chapter_04/ch04_r13.py:98: error: Keys ('start_time', 'start_fuel', 'end_time', 'end_fuel') missing for TypedDict "History"
+# Chapter_05/ch04_r04.py:98: error: Keys ('start_time', 'start_fuel', 'end_time', 'end_fuel') missing for TypedDict "History"
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
