@@ -1,6 +1,14 @@
 """
 Rename a chapter's examples. This does *not* look inside the files for other changes.
-Those are fraught with complexities.
+Those changes are fraught with complexities.
+
+Some ideas...
+
+    - "Chapter \d+" -> "Chapter m"
+
+    - "Chapter_\d\d" -> "Chapter_\d\d"
+
+    - "Chapter_\d\d.ch\d\d" -> "Chapter_\d\d.\d\d"
 """
 from pathlib import Path
 import re

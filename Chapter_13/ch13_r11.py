@@ -89,7 +89,7 @@ def summarize_2(
             directory: Path,
             games: int,
             temporary: Path
-    ):
+    ) -> Iterator[Counter]:
         total_counter: Counter[Any] = collections.Counter()
         command_sequence = command_iter(directory, games)
         output_lines_iter = command_output_iter(
