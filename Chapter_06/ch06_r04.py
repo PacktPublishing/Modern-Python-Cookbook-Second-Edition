@@ -34,8 +34,8 @@ def point_type(text: str) -> Tuple[float, float]:
 
 def get_options(argv: List[str]) -> argparse.Namespace:
     """
-    >>> opts = get_options(['-r', 'KM', '36.12,-86.67', '33.94,-118.4'])
-    >>> opts.r
+    >>> opts = get_options(['-u', 'KM', '36.12,-86.67', '33.94,-118.4'])
+    >>> opts.units
     'KM'
     >>> opts.p1
     (36.12, -86.67)
@@ -43,9 +43,13 @@ def get_options(argv: List[str]) -> argparse.Namespace:
     (33.94, -118.4)
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("-r", action="store", choices=("NM", "MI", "KM"), default="NM")
-    parser.add_argument("p1", action="store", type=point_type)
-    parser.add_argument("p2", action="store", type=point_type)
+    parser.add_argument(
+        "-u", "--units",
+        action="store", choices=("NM", "MI", "KM"), default="NM")
+    parser.add_argument(
+        "p1", action="store", type=point_type)
+    parser.add_argument(
+        "p2", action="store", type=point_type)
     options = parser.parse_args(argv)
     return options
 
@@ -64,7 +68,7 @@ def main(argv: List[str] = sys.argv[1:]) -> None:
     options = get_options(argv)
     lat_1, lon_1 = options.p1
     lat_2, lon_2 = options.p2
-    display(lat_1, lon_1, lat_2, lon_2, options.r)
+    display(lat_1, lon_1, lat_2, lon_2, options.units)
 
 
 if __name__ == "__main__":

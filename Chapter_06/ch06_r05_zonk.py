@@ -83,10 +83,11 @@ class Zonk(Cmd):
         """Sets the number of dice to roll."""
         try:
             self.n_dice = int(arg)
-            self.dice = None
-            print(f"Rolling {self.n_dice} dice")
         except ValueError:
             print(f"{arg!r} is invalid")
+            return False
+        self.dice = None
+        print(f"Rolling {self.n_dice} dice")
         return False
 
     def do_EOF(self, arg: str) -> bool:

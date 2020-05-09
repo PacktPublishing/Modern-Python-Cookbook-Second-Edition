@@ -44,9 +44,13 @@ def get_date2() -> date:
 
 
 def get_date3() -> date:
-    raw_date_str = input("date [yyyy-mm-dd]: ")
-    input_date = datetime.strptime(raw_date_str, "%Y-%m-%d").date()
-    return input_date
+    while True:
+        raw_date_str = input("date [yyyy-mm-dd]: ")
+        try:
+            input_date = datetime.strptime(raw_date_str, "%Y-%m-%d").date()
+            return input_date
+        except ValueError as ex:
+            print(f"invalid date, {ex}")
 
 
 DateGet = Callable[[], date]
@@ -193,6 +197,14 @@ def test_get_date3(monkeypatch):
     d = get_date3()
     assert d == date(2016, 4, 29)
     assert mock_input.mock_calls == [call("date [yyyy-mm-dd]: ")]
+
+
+def test_get_date3_error(monkeypatch):
+    mock_input = Mock(side_effect=["2016-2-31", "2016-4-29"])
+    monkeypatch.setitem(__builtins__, "input", mock_input)
+    d = get_date3()
+    assert d == date(2016, 4, 29)
+    assert mock_input.mock_calls == [call("date [yyyy-mm-dd]: "), call("date [yyyy-mm-dd]: ")]
 
 
 def test_get_date_list(monkeypatch):

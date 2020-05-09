@@ -88,3 +88,30 @@ mean_size=1414.77, std_size=901.10
 ... )
 mean_size=1414.77, std_size=901.10, mean_size+2*std_size=3216.97
 
+# Using argparse to get command-line input
+
+>>> import argparse
+>>> from typing import List
+>>> import sys
+>>> import platform
+
+>>> def get_options(argv: List[str] = sys.argv[1:]) -> argparse.Namespace:
+...     parser = argparse.ArgumentParser()
+...     parser.add_argument('file', nargs='*')
+...     options = parser.parse_args(argv)
+...     if platform.system() == "Windows":
+...         options.file = list(
+...             name
+...             for wildcard in options.file
+...             for name in Path().glob(wildcard))
+...     return options
+
+>>> options = get_options(['Chapter_06/*.py'])
+>>> options
+Namespace(file=['Chapter_06/*.py'])
+
+>>> from pathlib import Path
+>>> options = argparse.Namespace(file=["Chapter_06/*.py"])
+>>> list(name for wildcard in options.file for name in Path().glob(wildcard))  # doctest: +ELLIPSIS
+[...]
+
