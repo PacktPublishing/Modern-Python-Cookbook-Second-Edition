@@ -7,135 +7,140 @@ Chapter B, Bonus -- Statistical Programming and Linear Regression
 • Computing the coefficient of correlation
 • Computing regression parameters
 • Computing an autocorrelation
-• Is the data random?
+• Confirming that the data is random – the null hypothesis
 • Are there outliers?
 • Many variables one pass
 
 """
 
-# Lines 25 to 29
+# Using the statistics library
+
 >>> from pathlib import Path
 >>> import json
->>> from collections import OrderedDict
 >>> source_path = Path('data/anscombe.json')
->>> data = json.loads(source_path.read_text(),
-...     object_pairs_hook=OrderedDict)
+>>> data = json.loads(source_path.read_text())
 
 
-# Lines 34 to 36
 >>> [item['series'] for item in data]
 ['I', 'II', 'III', 'IV']
 >>> [len(item['data']) for item in data]
 [11, 11, 11, 11]
 
-# Lines 61 to 61
+
 >>> def get_series(data, series_name):
 ...     for s in data:
 ...         if s['series'] == series_name:
 ...             return s
 
 
-# Lines 69 to 72
 >>> series_1 = get_series(data, 'I')
 >>> series_1['series']
 'I'
 >>> len(series_1['data'])
 11
 
-# Lines 78 to 78
 >>> def get_series(data, series_name):
-...     name_match = lambda series: series['series'] == series_name
-...     series = list(filter(name_match, data))[0]
+...     name_match = lambda series: (
+...         series['series'] == series_name)
+...     series = next(filter(name_match, data))
 ...     return series
 
-
-# Lines 85 to 88
 >>> series_2 = get_series(data, 'II')
 >>> series_2['series']
 'II'
 >>> len(series_2['data'])
 11
 
-# Lines 92 to 92
 >>> def get_series(data, series_name):
-...     series = list(
+...     series = next(
 ...         s for s in data
 ...            if s['series'] == series_name
-...         )[0]
+...         )
 ...     return series
 
 
-# Lines 101 to 104
 >>> series_3 = get_series(data, 'III')
 >>> series_3['series']
 'III'
 >>> len(series_3['data'])
 11
 
-# Lines 111 to 111
 >>> def data_iter(series, variable_name):
 ...     return (item[variable_name] for item in series['data'])
 
 
-# Lines 114 to 116
 >>> s_4 = get_series(data, 'IV')
 >>> s_4_x = list(data_iter(s_4, 'x'))
 >>> len(s_4_x)
 11
 
-# Lines 122 to 123
 >>> import statistics
 >>> for series_name in 'I', 'II', 'III', 'IV':
 ...     series = get_series(data, series_name)
 ...     for variable_name in 'x', 'y':
-...         samples = list(data_iter(series, variable_name))
+...         samples = list(
+...             data_iter(series, variable_name))
 ...         mean = statistics.mean(samples)
 ...         median = statistics.median(samples)
-...         print(series_name, variable_name, round(mean,2), median)
-I x 9.0 9.0
-I y 7.5 7.58
-II x 9.0 9.0
-II y 7.5 8.14
-III x 9.0 9.0
-III y 7.5 7.11
-IV x 9.0 8.0
-IV y 7.5 7.04
+...         print(
+...             f"{series_name:>3s} {variable_name}: "
+...             f"mean={round(mean, 2)}, median={median}")
+  I x: mean=9.0, median=9.0
+  I y: mean=7.5, median=7.58
+ II x: mean=9.0, median=9.0
+ II y: mean=7.5, median=8.14
+III x: mean=9.0, median=9.0
+III y: mean=7.5, median=7.11
+ IV x: mean=9.0, median=8.0
+ IV y: mean=7.5, median=7.04
 
-# Lines 141 to 142
+
+
 >>> import collections
 >>> for series_name in 'I', 'II', 'III', 'IV':
 ...     series = get_series(data, series_name)
 ...     for variable_name in 'x', 'y':
 ...         samples = data_iter(series, variable_name)
-...         mode = collections.Counter(samples).most_common(1)
-...         print(series_name, variable_name, mode)
-I x [(10.0, 1)]
-I y [(8.04, 1)]
-II x [(10.0, 1)]
-II y [(9.14, 1)]
-III x [(10.0, 1)]
-III y [(7.46, 1)]
-IV x [(8.0, 10)]
-IV y [(6.58, 1)]
+...         mode = collections.Counter(
+...             samples
+...         ).most_common(1)
+...         print(
+...             f"{series_name:>3s} {variable_name}: "
+...             f"mode={mode}")
+  I x: mode=[(10.0, 1)]
+  I y: mode=[(8.04, 1)]
+ II x: mode=[(10.0, 1)]
+ II y: mode=[(9.14, 1)]
+III x: mode=[(10.0, 1)]
+III y: mode=[(7.46, 1)]
+ IV x: mode=[(8.0, 10)]
+ IV y: mode=[(6.58, 1)]
 
-# Lines 160 to 160
+
+
 >>> for series_name in 'I', 'II', 'III', 'IV':
 ...     series = get_series(data, series_name)
 ...     for variable_name in 'x', 'y':
-...         samples = list(data_iter(series, variable_name))
+...         samples = list(
+...             data_iter(series, variable_name))
 ...         least = min(samples)
 ...         most = max(samples)
-...         print(series_name, variable_name, least, most)
-I x 4.0 14.0
-I y 4.26 10.84
-II x 4.0 14.0
-II y 3.1 9.26
-III x 4.0 14.0
-III y 5.39 12.74
-IV x 8.0 19.0
-IV y 5.25 12.5
+...         print(
+...             f"{series_name:>3s} {variable_name}: "
+...             f"{least=}, {most=}")
+  I x: least=4.0, most=14.0
+  I y: least=4.26, most=10.84
+ II x: least=4.0, most=14.0
+ II y: least=3.1, most=9.26
+III x: least=4.0, most=14.0
+III y: least=5.39, most=12.74
+ IV x: least=8.0, most=19.0
+ IV y: least=5.25, most=12.5
 
-# Lines 178 to 179
+
+
+
+
 >>> import statistics
 >>> for series_name in 'I', 'II', 'III', 'IV':
 ...     series = get_series(data, series_name)
@@ -144,22 +149,26 @@ IV y 5.25 12.5
 ...         mean = statistics.mean(samples)
 ...         variance = statistics.variance(samples, mean)
 ...         stdev = statistics.stdev(samples, mean)
-...         print(series_name, variable_name,
-...            round(variance,2), round(stdev,2))
-I x 11.0 3.32
-I y 4.13 2.03
-II x 11.0 3.32
-II y 4.13 2.03
-III x 11.0 3.32
-III y 4.12 2.03
-IV x 11.0 3.32
-IV y 4.12 2.03
+...         print(
+...             f"{series_name:>3s} {variable_name}: "
+...             f"var={round(variance,2)}, stdev={round(stdev,2)}"
+...         )
+  I x: var=11.0, stdev=3.32
+  I y: var=4.13, stdev=2.03
+ II x: var=11.0, stdev=3.32
+ II y: var=4.13, stdev=2.03
+III x: var=11.0, stdev=3.32
+III y: var=4.12, stdev=2.03
+ IV x: var=11.0, stdev=3.32
+ IV y: var=4.12, stdev=2.03
 
-# Lines 217 to 217
+
 >>> statistics.mean.__name__
 'mean'
 
-# Lines 281 to 285
+
+# Average of values in a Counter
+
 >>> from collections import Counter
 >>> raw_data = [8, 8, 8, 8, 8, 8, 8, 19, 8, 8, 8]
 >>> series_4_x = Counter(raw_data)
@@ -167,94 +176,72 @@ IV y 4.12 2.03
 >>> series_4_x
 Counter({8: 10, 19: 1})
 
-# Lines 291 to 291
 >>> def counter_sum(counter):
-...     return sum(f*c for c,f in counter.items())
+...     return sum(f*v for v,f in counter.items())
 
-# Lines 298 to 298
 >>> counter_sum(series_4_x)
 99
 
-# Lines 302 to 302
 >>> def counter_len(counter):
-...     return sum(f for c,f in counter.items())
+...     return sum(f for v,f in counter.items())
 
-# Lines 307 to 307
 >>> counter_len(series_4_x)
 11
 
-# Lines 311 to 311
 >>> def counter_mean(counter):
 ...    return counter_sum(counter)/counter_len(counter)
 
-# Lines 316 to 316
 >>> counter_mean(series_4_x)
 9.0
 
-# Lines 337 to 337
 >>> def counter_sum_2(counter):
-...     return sum(f*c**2 for c,f in counter.items())
+...     return sum(f*v**2 for v,f in counter.items())
+
+>>> counter_sum_2(series_4_x)
+1001
 
 
-# Lines 340 to 340
 >>> def counter_variance(counter):
 ...    n = counter_len(counter)
 ...    return (counter_sum_2(counter)-(counter_sum(counter)**2)/n)/(n-1)
 
-
-# Lines 345 to 346
 >>> import math
 >>> def counter_stdev(counter):
 ...    return math.sqrt(counter_variance(counter))
 
 
-# Lines 349 to 351
 >>> counter_variance(series_4_x)
 11.0
 >>> round(counter_stdev(series_4_x), 2)
 3.32
 
-# Lines 354 to 355
 >>> import statistics
 >>> statistics.variance(series_4_x.elements())
 11
 
-# Lines 372 to 376
 >>> from pathlib import Path
 >>> import json
->>> from collections import OrderedDict
 >>> source_path = Path('data/anscombe.json')
->>> data = json.loads(source_path.read_text(),
-...     object_pairs_hook=OrderedDict)
+>>> data = json.loads(source_path.read_text())
 
-
-# Lines 381 to 383
 >>> [item['series'] for item in data]
 ['I', 'II', 'III', 'IV']
 >>> [len(item['data']) for item in data]
 [11, 11, 11, 11]
 
-# Lines 495 to 499
->>> from pathlib import Path
->>> import json
->>> from collections import OrderedDict
->>> source_path = Path('data/anscombe.json')
->>> data = json.loads(source_path.read_text(),
-...     object_pairs_hook=OrderedDict)
 
+# Is the data random?
 
-# Lines 504 to 506
->>> [item['series'] for item in data]
-['I', 'II', 'III', 'IV']
->>> [len(item['data']) for item in data]
-[11, 11, 11, 11]
-
-# Lines 753 to 767
 >>> from Chapter_B.chB_r05 import get_data
 >>> from pathlib import Path
 >>> source_path = Path('data/co2_mm_mlo.txt')
 >>> with source_path.open() as source_file:
 ...     all_data = list(get_data(source_file))
+>>> all_data[:3]  # doctest: +NORMALIZE_WHITESPACE
+[Sample(year=1958, month=3, decimal_date=1958.208, average=315.71, interpolated=315.71, trend=314.62, days=-1),
+ Sample(year=1958, month=4, decimal_date=1958.292, average=317.45, interpolated=317.45, trend=315.29, days=-1),
+ Sample(year=1958, month=5, decimal_date=1958.375, average=317.5, interpolated=317.5, trend=314.71, days=-1)]
+
 >>> y1959 = [r.interpolated for r in all_data if r.year == 1959]
 >>> y1960 = [r.interpolated for r in all_data if r.year == 1960]
 >>> y2014 = [r.interpolated for r in all_data if r.year == 2014]
@@ -267,34 +254,11 @@ Counter({8: 10, 19: 1})
 >>> round(mean(y2014), 2)
 398.61
 
-# Lines 779 to 782
+# Are there outliers?
+
 >>> from Chapter_03.ch03_r10 import fact_s
 >>> def binom(n, k):
 ...     return fact_s(n)//(fact_s(k)*fact_s(n-k))
 >>> binom(24, 12)
 2704156
-
-# Lines 921 to 925
->>> from pathlib import Path
->>> import json
->>> from collections import OrderedDict
->>> source_path = Path('data/anscombe.json')
->>> data = json.loads(source_path.read_text(),
-...     object_pairs_hook=OrderedDict)
-
-
-# Lines 930 to 932
->>> [item['series'] for item in data]
-['I', 'II', 'III', 'IV']
->>> [len(item['data']) for item in data]
-[11, 11, 11, 11]
-
-# Lines 1058 to 1062
->>> from pathlib import Path
->>> import json
->>> from collections import OrderedDict
->>> source_path = Path('data/anscombe.json')
->>> data = json.loads(source_path.read_text(),
-...     object_pairs_hook=OrderedDict)
-
 

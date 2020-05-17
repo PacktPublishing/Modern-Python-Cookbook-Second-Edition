@@ -4,7 +4,7 @@ Chapter 10, Examples from the text.
 
 •	Using pathlib to work with file names
 •	Replacing a file while preserving the previous version
-•	Reading delimited files with the cvs module
+•	Reading delimited files with the ``csv`` module
 •	Using data classes to simplify working with CSV files
 •	Reading complex formats using regular expressions
 •	Reading JSON and YAML documents

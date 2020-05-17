@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter B, Bonus, recipe 5.
+Chapter B, Bonus, recipe 5, Computing an autocorrelation
 
 Raw data source: ftp://ftp.cmdl.noaa.gov/ccg/co2/trends/co2_mm_mlo.txt
 
@@ -20,7 +20,8 @@ def non_comment_iter(source: TextIO) -> Iterator[str]:
         yield line
 
 
-def raw_data_iter(source: Iterable[str]) -> Iterator[Dict[str, str]]:
+def raw_data_iter(
+        source: Iterable[str]) -> Iterator[Dict[str, str]]:
     header = [
         "year",
         "month",
@@ -30,11 +31,11 @@ def raw_data_iter(source: Iterable[str]) -> Iterator[Dict[str, str]]:
         "trend",
         "days",
     ]
-    rdr = csv.DictReader(source, header, delimiter=" ", skipinitialspace=True)
+    rdr = csv.DictReader(
+        source, header, delimiter=" ", skipinitialspace=True)
     return rdr
 
 
-# from types import SimpleNamespace as Sample
 from typing import NamedTuple
 
 
@@ -48,7 +49,7 @@ class Sample(NamedTuple):
     days: int
 
 
-def cleanse(row: Dict[str, str]):
+def cleanse(row: Dict[str, str]) -> Sample:
     return Sample(
         year=int(row["year"]),
         month=int(row["month"]),
@@ -63,45 +64,56 @@ def cleanse(row: Dict[str, str]):
 def get_data(source_file: TextIO) -> Iterator[Sample]:
     non_comment_data = non_comment_iter(source_file)
     raw_data = raw_data_iter(non_comment_data)
-
-    # print(list(raw_data)[:10])
-
     cleansed_data = (cleanse(row) for row in raw_data)
-
-    # print(list(cleansed_data)[:10])
     return cleansed_data
 
+test_get_data = """
+>>> source_path = Path("data") / "co2_mm_mlo.txt"
+>>> with source_path.open() as source_file:
+...     all_data = list(get_data(source_file))
+>>> all_data[:3]  # doctest: +NORMALIZE_WHITESPACE
+[Sample(year=1958, month=3, decimal_date=1958.208, average=315.71, interpolated=315.71, trend=314.62, days=-1), 
+ Sample(year=1958, month=4, decimal_date=1958.292, average=317.45, interpolated=317.45, trend=315.29, days=-1), 
+ Sample(year=1958, month=5, decimal_date=1958.375, average=317.5, interpolated=317.5, trend=314.71, days=-1)]
 
-from Chapter_B.chB_r03 import correlation
+"""
+__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
+
+
+from Chapter_B.chB_r03 import correlation, Point
 from Chapter_B.chB_r04 import regression
 from statistics import mean, median
-
-__test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
 
 if __name__ == "__main__":
     source_path = Path("data") / "co2_mm_mlo.txt"
     with source_path.open() as source_file:
 
-        co2_ppm = list(row.interpolated for row in get_data(source_file))
-        print(len(co2_ppm))
-        # print(co2_ppm)
+        co2_ppm = list(
+            row.interpolated
+            for row in get_data(source_file))
+        print(f"Read {len(co2_ppm)} Samples")
 
-        for tau in range(1, 20):
-            # print(co2_ppm[:-tau], co2_ppm[tau:])
-            data = [{"x": x, "y": y} for x, y in zip(co2_ppm[:-tau], co2_ppm[tau:])]
-            r_tau_0 = correlation(data[:60])
-            r_tau_60 = correlation(data[60:120])
-            print(f"r_{{xx}}(τ={tau:2d}) = {r_tau_0:6.3f}")
-
-        monthly_mean = [
-            {"x": x, "y": mean(co2_ppm[x : x + 12])} for x in range(0, len(co2_ppm), 12)
+    for tau in range(1, 20):
+        data = [
+            Point({"x": x, "y": y})
+            for x, y in zip(co2_ppm[:-tau], co2_ppm[tau:])
         ]
+        r_tau_0 = correlation(data[:60])
+        r_tau_60 = correlation(data[60:120])
+        print(f"r_{{xx}}(τ={tau:2d}) = {r_tau_0:6.3f}")
 
-        # print(monthly_mean)
-        alpha, beta = regression(monthly_mean)
-        print(f"y = {alpha}+x*{beta}")
-        r = correlation(monthly_mean)
-        print(f"r^2 = {r**2}")
+    monthly_mean = [
+        Point(
+            {"x": x, "y": mean(co2_ppm[x : x + 12])}
+        )
+        for x in range(0, len(co2_ppm), 12)
+    ]
 
-        for d in monthly_mean:
-            print(f"{d} x={d['x']}, y={alpha+d['x']*beta}")
+    # print(monthly_mean)
+    alpha, beta = regression(monthly_mean)
+    print(f"y = {alpha:.1f}+x*{beta:.4f}")
+    r = correlation(monthly_mean)
+    print(f"r^2 = {r**2:.3f}")
+
+    for d in monthly_mean:
+        print(f"{d} x={d['x']}, y={alpha+d['x']*beta}")

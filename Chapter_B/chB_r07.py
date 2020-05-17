@@ -1,27 +1,31 @@
 """Python Cookbook 2nd ed.
 
-Chapter B, Bonus, recipe 7.
+Chapter B, Bonus, recipe 7, Are there outliers?
 """
 
 from pathlib import Path
 import json
 import statistics
-from typing import Iterable, Iterator, Optional, List
+from typing import Iterable, Iterator, Optional, List, Dict, TypedDict, Callable
 
 
-def absdev(data: Iterable[float], median: Optional[float] = None) -> Iterator[float]:
+def absdev(
+        data: List[float],
+        median: Optional[float] = None) -> Iterator[float]:
     if median is None:
         median = statistics.median(data)
     return (abs(x - median) for x in data)
 
 
-def median_absdev(data: Iterable[float], median: Optional[float] = None) -> float:
+def median_absdev(
+        data: List[float],
+        median: Optional[float] = None) -> float:
     if median is None:
         median = statistics.median(data)
     return statistics.median(absdev(data, median=median))
 
 
-def z_mod(data: Iterable[float]) -> Iterator[float]:
+def z_mod(data: List[float]) -> Iterator[float]:
     median = statistics.median(data)
     mad = median_absdev(data, median)
     return (0.6745 * (x - median) / mad for x in data)
@@ -31,31 +35,35 @@ import itertools
 
 
 def pass_outliers(data: List[float]) -> Iterator[float]:
-    return itertools.compress(data, (z >= 3.5 for z in z_mod(data)))
+    return itertools.compress(
+        data, (z >= 3.5 for z in z_mod(data)))
 
 
 def reject_outliers(data: List[float]) -> Iterator[float]:
-    return itertools.compress(data, (z < 3.5 for z in z_mod(data)))
+    return itertools.compress(
+        data, (z < 3.5 for z in z_mod(data)))
 
 
-from pprint import pprint
+Point = Dict[str, float]
+class Series(TypedDict):
+    series: str
+    data: List[Point]
 
-# for series in data:
-#     pprint(series)
 
+def examine_all_series(source_path: Path) -> None:
+    raw_data: List[Series] = json.loads(source_path.read_text())
 
-def examine_anscombe(source_path: Path) -> None:
-    raw_data = json.loads(source_path.read_text())
-
-    data = {series["series"]: series["data"] for series in raw_data}
-    for series_name in data:
+    series_map = {
+        series["series"]: series["data"]
+        for series in raw_data}
+    for series_name in series_map:
         print(series_name)
-        series_data = data[series_name]
-        for variable_name in series_data:
-            variable = [item[variable_name] for item in series_data]
-            print(variable_name, variable, end=" ")
+        series_data = series_map[series_name]
+        for variable_name in 'x', 'y':
+            values = [item[variable_name] for item in series_data]
+            print(variable_name, values, end=" ")
             try:
-                print("outliers", list(pass_outliers(variable)))
+                print("outliers", list(pass_outliers(values)))
             except ZeroDivisionError:
                 print("Data Appears Linear")
         print()
@@ -96,8 +104,72 @@ ZeroDivisionError: float division by zero
 []
 """
 
+outlier = lambda z: z >= 3.5
+
+def pass_outliers_2(data: List[float]) -> Iterator[float]:
+    return itertools.compress(
+        data, (outlier(z) for z in z_mod(data)))
+
+
+def reject_outliers_2(data: List[float]) -> Iterator[float]:
+    return itertools.compress(
+        data, (not outlier(z) for z in z_mod(data)))
+
+
+
+
+def filter_outlier(mad: float, median_x: float, x: float) -> bool:
+    return 0.6745*(x - median_x)/mad >= 3.5
+
+
+from functools import partial
+
+
+def make_filter_outlier_partial(
+        data: List[float]) -> Callable[[float], bool]:
+    population_median = statistics.median(data)
+    mad = median_absdev(data, population_median)
+    outlier_partial = partial(
+        filter_outlier, mad, population_median)
+    return outlier_partial
+
+
+def pass_outliers_3(data: List[float]) -> Iterator[float]:
+    outlier_partial = make_filter_outlier_partial(data)
+    return filter(outlier_partial, data)
+
+
+def reject_outliers_3(data: List[float]) -> Iterator[float]:
+    outlier_partial = make_filter_outlier_partial(data)
+    return itertools.filterfalse(outlier_partial, data)
+
+test_outliers = """
+>>> data =  [7.46, 6.77, 12.74, 7.11, 7.81, 8.84, 6.08, 5.39, 8.15, 6.42, 5.73] 
+>>> list(pass_outliers(data))
+[12.74]
+>>> set(reject_outliers(data)) == set(data) - set([12.74])
+True
+"""
+
+test_outliers_2 = """
+>>> data =  [7.46, 6.77, 12.74, 7.11, 7.81, 8.84, 6.08, 5.39, 8.15, 6.42, 5.73] 
+>>> list(pass_outliers_2(data))
+[12.74]
+>>> set(reject_outliers_2(data)) == set(data) - set([12.74])
+True
+"""
+
+test_outliers_3 = """
+>>> data =  [7.46, 6.77, 12.74, 7.11, 7.81, 8.84, 6.08, 5.39, 8.15, 6.42, 5.73] 
+>>> list(pass_outliers_3(data))
+[12.74]
+>>> set(reject_outliers_3(data)) == set(data) - set([12.74])
+True
+"""
+
+
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
 
 if __name__ == "__main__":
     source_path = Path("data") / "anscombe.json"
-    examine_anscombe(source_path)
+    examine_all_series(source_path)
