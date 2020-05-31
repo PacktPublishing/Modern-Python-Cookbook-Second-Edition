@@ -12,7 +12,7 @@ ArrivalF = Callable[[int], Iterator[int]]
 
 
 def raw_data(
-    n: int = 8, limit: int = 1000, arrival_function: ArrivalF = arrival1
+        n: int = 8, limit: int = 1000, arrival_function: ArrivalF = arrival1
 ) -> Counter[int]:
     """
     >>> import random
@@ -78,7 +78,7 @@ class UpdateableCounterStatistics:
     """
 
     def __init__(self, counter: Counter = None) -> None:
-        if counter:
+        if counter is not None:
             self.raw_counter = counter
             self.count = sum(self.raw_counter[k] for k in self.raw_counter)
             self.sum = sum(self.raw_counter[k] * k for k in self.raw_counter)

@@ -12,7 +12,6 @@ Chapter 7, Examples from the text.
 •	Using more sophisticated collections
 •	Extending a built-in collection – a list that does statistics
 •	Using properties for lazy attributes
-•	Using settable properties to update eager attributes
 •	Creating contexts and context managers
 •	Managing multiple contexts with multiple resources
 

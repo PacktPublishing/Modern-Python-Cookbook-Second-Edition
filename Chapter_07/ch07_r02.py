@@ -16,7 +16,10 @@ class Dice:
         self.roll_number = 0
 
     def __str__(self) -> str:
-        return ", ".join(f"{i}: {self.faces[i]}" for i in range(len(self.faces)))
+        return ", ".join(
+            f"{i}: {f}"
+            for i, f in enumerate(self.faces)
+        )
 
     def total(self) -> int:
         return sum(self.faces)

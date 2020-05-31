@@ -1,7 +1,7 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 12a, Using contexts and context managers
-This (and related recipes) are part of Chapter 7, Recipe 12.
+Chapter 7, recipe 11a, Using contexts and context managers
+This (and related recipes) are part of Chapter 7, Recipe 11.
 
 FileFacts(name=PosixPath('anscome_json.py'), modified='2019-11-08T16:24:50.834272', size=993, checksum='ab8cea15584ffbe17eb3763205cae947')
 FileFacts(name=PosixPath('hint_game.py'), modified='2016-03-16T14:36:20', size=1152, checksum='43b9119fb44ba26be022ba11928b33ad')

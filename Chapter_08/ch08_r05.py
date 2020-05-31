@@ -44,7 +44,8 @@ class Event(NamedTuple):
     """
     A detail line from a log
 
-    >>> Event.from_line("[2016-04-24 11:05:01,462] INFO in module1: Sample Message One")
+    >>> Event.from_line(
+    ...     "[2016-04-24 11:05:01,462] INFO in module1: Sample Message One")
     Event(timestamp='2016-04-24 11:05:01,462', level='INFO', module='module1', message='Sample Message One')
     """
 

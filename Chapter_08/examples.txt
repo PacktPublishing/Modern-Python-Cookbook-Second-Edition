@@ -61,6 +61,8 @@ Card(rank=2, suit='♠')
 
 >>> id(c_2s) == id(another)
 True
+>>> c_2s is another
+True
 
 # Separating concerns via multiple inheritance
 
@@ -109,14 +111,14 @@ True
 
 # Managing global and singleton objects
 
->>> from Chapter_08.ch08_r04 import count, counts
+>>> from Chapter_08.ch08_r04 import count, count_summary
 >>> from Chapter_08.ch08_r03 import Dice1
 >>> d = Dice1(1)
 >>> for _ in range(1000):
 ...     if sum(d.roll()) == 7: count('seven')
 ...     else: count('other')
 
->>> print(counts())
+>>> print(count_summary())
 [('other', 833), ('seven', 167)]
 
 >>> from Chapter_08.ch08_r04 import EventCounter
@@ -125,7 +127,7 @@ True
 >>> c2 = EventCounter()
 >>> c2.count('input')
 >>> c3 = EventCounter()
->>> c3.counts()
+>>> c3.summary()
 [('input', 2)]
 
 # Using more complex structures – maps of lists

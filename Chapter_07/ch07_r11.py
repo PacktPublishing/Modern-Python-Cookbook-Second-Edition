@@ -1,217 +1,98 @@
 """Python Cookbook 2nd ed.
 
-Chapter 7, recipe 11, Using settable properties to update eager attributes
+Chapter 7, recipe 11, Using contexts and context managers
 """
-import collections
-from typing import Deque, Optional
+
+from Chapter_03.ch03_r08 import haversine, MI, NM, KM
+from typing import Type, NamedTuple, Optional, Callable, List
+from types import TracebackType
 
 
-class Leg:
-    """Computations for a leg of a journey."""
+class Point(NamedTuple):
+    lat: float
+    lon: float
 
-    def __init__(
+
+class Distance:
+    def __init__(self, r: float) -> None:
+        self.r = r
+
+    def __enter__(self) -> Callable[[Point, Point], float]:
+        return self.distance
+
+    def __exit__(
         self,
-        rate: Optional[float] = None,
-        time: Optional[float] = None,
-        distance: Optional[float] = None,
-    ) -> None:
-        self._rate = rate
-        self._time = time
-        self._distance = distance
-        self._changes: Deque = collections.deque(maxlen=2)
-        if rate:
-            self._calculate("rate")
-        if time:
-            self._calculate("time")
-        if distance:
-            self._calculate("distance")
+        exc_type: Optional[Type[Exception]],
+        exc_val: Optional[Exception],
+        exc_tb: Optional[TracebackType],
+    ) -> Optional[bool]:
+        return None
 
-    def _calculate(self, change: str) -> None:
-        if change not in self._changes:
-            self._changes.append(change)
-        compute = {"rate", "time", "distance"} - set(self._changes)
-        if (
-            compute == {"distance"}
-            and self._time is not None
-            and self._rate is not None
-        ):
-            self._distance = self._time * self._rate
-        elif (
-            compute == {"time"}
-            and self._distance is not None
-            and self._rate is not None
-        ):
-            self._time = self._distance / self._rate
-        elif (
-            compute == {"rate"}
-            and self._distance is not None
-            and self._time is not None
-        ):
-            self._rate = self._distance / self._time
-
-    @property
-    def rate(self) -> float:
-        assert self._rate is not None
-        return self._rate
-
-    @rate.setter
-    def rate(self, value: float) -> None:
-        self._rate = value
-        self._calculate("rate")
-
-    @property
-    def time(self) -> float:
-        assert self._time is not None
-        return self._time
-
-    @time.setter
-    def time(self, value: float) -> None:
-        self._time = value
-        self._calculate("time")
-
-    @property
-    def distance(self) -> float:
-        assert self._distance is not None
-        return self._distance
-
-    @distance.setter
-    def distance(self, value: float) -> None:
-        self._distance = value
-        self._calculate("distance")
+    def distance(self, p1: Point, p2: Point) -> float:
+        return haversine(p1.lat, p1.lon, p2.lat, p2.lon, self.r)
 
 
-test_leg = """
->>> leg_1 = Leg()
->>> leg_1.rate = 6.0 # knots
->>> leg_1.distance = 35.6 # nautical miles
->>> print(f"option 1 {leg_1.distance:.1f}nm"
-... f" at {leg_1.rate:.2f}kt"
-... f" = {leg_1.time:.2f}hr")
-option 1 35.6nm at 6.00kt = 5.93hr
+test_distance = """
+>>> p1 = Point(38.9784, -76.4922)
+>>> p2 = Point(36.8443, -76.2922)
+>>> with Distance(r=NM) as nm_dist:
+...     print(f"{nm_dist(p1, p2)=:.2f}")
+nm_dist(p1, p2)=128.48
 
->>> leg_1.distance = 38.2 # nautical miles
->>> print(f"option 2 {leg_1.distance:.1f}nm"
-... f" at {leg_1.rate:.2f}kt"
-... f" = {leg_1.time:.2f}hr")
-option 2 38.2nm at 6.00kt = 6.37hr
-
->>> leg_1.time= 7
->>> print(f"option 3 {leg_1.distance:.1f}nm"
-... f" at {leg_1.rate:.2f}kt"
-... f" = {leg_1.time:.2f}hr")
-option 3 38.2nm at 5.46kt = 7.00hr
-
+>>> nm_distance = Distance(r=NM)
+>>> with nm_distance as nm_calc:
+...     print(f"{nm_calc(p1, p2)=:.2f}")
+nm_calc(p1, p2)=128.48
 """
 
 
-class Leg_Alt:
-    """Alternate calculation implementation"""
+class Distance_2:
+    def __init__(self, r: float) -> None:
+        self.r = r
 
-    def __init__(
+    def __enter__(self) -> Callable[[Point, Point], float]:
+        return self.distance
+
+    def __exit__(
         self,
-        rate: Optional[float] = None,
-        time: Optional[float] = None,
-        distance: Optional[float] = None,
-    ) -> None:
-        self._rate = rate
-        self._time = time
-        self._distance = distance
-        self._changes: Deque = collections.deque(maxlen=2)
-        if rate:
-            self._calculate("rate")
-        if time:
-            self._calculate("time")
-        if distance:
-            self._calculate("distance")
+        exc_type: Optional[Type[Exception]],
+        exc_val: Optional[Exception],
+        exc_tb: Optional[TracebackType],
+    ) -> Optional[bool]:
+        if exc_type == TypeError:
+            raise ValueError(f"Invalid r={self.r}")
+        return None
 
-    def calc_distance(self) -> None:
-        assert self._time is not None and self._rate is not None
-        self._distance = self._time * self._rate
-
-    def calc_time(self) -> None:
-        assert self._distance is not None and self._rate is not None
-        self._time = self._distance / self._rate
-
-    def calc_rate(self) -> None:
-        assert self._distance is not None and self._time is not None
-        self._rate = self._distance / self._time
-
-    def _calculate(self, change: str) -> None:
-        if change not in self._changes:
-            self._changes.append(change)
-        properties = {"rate", "time", "distance"}
-        compute = properties - set(self._changes)
-        if len(compute) == 1:
-            name = compute.pop()
-            method = getattr(self, f"calc_{name}")
-            method()
-
-    @property
-    def rate(self) -> float:
-        assert self._rate is not None
-        return self._rate
-
-    @rate.setter
-    def rate(self, value: float) -> None:
-        self._rate = value
-        self._calculate("rate")
-
-    @property
-    def time(self) -> float:
-        assert self._time is not None
-        return self._time
-
-    @time.setter
-    def time(self, value: float) -> None:
-        self._time = value
-        self._calculate("time")
-
-    @property
-    def distance(self) -> float:
-        assert self._distance is not None
-        return self._distance
-
-    @distance.setter
-    def distance(self, value: float) -> None:
-        self._distance = value
-        self._calculate("distance")
+    def distance(self, p1: Point, p2: Point) -> float:
+        return haversine(p1.lat, p1.lon, p2.lat, p2.lon, self.r)
 
 
-test_leg_alt = """
->>> leg_2 = Leg_Alt(distance=38.2, time=7)
->>> round(leg_2.rate, 1)
-5.5
->>> round(leg_2.time, 1)
-7
->>> round(leg_2.distance, 1)
-38.2
->>> leg_2.time=6.5
->>> round(leg_2.rate, 1)
-5.9
+test_bad = """
+>>> p1 = Point(38.9784, -76.4922)
+>>> p2 = Point(36.8443, -76.2922)
+>>> with Distance(None) as nm_dist:
+...     print(f"{nm_dist(p1, p2)=:.2f}")
+Traceback (most recent call last):
+  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1328, in __run
+    exec(compile(example.source, filename, "single",
+  File "<doctest Chapter_07.ch07_r12.__test__.test_bad[2]>", line 2, in <module>
+  File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Modern-Python-Cookbook-Second-Edition/Chapter_07.ch07_r12.py", line 32, in distance
+    return haversine(p1.lat, p1.lon, p2.lat, p2.lon, self.r)
+  File "/Users/slott/Documents/Writing/Python/Python Cookbook 2e/Modern-Python-Cookbook-Second-Edition/Chapter_03/ch03_r08.py", line 30, in haversine
+    return R * 2 * asin(a)
+TypeError: unsupported operand type(s) for *: 'NoneType' and 'int'
 
-
->>> (f"option 1 {leg_2.distance:.1f}nm"
-... f" at {leg_2.rate:.2f}kt"
-... f" = {leg_2.time:.2f}hr")
-'option 1 38.2nm at 5.88kt = 6.50hr'
 """
+
+test_bad_2 = """
+>>> p1 = Point(38.9784, -76.4922)
+>>> p2 = Point(36.8443, -76.2922)
+>>> with Distance_2(None) as nm_dist:
+...     print(f"{nm_dist(p1, p2)=:.2f}")
+Traceback (most recent call last):
+    ...
+ValueError: Invalid r=None
+"""
+
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
-
-if __name__ == "__main__":
-
-    message = "option {n} {leg.distance:.1f}nm at {leg.rate:.2f}kt = {leg.time:.2f}hr"
-
-    leg_1 = Leg()
-    leg_1.rate = 6.0  # knots
-    leg_1.distance = 35.6  # nautical miles
-    # print( vars(leg_1) )
-    print(message.format(n=1, leg=leg_1))
-    leg_1.distance = 38.2
-    print(message.format(n=2, leg=leg_1))
-    leg_1.time = 7
-    print(message.format(n=3, leg=leg_1))
-
-    leg_2 = Leg_Alt(rate=6, distance=35.6)
-    print(f"Raw: {leg_2.rate=}, {leg_2.time=}, {leg_2.distance=}")
-    print(message.format(n=1, leg=leg_2))

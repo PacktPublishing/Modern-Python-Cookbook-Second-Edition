@@ -27,7 +27,7 @@ Card(rank=2, suit='♠')
 
 class Deck_W:
     def __init__(self, cards: List[Card]) -> None:
-        self.cards = cards.copy()
+        self.cards = cards
         self.deal_iter = iter(cards)
 
     def shuffle(self) -> None:
