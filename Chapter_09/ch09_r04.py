@@ -109,5 +109,4 @@ DatedLog(date=datetime.datetime(2016, 4, 24, 11, 8, 5, 468000), level='WARNING',
 DatedLog(date=datetime.datetime(2016, 4, 24, 11, 8, 5, 468000), level='WARNING', module='other', message='Unexpected')
 """
 
-
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

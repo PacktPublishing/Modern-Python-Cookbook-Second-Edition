@@ -54,6 +54,24 @@ def prime_t(n: int) -> bool:
     return tests == non_factors
 
 
+def prime_any(n: int) -> bool:
+    """
+    >>> p = {2, 3, 5, 7, 11, 13, 17, 19}
+    >>> tests = (prime_any(n) == (n in p)
+    ...     for n in range(2, 21)
+    ... )
+    >>> all(tests)
+    True
+    >>> prime_any(9973)
+    True
+    >>> prime_any(9997)
+    False
+
+    """
+    tests = range(2, int(math.sqrt(n) + 1))
+    has_factors = any(n % t == 0 for t in tests)
+    return not has_factors
+
 def primeset(source: Iterable[int]) -> Iterator[int]:
     """
     >>> list(primeset(range(2, 21)))

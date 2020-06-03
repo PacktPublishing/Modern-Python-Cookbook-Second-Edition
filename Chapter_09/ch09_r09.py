@@ -124,14 +124,21 @@ def rank_by_y_dc(source: Iterable[DataPairDC]) -> Iterable[DataPairDC]:
 
 def timing():
     import timeit
+    from textwrap import dedent
 
     tuple_runtime = timeit.timeit(
-        """list(rank_by_y(cleanse(text_parse(text_1))))""",
-        """from ch08_r09 import text_parse, cleanse, rank_by_y, text_1""",
+        """list(rank_by_y(data))""",
+        dedent("""
+        from ch09_r09 import text_parse, cleanse, rank_by_y, text_1
+        data = cleanse(text_parse(text_1))
+        """),
     )
     dataclass_runtime = timeit.timeit(
-        """list(rank_by_y_dc(cleanse_dc(text_parse(text_1))))""",
-        """from ch08_r09 import text_parse, cleanse_dc, rank_by_y_dc, text_1""",
+        """list(rank_by_y_dc(data))""",
+        dedent("""
+        from ch09_r09 import text_parse, cleanse_dc, rank_by_y_dc, text_1
+        data = cleanse_dc(text_parse(text_1))
+        """),
     )
     print(f"tuple     {tuple_runtime}")
     print(f"dataclass {dataclass_runtime}")

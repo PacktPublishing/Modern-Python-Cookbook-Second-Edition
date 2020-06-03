@@ -40,8 +40,8 @@ def make_Leg(row: CombinedRow) -> Leg:
 def timestamp(date_text: str, time_text: str) -> datetime.datetime:
     date = datetime.datetime.strptime(date_text, "%m/%d/%y").date()
     time = datetime.datetime.strptime(time_text, "%I:%M:%S %p").time()
-    timestamp = datetime.datetime.combine(date, time)
-    return timestamp
+    combined_date_time = datetime.datetime.combine(date, time)
+    return combined_date_time
 
 
 def start_datetime(row: Leg) -> Leg:
