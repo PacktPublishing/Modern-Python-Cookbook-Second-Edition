@@ -65,7 +65,8 @@ test_default_date = """
 
 def as_date(object: Dict[str, Any]) -> Union[Any, Dict[str, Any]]:
     if {"$date"} == set(object.keys()):
-        return datetime.datetime.strptime(object["$date"], "%Y-%m-%dT%H:%M:%S")
+        # return datetime.datetime.strptime(object["$date"], "%Y-%m-%dT%H:%M:%S")
+        return datetime.datetime.fromisoformat(object["$date"])
     return object
 
 

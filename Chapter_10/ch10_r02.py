@@ -38,11 +38,7 @@ def safe_write(
 
     # Clear any previous .{ext}.old
     output_old_path = output_path.with_suffix(f"{ext}.old")
-    try:
-        output_old_path.unlink()
-    except FileNotFoundError as ex:
-        # No previous file
-        pass
+    output_old_path.unlink(missing_ok=True)
 
     # Try to preserve current as old
     try:
@@ -90,11 +86,8 @@ def safe(function: Writer) -> Writer:
         function(output_new_path, *args)
 
         output_old_path = output_path.with_suffix(f"{ext}.old")
-        try:
-            # remove old .old
-            output_old_path.unlink()
-        except FileNotFoundError as ex:
-            pass
+        # remove old .old
+        output_old_path.unlink(missing_ok=True)
 
         try:
             # preserve original as .old

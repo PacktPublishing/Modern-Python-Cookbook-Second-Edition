@@ -43,7 +43,7 @@ def cleanse(reader: csv.DictReader) -> Iterator[Waypoint]:
         yield clean_row(cast(Raw, row))
 
 
-def clean(data_path: Path) -> None:
+def display_clean(data_path: Path) -> None:
     with data_path.open() as data_file:
         data_reader = csv.DictReader(data_file)
         clean_data_reader = cleanse(data_reader)
@@ -68,7 +68,7 @@ test_raw = """
 """
 
 test_clean = """
->>> clean(Path("data/waypoints.csv"))
+>>> display_clean(Path("data/waypoints.csv"))
 {'date': '2012-11-27',
  'lat': '32.8321666666667',
  'lat_lon': (32.8321666666667, -79.9338333333333),
@@ -106,11 +106,7 @@ class Raw_TD(TypedDict):
     lon: str
 
 
-class Waypoint_TD(TypedDict):
-    date: str
-    time: str
-    lat: str
-    lon: str
+class Waypoint_TD(Raw_TD):
     lat_lon: Tuple[float, float]
     ts_date: datetime.date
     ts_time: datetime.time
@@ -136,5 +132,42 @@ def cleanse_td(reader: csv.DictReader) -> Iterator[Waypoint_TD]:
     for row in reader:
         yield clean_row_td(cast(Raw_TD, row))
 
+
+def display_clean_td(data_path: Path) -> None:
+    with data_path.open() as data_file:
+        data_reader = csv.DictReader(data_file)
+        clean_data_reader = cleanse_td(data_reader)
+        for row in clean_data_reader:
+            pprint(row)
+            assert row['date'] == row['ts_date'].strftime("%Y-%m-%d")
+
+
+test_clean_td = """
+>>> display_clean_td(Path("data/waypoints.csv"))
+{'date': '2012-11-27',
+ 'lat': '32.8321666666667',
+ 'lat_lon': (32.8321666666667, -79.9338333333333),
+ 'lon': '-79.9338333333333',
+ 'time': '09:15:00',
+ 'timestamp': datetime.datetime(2012, 11, 27, 9, 15),
+ 'ts_date': datetime.date(2012, 11, 27),
+ 'ts_time': datetime.time(9, 15)}
+{'date': '2012-11-28',
+ 'lat': '31.6714833333333',
+ 'lat_lon': (31.6714833333333, -80.93325),
+ 'lon': '-80.93325',
+ 'time': '00:00:00',
+ 'timestamp': datetime.datetime(2012, 11, 28, 0, 0),
+ 'ts_date': datetime.date(2012, 11, 28),
+ 'ts_time': datetime.time(0, 0)}
+{'date': '2012-11-28',
+ 'lat': '30.7171666666667',
+ 'lat_lon': (30.7171666666667, -81.5525),
+ 'lon': '-81.5525',
+ 'time': '11:35:00',
+ 'timestamp': datetime.datetime(2012, 11, 28, 11, 35),
+ 'ts_date': datetime.date(2012, 11, 28),
+ 'ts_time': datetime.time(11, 35)}
+"""
 
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}

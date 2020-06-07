@@ -6,7 +6,7 @@ Chapter 5, recipe 3, Controlling the order of dict keys
 import collections
 import csv
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, cast, Sequence
 
 
 def get_fuel_use(source_path: Path) -> List[Dict[str, str]]:
@@ -32,7 +32,8 @@ def get_fuel_use_od(source_path: Path) -> List[Dict[str, str]]:
         rdr = csv.DictReader(source_file)
         od = (
             collections.OrderedDict(
-                [(column, row[column]) for column in rdr.fieldnames]
+                [(column, row[column])
+                 for column in cast(Sequence[str], rdr.fieldnames)]
             )
             for row in rdr
         )

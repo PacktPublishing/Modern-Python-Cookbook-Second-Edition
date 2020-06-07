@@ -16,7 +16,7 @@ class Card(NamedTuple):
 
 
 SUITS = "\u2660\u2661\u2662\u2663"
-Spades, Hearts, Diamonds, Clubs = SUITS
+Spades, Hearts, Diamonds, Clubs = tuple(SUITS)
 
 test_Card = """
 >>> c_2s = Card(2, Spades)

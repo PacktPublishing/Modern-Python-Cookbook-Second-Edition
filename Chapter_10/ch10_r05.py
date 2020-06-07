@@ -13,7 +13,7 @@ from typing import Dict, Any, cast, Match, NamedTuple
 pattern_text = (
     r"\[   (?P<date>.*?)  \]\s+"
     r"     (?P<level>\w+)   \s+"
-    r"in\s+(?P<module>.+?)"
+    r"in\s+(?P<module>\S+?)"
     r":\s+ (?P<message>.+)"
 )
 pattern = re.compile(pattern_text, re.X)

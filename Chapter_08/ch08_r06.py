@@ -5,7 +5,7 @@ Chapter 8, recipe 6, Creating a class that has orderable objects
 from typing import Any, Protocol, Union, List
 from Chapter_08.ch08_r02 import AceCard, Card, FaceCard, SUITS, PointedCard
 
-Spades, Hearts, Diamonds, Clubs = SUITS
+Spades, Hearts, Diamonds, Clubs = tuple(SUITS)
 
 
 class CardLike(Protocol):

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Protocol
 from dataclasses import dataclass
 
 SUITS = "\u2660\u2661\u2662\u2663"
-Spades, Hearts, Diamonds, Clubs = SUITS
+Spades, Hearts, Diamonds, Clubs = tuple(SUITS)
 
 
 @dataclass(frozen=True)

@@ -6,7 +6,7 @@ Chapter 11, recipe 3, Handling common doctest issues
 # Issue 1 -- set order
 
 import csv
-from typing import Iterator, NamedTuple, TextIO
+from typing import Iterator, NamedTuple, TextIO, Sequence, cast
 
 class Row(NamedTuple):
     date: str
@@ -21,7 +21,8 @@ def raw_reader(data_file: TextIO) -> Iterator[Row]:
     """
     row_field_names = set(Row._fields)
     data_reader = csv.DictReader(data_file)
-    if not (set(data_reader.fieldnames) >= row_field_names):
+    reader_field_names = set(cast(Sequence[str], data_reader.fieldnames))
+    if not (reader_field_names >= row_field_names):
         raise ValueError(f"Expected {row_field_names}")
     for row in data_reader:
         yield Row(**{k: row[k] for k in row_field_names})
