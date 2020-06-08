@@ -19,8 +19,12 @@ def Twc(T: float, V: float) -> float:
     -18.8
     """
     if V < 4.8 or T > 10.0:
-        raise ValueError("V must be over 4.8 kph, T must be below 10°C")
-    return 13.12 + 0.6215 * T - 11.37 * V ** 0.16 + 0.3965 * T * V ** 0.16
+        raise ValueError(
+            "V must be over 4.8 kph, T must be below 10°C")
+    return (
+        13.12 + 0.6215 * T
+        - 11.37 * V ** 0.16 + 0.3965 * T * V ** 0.16
+    )
 
 
 from pytest import approx  # type: ignore

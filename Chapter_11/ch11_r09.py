@@ -14,7 +14,7 @@ def resample(population: List[int], N: int) -> Iterator[int]:
 
 def mean_distribution(population: List[int], N: int):
     means: Counter[float] = collections.Counter()
-    for n in range(1000):
+    for _ in range(1000):
         subset = list(resample(population, N))
         measure = round(statistics.mean(subset), 1)
         means[measure] += 1
