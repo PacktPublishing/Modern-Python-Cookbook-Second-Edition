@@ -131,12 +131,15 @@ components:
         __class__:
           type: string
           example: "Card"
-        rank:
-          type: integer
-          example: 1
-        suit:
-          type: string
-          example: "\u2660"
+        __init__:
+          type: object
+          properties:
+            rank:
+              type: integer
+              example: 1
+            suit:
+              type: string
+              example: "\u2660"
   parameters:
     deck_id:
       name: id
@@ -156,6 +159,7 @@ def get_decks() -> Dict[str, Deck]:
     global decks
     if decks is None:
         random.seed(os.environ.get("DEAL_APP_SEED"))
+        # Database connection might go here.
         decks = {}
     return decks
 
@@ -213,7 +217,7 @@ def make_deck() -> Response:
     response = make_response(
         response_json, HTTPStatus.CREATED)
     response.headers["Location"] = url_for(
-        "get_deck", id=str(id))
+        "get_deck", id=id)
     return response
 
 
@@ -224,7 +228,7 @@ def get_deck(id: str) -> Response:
         dealer.logger.error(id)
         dealer.logger.debug(list(decks.keys()))
         abort(HTTPStatus.BAD_REQUEST)
-    response = jsonify([c.to_json() for c in decks[id].cards])
+    response = jsonify([c.serialize() for c in decks[id].cards])
     return response
 
 
@@ -243,11 +247,11 @@ def get_hands(id: str) -> Response:
         assert (
             skip * cards + top * cards <= len(decks[id].cards)
         ), "$skip, $top, and cards larger than the deck"
-    except ValueError as ex:
+    except (ValueError, AssertionError) as ex:
         dealer.logger.error(ex)
         abort(HTTPStatus.BAD_REQUEST)
     subset = decks[id].cards[
-         skip * cards : (skip + top) * cards]
+         skip * cards : skip * cards + top * cards]
     hands = [
         subset[h * cards : (h + 1) * cards]
         for h in range(top)]
@@ -256,7 +260,7 @@ def get_hands(id: str) -> Response:
         [
             {
                 "hand": i,
-                "cards": [card.to_json() for card in hand]
+                "cards": [card.serialize() for card in hand]
             } for i, hand in enumerate(hands)
         ]
     )

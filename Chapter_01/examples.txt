@@ -53,13 +53,14 @@ b'\xfe'
 >>> sys.int_info
 sys.int_info(bits_per_digit=30, sizeof_digit=4)
 
->>> id(1)  # doctest: +ELLIPSIS
-4...
->>> id(2)  # doctest: +ELLIPSIS
-4...
+# The following are dependent on Python version and platform.
+>>> id(1)  # doctest: +SKIP
+4464028000
+>>> id(2)  # doctest: +SKIP
+4464028032
 >>> a=1+1
->>> id(a)  # doctest: +ELLIPSIS
-4...
+>>> id(a)  # doctest: +SKIP
+4464028032
 
 >>> len(str(2**2048))
 617
@@ -232,11 +233,12 @@ TypeError: 'str' object does not support item assignment
 >>> while '__' in post_colon_text:
 ...   post_colon_text = post_colon_text.replace('__', '_')
 
->>> id(post_colon_text)  # doctest: +ELLIPSIS
-4...
+# The following aare dependent on Python version and platform.
+>>> id(post_colon_text)  # doctest: +SKIP
+140441370690448
 >>> post_colon_text = post_colon_text.replace('_','-')
->>> id(post_colon_text)  # doctest: +ELLIPSIS
-4...
+>>> id(post_colon_text)  # doctest: +SKIP
+140441370690064
 
 >>> 'some word'.isnumeric()
 False
@@ -282,7 +284,7 @@ False
 ... (?P<unit>\w+)               # units, alphanumeric characters
 ... ''', re.X)
 >>> ingredient2 = "Martini Olives: 2 count"
->>> m_x = ingredient_pattern.match(ingredient2)
+>>> m_x = ingredient_pattern_x.match(ingredient2)
 >>> m_x.groups()
 ('Martini Olives', '2', 'count')
 

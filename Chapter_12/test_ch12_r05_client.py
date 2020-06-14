@@ -87,7 +87,13 @@ def test_get_openapi_spec(mock_urllib):
 
 def test_create_new_player(mock_urllib):
     paths = Chapter_12.ch12_r05_client.make_path_map(specification)
-    response = Chapter_12.ch12_r05_client.create_new_player(specification, paths)
+    sample = Chapter_12.ch12_r05_client.Player(
+        player_name="Noriko",
+        email_address="nori@example.com",
+        other_field=7,
+        handle="https://twitter.com/PacktPub",
+    )
+    response = Chapter_12.ch12_r05_client.create_new_player(specification, paths, sample)
     assert response == {"status": "ok", "id": "mock_id"}
 
 

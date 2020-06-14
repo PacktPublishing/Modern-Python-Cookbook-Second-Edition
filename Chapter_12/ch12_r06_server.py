@@ -324,7 +324,7 @@ def openapi3() -> Response:
 def redacted_asdict(user: User) -> Dict[str, Any]:
     """Build the dict of a User, but redact 'password'."""
     document = asdict(user)
-    document.pop("password")
+    document.pop("password", None)
     return document
 
 
@@ -348,7 +348,7 @@ def make_player() -> Response:
     try:
         validate(document, player_schema)
     except ValidationError as ex:
-        abort(HTTPStatus.FORBIDDEN, description=ex.message)
+        abort(HTTPStatus.BAD_REQUEST, description=ex.message)
 
     user_database = get_users()
     id = hashlib.md5(
@@ -356,8 +356,9 @@ def make_player() -> Response:
     if id in user_database:
         abort(HTTPStatus.FORBIDDEN, description="Duplicate player")
 
+    password = document.pop('password')
     new_user = User(**document)
-    new_user.set_password(document['password'])
+    new_user.set_password(password)
     user_database[id] = new_user
 
     response = make_response(
@@ -468,7 +469,7 @@ def get_hands(id) -> Response:
     hands = [subset[h * cards : (h + 1) * cards] for h in range(top)]
     response = jsonify(
         [
-            {"hand": i, "cards": [card.to_json() for card in hand]}
+            {"hand": i, "cards": [card.serialize() for card in hand]}
             for i, hand in enumerate(hands)
         ]
     )

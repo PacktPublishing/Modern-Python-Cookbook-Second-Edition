@@ -29,10 +29,13 @@ paths:
                   properties:
                     __class__:
                         type: string
-                    rank:
-                        type: integer
-                    suit:
-                        type: string
+                    __init__:
+                        type: object
+                        properties:
+                            rank:
+                                type: integer
+                            suit:
+                                type: string
 components: {}
 """
 import random
@@ -74,7 +77,7 @@ def deal() -> Response:
         abort(HTTPStatus.BAD_REQUEST)
     deck = get_deck()
     cards = deck.deal(hand_size)
-    response = jsonify([card.to_json() for card in cards])
+    response = jsonify([card.serialize() for card in cards])
     return response
 
 

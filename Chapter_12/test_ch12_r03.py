@@ -43,7 +43,7 @@ def test_query_build_1(ch12_r02_server, capsys):
     status, *headers = status_headers.splitlines()
     assert status == "200"
     assert all(header_pattern.match(h) for h in headers)
-    assert body == "\n[{'__class__': 'Card', 'rank': 10, 'suit': '♡'}, {'__class__': 'Card', 'rank': 4, 'suit': '♡'}, {'__class__': 'Card', 'rank': 7, 'suit': '♠'}, {'__class__': 'Card', 'rank': 11, 'suit': '♢'}, {'__class__': 'Card', 'rank': 12, 'suit': '♡'}]\n"
+    assert body == "\n[{'__class__': 'Card', '__init__': {'rank': 10, 'suit': '♡'}}, {'__class__': 'Card', '__init__': {'rank': 4, 'suit': '♡'}}, {'__class__': 'Card', '__init__': {'rank': 7, 'suit': '♠'}}, {'__class__': 'Card', '__init__': {'rank': 11, 'suit': '♢'}}, {'__class__': 'Card', '__init__': {'rank': 12, 'suit': '♡'}}]\n"
 
 def test_query_build_2(ch12_r02_server, capsys):
     spec = Chapter_12.ch12_r03.get_openapi_spec()
@@ -54,5 +54,5 @@ def test_query_build_2(ch12_r02_server, capsys):
     assert spec_response == "openapi.json is valid"
     assert status == "200"
     assert all(header_pattern.match(h) for h in headers)
-    assert body == "\n[{'cards': [{'__class__': 'Card', 'rank': 3, 'suit': '♣'}, {'__class__': 'Card', 'rank': 10, 'suit': '♠'}], 'hand': 0}, {'cards': [{'__class__': 'Card', 'rank': 9, 'suit': '♠'}], 'hand': 1}, {'cards': [{'__class__': 'Card', 'rank': 13, 'suit': '♣'}], 'hand': 2}, {'cards': [{'__class__': 'Card', 'rank': 5, 'suit': '♣'}], 'hand': 3}]\n"
+    assert body == "\n[{'cards': [{'__class__': 'Card', '__init__': {'rank': 3, 'suit': '♣'}}, {'__class__': 'Card', '__init__': {'rank': 10, 'suit': '♠'}}], 'hand': 0}, {'cards': [{'__class__': 'Card', '__init__': {'rank': 9, 'suit': '♠'}}], 'hand': 1}, {'cards': [{'__class__': 'Card', '__init__': {'rank': 13, 'suit': '♣'}}], 'hand': 2}, {'cards': [{'__class__': 'Card', '__init__': {'rank': 5, 'suit': '♣'}}], 'hand': 3}]\n"
 

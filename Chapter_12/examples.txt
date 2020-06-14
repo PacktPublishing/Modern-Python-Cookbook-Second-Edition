@@ -2,7 +2,8 @@
 
 Chapter 12, Examples from the text.
 
-•	Using the Flask framework for RESTful APIs
+•	The Card Model
+•   Using the Flask framework for RESTful APIs
 •	Parsing the query string in a request
 •	Making REST requests with urllib
 •	Parsing the URL path
@@ -23,35 +24,156 @@ Chapter 12, Examples from the text.
 [Card(rank=3, suit='♡'), Card(rank=6, suit='♣'), Card(rank=7, suit='♡'), Card(rank=1, suit='♣'), Card(rank=6, suit='♡')]
 
 >>> import json
->>> json_cards = list(card.to_json() for card in deck.deal(5))
+>>> json_cards = list(card.serialize() for card in deck.deal(5))
 >>> print(json.dumps(json_cards, indent=2, sort_keys=True))
 [
   {
     "__class__": "Card",
-    "rank": 10,
-    "suit": "\u2662"
+    "__init__": {
+      "rank": 10,
+      "suit": "\u2662"
+    }
   },
   {
     "__class__": "Card",
-    "rank": 5,
-    "suit": "\u2660"
+    "__init__": {
+      "rank": 5,
+      "suit": "\u2660"
+    }
   },
   {
     "__class__": "Card",
-    "rank": 10,
-    "suit": "\u2663"
+    "__init__": {
+      "rank": 10,
+      "suit": "\u2663"
+    }
   },
   {
     "__class__": "Card",
-    "rank": 5,
-    "suit": "\u2663"
+    "__init__": {
+      "rank": 5,
+      "suit": "\u2663"
+    }
   },
   {
     "__class__": "Card",
-    "rank": 3,
-    "suit": "\u2663"
+    "__init__": {
+      "rank": 3,
+      "suit": "\u2663"
+    }
   }
 ]
+
+# Example specification as Pure Python
+>>> specification = {
+...     "openapi": "3.0.3",
+...     "info": {
+...         "description": "Parsing the query string in a request",
+...         "title": "Python Cookbook Chapter 12, recipe 2.",
+...         "version": "1.0",
+...     },
+...     "servers": [{"url": "http://127.0.0.1:5000/dealer"}],
+...     "paths": {
+...         "/hand": {
+...             "get": {
+...                 "parameters": [
+...                     {
+...                         "content": {
+...                             "application/json": {
+...                                 "schema": {"default": "5", "type": "string"}
+...                             }
+...                         },
+...                         "in": "query",
+...                         "name": "cards",
+...                     }
+...                 ],
+...                 "responses": {
+...                     "200": {
+...                         "content": {
+...                             "application/json": {
+...                                 "schema": {
+...                                     "items": {"$ref": "#/components/schemas/Card"},
+...                                     "type": "array",
+...                                 }
+...                             }
+...                         },
+...                         "description": "One hand of "
+...                         "cards with "
+...                         "a size "
+...                         "given by "
+...                         "the hand "
+...                         "value in "
+...                         "the query "
+...                         "string",
+...                     }
+...                 },
+...             }
+...         },
+...         "/hands": {
+...             "get": {
+...                 "parameters": [
+...                     {
+...                         "explode": True,
+...                         "in": "query",
+...                         "name": "cards",
+...                         "schema": {"type": "integer"},
+...                         "style": "form",
+...                     }
+...                 ],
+...                 "responses": {
+...                     "200": {
+...                         "content": {
+...                             "application/json": {
+...                                 "schema": {
+...                                     "items": {
+...                                         "properties": {
+...                                             "cards": {
+...                                                 "items": {
+...                                                     "$ref": "#/components/schemas/Card"
+...                                                 },
+...                                                 "type": "array",
+...                                             },
+...                                             "hand": {"type": "integer"},
+...                                         },
+...                                         "type": "object",
+...                                     },
+...                                     "type": "array",
+...                                 }
+...                             }
+...                         },
+...                         "description": "one hand "
+...                         "of cards "
+...                         "for each "
+...                         "`hand` "
+...                         "value in "
+...                         "the query "
+...                         "string",
+...                     }
+...                 },
+...             }
+...         },
+...     },
+...     "components": {
+...         "schemas": {
+...             "Card": {
+...                 "properties": {
+...                     "__class__": {"example": "Card", "type": "string"},
+...                     "__init__": {
+...                         "properties": {
+...                             "rank": {"example": 1, "type": "integer"},
+...                             "suit": {"example": "♠", "type": "string"},
+...                         },
+...                         "type": "object",
+...                     },
+...                 },
+...                 "type": "object",
+...             }
+...         }
+...     }
+... }
+
+
+
 
 # Parsing the query string in a request
 
@@ -71,4 +193,3 @@ Chapter 12, Examples from the text.
 False
 >>> check_password_hash(fixed_pw, "OpenSesame")
 True
-

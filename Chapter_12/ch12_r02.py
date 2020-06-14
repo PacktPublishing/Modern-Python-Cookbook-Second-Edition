@@ -64,12 +64,15 @@ components:
         __class__:
           type: string
           example: "Card"
-        rank:
-          type: integer
-          example: 1
-        suit:
-          type: string
-          example: "\u2660"
+        __init__:
+          type: object
+          properties:
+            rank:
+              type: integer
+              example: 1
+            suit:
+              type: string
+              example: "\u2660"
 """
 import random
 from http import HTTPStatus
@@ -117,9 +120,7 @@ from flask import send_file
 # @dealer.route('/dealer/openapi.yaml')
 def openapi_1() -> Response:
     # Note. No IANA registered standard as of this writing.
-    response = send_file(
-        "openapi.yaml",
-        mimetype="application/yaml")
+    response = send_file("openapi.yaml", mimetype="application/yaml")
     return response
 
 
@@ -128,9 +129,7 @@ from flask import make_response
 
 @dealer.route("/dealer/openapi.yaml")
 def openapi_2() -> Response:
-    response = make_response(
-        yaml.dump(specification).encode("utf-8")
-    )
+    response = make_response(yaml.dump(specification).encode("utf-8"))
     # Note. No IANA registered standard as of this writing.
     response.headers["Content-Type"] = "application/yaml"
     return response
@@ -154,7 +153,7 @@ def deal() -> Response:
         abort(HTTPStatus.BAD_REQUEST)
     deck = get_deck()
     cards = deck.deal(hand_size)
-    response = jsonify([card.to_json() for card in cards])
+    response = jsonify([card.serialize() for card in cards])
     return response
 
 
@@ -162,27 +161,19 @@ def deal() -> Response:
 def multi_hand() -> Response:
     dealer.logger.debug(f"Request: {request.args}")
     try:
-        hand_sizes = request.args.getlist(
-            "cards", type=int)
+        hand_sizes = request.args.getlist("cards", type=int)
     except ValueError as ex:
         abort(HTTPStatus.BAD_REQUEST)
     dealer.logger.info(f"{hand_sizes=}")
     if len(hand_sizes) == 0:
         hand_sizes = [13, 13, 13, 13]
-    if not(1 <= sum(hand_sizes) < 53):
+    if not (1 <= sum(hand_sizes) < 53):
         abort(HTTPStatus.BAD_REQUEST)
     deck = get_deck()
-    hands = [
-        deck.deal(hand_size) for hand_size in hand_sizes]
+    hands = [deck.deal(hand_size) for hand_size in hand_sizes]
     response = jsonify(
         [
-            {
-                "hand": i,
-                "cards": [
-                    card.to_json()
-                    for card in hand
-                ]
-            }
+            {"hand": i, "cards": [card.serialize() for card in hand]}
             for i, hand in enumerate(hands)
         ]
     )
@@ -210,28 +201,38 @@ Get a hard of cards
     [
       {
         "__class__": "Card", 
-        "rank": 10, 
-        "suit": "\u2661"
+        "__init__": {
+          "rank": 10, 
+          "suit": "\u2661"
+        }
       }, 
       {
         "__class__": "Card", 
-        "rank": 4, 
-        "suit": "\u2661"
+        "__init__": {
+          "rank": 4, 
+          "suit": "\u2661"
+        }
       }, 
       {
         "__class__": "Card", 
-        "rank": 7, 
-        "suit": "\u2660"
+        "__init__": {
+           "rank": 7, 
+           "suit": "\u2660"
+        }
       }, 
       {
         "__class__": "Card", 
-        "rank": 11, 
-        "suit": "\u2662"
+        "__init__": {
+          "rank": 11, 
+          "suit": "\u2662"
+        }
       }, 
       {
         "__class__": "Card", 
-        "rank": 12, 
-        "suit": "\u2661"
+        "__init__": {
+          "rank": 12, 
+          "suit": "\u2661"
+        }
       }
     ]
 
@@ -260,8 +261,10 @@ Get multiple hands
         "cards": [
           {
             "__class__": "Card", 
-            "rank": 9, 
-            "suit": "\u2660"
+            "__init__": {
+              "rank": 9, 
+              "suit": "\u2660"
+            }
           }
         ], 
         "hand": 1
@@ -270,8 +273,10 @@ Get multiple hands
         "cards": [
           {
             "__class__": "Card", 
-            "rank": 13, 
-            "suit": "\u2663"
+            "__init__": {
+              "rank": 13, 
+              "suit": "\u2663"
+            }
           }
         ], 
         "hand": 2
@@ -280,11 +285,131 @@ Get multiple hands
         "cards": [
           {
             "__class__": "Card", 
-            "rank": 5, 
-            "suit": "\u2663"
+            "__init__": {
+              "rank": 5, 
+              "suit": "\u2663"
+            }
           }
         ], 
         "hand": 3
       }
     ]
 """
+
+alternative_specification = {
+    "openapi": "3.0.3",
+    "info": {
+        "description": "Parsing the query string in a request",
+        "title": "Python Cookbook Chapter 12, recipe 2.",
+        "version": "1.0",
+    },
+    "servers": [{"url": "http://127.0.0.1:5000/dealer"}],
+    "paths": {
+        "/hand": {
+            "get": {
+                "parameters": [
+                    {
+                        "content": {
+                            "application/json": {
+                                "schema": {"default": "5", "type": "string"}
+                            }
+                        },
+                        "in": "query",
+                        "name": "cards",
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {"$ref": "#/components/schemas/Card"},
+                                    "type": "array",
+                                }
+                            }
+                        },
+                        "description": "One hand of "
+                        "cards with "
+                        "a size "
+                        "given by "
+                        "the hand "
+                        "value in "
+                        "the query "
+                        "string",
+                    }
+                },
+            }
+        },
+        "/hands": {
+            "get": {
+                "parameters": [
+                    {
+                        "explode": True,
+                        "in": "query",
+                        "name": "cards",
+                        "schema": {"type": "integer"},
+                        "style": "form",
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "properties": {
+                                            "cards": {
+                                                "items": {
+                                                    "$ref": "#/components/schemas/Card"
+                                                },
+                                                "type": "array",
+                                            },
+                                            "hand": {"type": "integer"},
+                                        },
+                                        "type": "object",
+                                    },
+                                    "type": "array",
+                                }
+                            }
+                        },
+                        "description": "one hand "
+                        "of cards "
+                        "for each "
+                        "`hand` "
+                        "value in "
+                        "the query "
+                        "string",
+                    }
+                },
+            }
+        },
+    },
+    "components": {
+        "schemas": {
+            "Card": {
+                "properties": {
+                    "__class__": {"example": "Card", "type": "string"},
+                    "__init__": {
+                        "properties": {
+                            "rank": {"example": 1, "type": "integer"},
+                            "suit": {"example": "♠", "type": "string"},
+                        },
+                        "type": "object",
+                    },
+                },
+                "type": "object",
+            }
+        }
+    }
+}
+
+test_specification_matches = """
+>>> assert specification ==  alternative_specification
+"""
+
+
+__test__ = {
+    n: v
+    for n, v in locals().items()
+    if n.startswith("test_")
+}

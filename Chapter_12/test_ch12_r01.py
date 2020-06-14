@@ -23,9 +23,9 @@ def test_deal_cards(dealer_client):
     )
     assert response.status_code == 200
     assert response.json == [
-        {"__class__": "Card", "rank": 10, "suit": "♡"},
-        {"__class__": "Card", "rank": 4, "suit": "♡"},
-        {"__class__": "Card", "rank": 7, "suit": "♠"},
-        {"__class__": "Card", "rank": 11, "suit": "♢"},
-        {"__class__": "Card", "rank": 12, "suit": "♡"},
+        {"__class__": "Card", "__init__": {"rank": 10, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 4, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 7, "suit": "♠"}},
+        {"__class__": "Card", "__init__": {"rank": 11, "suit": "♢"}},
+        {"__class__": "Card", "__init__": {"rank": 12, "suit": "♡"}},
     ]

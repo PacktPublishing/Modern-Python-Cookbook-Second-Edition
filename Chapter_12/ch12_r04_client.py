@@ -78,7 +78,6 @@ def create_new_deck(openapi_spec: ResponseDoc, size: int = 6) -> Dict[str, Any]:
             print(response.headers)
             document = json.loads(response.read().decode("utf-8"))
 
-        print(document)
         assert document["status"] == "ok"
         return document
     except urllib.error.HTTPError as ex:
@@ -116,7 +115,6 @@ def no_spec_create_new_deck(size: int = 6) -> Dict[str, Any]:
             document = json.loads(
                 response.read().decode("utf-8"))
 
-        print(document)
         assert document["status"] == "ok"
         return document
     except urllib.error.HTTPError as ex:
@@ -226,18 +224,23 @@ def no_spec_get_hands(
 
 def main_no_spec():
     create_doc = no_spec_create_new_deck(6)
+    print(create_doc)
     id = create_doc["id"]
     deck_info = no_spec_get_new_deck(id)
-    print(deck_info)
+    # print(deck_info)
     hands = no_spec_get_hands(id, cards=6, limit=2)
-    pprint(hands)
+    for hand in hands:
+        print(f"Hand {hand['hand']}")
+        pprint(hand['cards'])
+        print()
 
 def main():
     spec = get_openapi_spec()
     create_doc = create_new_deck(spec, 6)
+    print(create_doc)
     id = create_doc["id"]
     deck_info = get_new_deck(spec, id)
-    print(deck_info)
+    # print(deck_info)
     hands = get_hands(spec, id, cards=6, limit=2)
     pprint(hands)
 

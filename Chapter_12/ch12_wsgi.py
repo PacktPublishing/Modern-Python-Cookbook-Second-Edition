@@ -48,7 +48,7 @@ def deal_cards(
     status = f"{HTTPStatus.OK.value} {HTTPStatus.OK.phrase}"
     headers = [("Content-Type", "application/json;charset=utf-8")]
     start_response(status, headers)
-    json_cards = list(card.to_json() for card in cards)
+    json_cards = list(card.serialize() for card in cards)
     return [json.dumps(json_cards, indent=2).encode("utf-8")]
 
 
@@ -70,7 +70,7 @@ class DealCards:
         status = f"{HTTPStatus.OK.value} {HTTPStatus.OK.phrase}"
         headers = [("Content-Type", "application/json;charset=utf-8")]
         start_response(status, headers)
-        json_cards = list(card.to_json() for card in cards)
+        json_cards = list(card.serialize() for card in cards)
         return [json.dumps(json_cards, indent=2).encode("utf-8")]
 
 

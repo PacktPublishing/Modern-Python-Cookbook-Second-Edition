@@ -15,12 +15,12 @@ def test_deal_cards():
         Chapter_12.ch12_wsgi.deal_cards(environ, start_response=mock_start)
     )
     assert json.loads(response) == [
-        {"__class__": "Card", "rank": 3, "suit": "♡"},
-        {"__class__": "Card", "rank": 6, "suit": "♣"},
-        {"__class__": "Card", "rank": 7, "suit": "♡"},
-        {"__class__": "Card", "rank": 1, "suit": "♣"},
-        {"__class__": "Card", "rank": 6, "suit": "♡"},
-        {"__class__": "Card", "rank": 10, "suit": "♢"},
+        {"__class__": "Card", "__init__": {"rank": 3, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 6, "suit": "♣"}},
+        {"__class__": "Card", "__init__": {"rank": 7, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 1, "suit": "♣"}},
+        {"__class__": "Card", "__init__": {"rank": 6, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 10, "suit": "♢"}},
     ]
     mock_start.assert_called_once_with(
         "200 OK", [("Content-Type", "application/json;charset=utf-8")]
@@ -34,12 +34,12 @@ def test_DeaLCards():
     environ = {}
     response = b"".join(dealer(environ, start_response=mock_start))
     assert json.loads(response) == [
-        {"__class__": "Card", "rank": 3, "suit": "♡"},
-        {"__class__": "Card", "rank": 6, "suit": "♣"},
-        {"__class__": "Card", "rank": 7, "suit": "♡"},
-        {"__class__": "Card", "rank": 1, "suit": "♣"},
-        {"__class__": "Card", "rank": 6, "suit": "♡"},
-        {"__class__": "Card", "rank": 10, "suit": "♢"},
+        {"__class__": "Card", "__init__": {"rank": 3, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 6, "suit": "♣"}},
+        {"__class__": "Card", "__init__": {"rank": 7, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 1, "suit": "♣"}},
+        {"__class__": "Card", "__init__": {"rank": 6, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 10, "suit": "♢"}},
     ]
     mock_start.assert_called_once_with(
         "200 OK", [("Content-Type", "application/json;charset=utf-8")]
@@ -58,12 +58,12 @@ def test_json_filter_good_1():
     assert dict(headers) == {"Content-Type": "application/json;charset=utf-8"}
     response = b"".join(response)
     assert json.loads(response) == [
-        {"__class__": "Card", "rank": 3, "suit": "♡"},
-        {"__class__": "Card", "rank": 6, "suit": "♣"},
-        {"__class__": "Card", "rank": 7, "suit": "♡"},
-        {"__class__": "Card", "rank": 1, "suit": "♣"},
-        {"__class__": "Card", "rank": 6, "suit": "♡"},
-        {"__class__": "Card", "rank": 10, "suit": "♢"},
+        {"__class__": "Card", "__init__": {"rank": 3, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 6, "suit": "♣"}},
+        {"__class__": "Card", "__init__": {"rank": 7, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 1, "suit": "♣"}},
+        {"__class__": "Card", "__init__": {"rank": 6, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 10, "suit": "♢"}},
     ]
 
 
@@ -90,10 +90,10 @@ def test_json_filter_good_2():
     assert status == "200 OK"
     assert dict(headers) == {"Content-Type": "application/json;charset=utf-8"}
     assert json.loads(b"".join(response)) == [
-        {"__class__": "Card", "rank": 3, "suit": "♡"},
-        {"__class__": "Card", "rank": 6, "suit": "♣"},
-        {"__class__": "Card", "rank": 7, "suit": "♡"},
-        {"__class__": "Card", "rank": 1, "suit": "♣"},
-        {"__class__": "Card", "rank": 6, "suit": "♡"},
-        {"__class__": "Card", "rank": 10, "suit": "♢"},
+        {"__class__": "Card", "__init__": {"rank": 3, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 6, "suit": "♣"}},
+        {"__class__": "Card", "__init__": {"rank": 7, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 1, "suit": "♣"}},
+        {"__class__": "Card", "__init__": {"rank": 6, "suit": "♡"}},
+        {"__class__": "Card", "__init__": {"rank": 10, "suit": "♢"}},
     ]

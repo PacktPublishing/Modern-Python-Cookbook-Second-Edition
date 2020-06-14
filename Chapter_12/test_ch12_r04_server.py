@@ -51,11 +51,11 @@ def test_deal_cards_sequence(dealer_client):
     assert response3.json == [
         {
             "cards": [
-                {"__class__": "Card", "rank": 10, "suit": "♡"},
-                {"__class__": "Card", "rank": 1, "suit": "♠"},
-                {"__class__": "Card", "rank": 9, "suit": "♡"},
-                {"__class__": "Card", "rank": 11, "suit": "♢"},
-                {"__class__": "Card", "rank": 5, "suit": "♡"},
+                {"__class__": "Card", "__init__": {"rank": 10, "suit": "♡"}},
+                {"__class__": "Card", "__init__": {"rank": 1, "suit": "♠"}},
+                {"__class__": "Card", "__init__": {"rank": 9, "suit": "♡"}},
+                {"__class__": "Card", "__init__": {"rank": 11, "suit": "♢"}},
+                {"__class__": "Card", "__init__": {"rank": 5, "suit": "♡"}},
             ],
             "hand": 0,
         }

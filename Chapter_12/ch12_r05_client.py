@@ -4,6 +4,7 @@ Chapter 12, recipe 5, Parsing a JSON request
 Client.
 """
 
+from dataclasses import dataclass
 from pprint import pprint
 import urllib.request
 import urllib.parse
@@ -59,7 +60,18 @@ def make_path_map(openapi_spec: ResponseDoc) -> Path_Map:
     return operation_ids
 
 
-def create_new_player(openapi_spec: ResponseDoc, path_map: Path_Map) -> ResponseDoc:
+@dataclass
+class Player:
+    player_name: str
+    email_address: str
+    other_field: int
+    handle: str
+
+
+def create_new_player(
+        openapi_spec: ResponseDoc,
+        path_map: Path_Map,
+        input_form: Player) -> ResponseDoc:
     """Post to create a player."""
 
     path, operation = path_map["make_player"]
@@ -67,10 +79,10 @@ def create_new_player(openapi_spec: ResponseDoc, path_map: Path_Map) -> Response
     full_url = f"{base_url}{path}"
 
     document = {
-        "name": "Noriko",
-        "email": "nori@example.com",
-        "lucky_number": 7,
-        "twitter": "https://twitter.com/PacktPub",
+        "name": input_form.player_name,
+        "email": input_form.email_address,
+        "lucky_number": input_form.other_field,
+        "twitter": input_form.handle,
     }
 
     request = urllib.request.Request(
@@ -151,7 +163,13 @@ def get_one_player(
 def main():
     spec = get_openapi_spec()
     paths = make_path_map(spec)
-    create_doc = create_new_player(spec, paths)
+    input_form = Player(
+        player_name="Noriko",
+        email_address="nori@example.com",
+        other_field=7,
+        handle="https://twitter.com/PacktPub",
+    )
+    create_doc = create_new_player(spec, paths, input_form)
     id = create_doc["id"]
     get_one_player(spec, paths, id)
     players = get_all_players(spec, paths, id)

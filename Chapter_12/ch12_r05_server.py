@@ -39,6 +39,12 @@ paths:
       responses:
         "201":
           description: Create and shuffle a deck. Returns a unique deck id.
+          headers: 
+            Location: 
+              schema: 
+                type: string
+                format: uri
+              description: URL for new deck
           content:
             application/json:
               schema:
@@ -193,12 +199,15 @@ components:
         __class__:
           type: string
           example: "Card"
-        rank:
-          type: integer
-          example: 1
-        suit:
-          type: string
-          example: "\u2660"
+        __init__:
+          type: object
+          properties:
+            rank:
+              type: integer
+              example: 1
+            suit:
+              type: string
+              example: "\u2660"
     decks:
       description: Number of decks to build and deal
       type: integer
@@ -243,6 +252,7 @@ def get_decks() -> Dict[str, Deck]:
     global decks
     if decks is None:
         random.seed(os.environ.get("DEAL_APP_SEED"))
+        # Database connection might go here.
         decks = {}
     return decks
 
@@ -254,6 +264,7 @@ players: Optional[Dict[str, JSON_Doc]] = None
 def get_players() -> Dict[str, JSON_Doc]:
     global players
     if players is None:
+        # Database connection might go here.
         players = {}
     return players
 
@@ -394,7 +405,7 @@ def get_hands(id: str) -> Response:
     hands = [subset[h * cards : (h + 1) * cards] for h in range(top)]
     response = jsonify(
         [
-            {"hand": i, "cards": [card.to_json() for card in hand]}
+            {"hand": i, "cards": [card.serialize() for card in hand]}
             for i, hand in enumerate(hands)
         ]
     )
