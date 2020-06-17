@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 13, recipe 10, Wrapping and combining CLI applications
+Chapter 14, recipe 4, Wrapping and combining CLI applications
 
 This uses an explicit `python` command
 so Chapter_13/ch13_r05.py does not have to be marked executable.
@@ -9,9 +9,14 @@ import argparse
 from pathlib import Path
 import subprocess
 import sys
-from typing import List
+from typing import List, Optional
 
-def get_options(argv: List[str] = sys.argv[1:]) -> argparse.Namespace:
+
+def get_options(
+        argv: Optional[List[str]] = None
+) -> argparse.Namespace:
+    if argv is None:
+        argv = sys.argv[1:]
     parser = argparse.ArgumentParser()
     parser.add_argument("directory", type=Path)
     parser.add_argument("games", type=int)
@@ -44,9 +49,11 @@ def make_files_clean(directory: Path, files: int = 100) -> None:
             partial.unlink()
         raise
 
+
 def main() -> None:
     options = get_options()
     make_files_clean(options.directory, options.games)
+
 
 if __name__ == "__main__":
     main()

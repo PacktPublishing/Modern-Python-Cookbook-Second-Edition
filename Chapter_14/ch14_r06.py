@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 13, recipe 12, Controlling complex sequences of steps.
+Chapter 14, recipe 6, Controlling complex sequences of steps.
 """
 import argparse
 import os
@@ -98,11 +98,9 @@ def demo() -> None:
     print(report_document)
 
 test_demo = """
->>> from Chapter_13.ch13_r12 import demo
+>>> from Chapter_14.ch14_r06 import demo
 >>> demo()
-['python', 'Chapter_13/ch13_r05.py', '--samples', '100', '-o', 'data/x13.yaml'] Namespace(output='data/x13.yaml', output_path=PosixPath('data/x13.yaml'), samples=100, seed=42)
-Counter({7: 53, 5: 43, 6: 36, 9: 34, 8: 31, 4: 20, 10: 19, 11: 17, 3: 15, 12: 13, 2: 13})
-<BLANKLINE>
+['python', 'Chapter_13/ch13_r05.py', '--samples', '100', '-o', 'data/x13.yaml'] 
 ['python', 'Chapter_13/ch13_r06.py', '-o', 'data/y13.yaml', 'data/x13.yaml'] 
 {('loss', 1): 15, ('loss', 2): 11, ('loss', 3): 8, ('loss', 4): 8, ('loss', 5): 4, ('loss', 6): 2, ('loss', 7): 1, ('loss', 11): 1, ('loss', 12): 1, ('win', 1): 24, ('win', 2): 4, ('win', 3): 6, ('win', 4): 4, ('win', 5): 3, ('win', 6): 3, ('win', 7): 4, ('win', 12): 1}
 

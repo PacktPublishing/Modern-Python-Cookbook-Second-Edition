@@ -1,0 +1,24 @@
+"""Python Cookbook
+
+Chapter 1, Examples from the text.
+
+•	Decoding bytes – how to get proper characters from some bytes
+    Portions of this example require internet access.
+
+"""
+
+# Recipe 10
+# Decoding bytes – how to get proper characters from some bytes
+# This can be skipped in the event of an unreliable internet connection.
+
+>>> import urllib.request
+>>> warnings_uri= 'https://forecast.weather.gov/product.php?site=CRH&issuedby=AKQ&product=SMW&format=TXT'
+>>> with urllib.request.urlopen(warnings_uri) as source:
+...     warnings_text = source.read()
+
+>>> warnings_text[:80]
+b'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/x'
+
+>>> document = warnings_text.decode("UTF-8")
+>>> document[:80]
+'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/x'

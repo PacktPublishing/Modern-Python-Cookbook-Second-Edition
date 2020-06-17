@@ -1,0 +1,12 @@
+"""Python Cookbook
+
+Chapter 14, Examples from the text.
+
+•	Combining two applications into one
+•	Combining many applications using the Command design pattern
+•	Managing arguments and configuration in composite applications
+•	Wrapping and combining CLI applications
+•	Wrapping a program and checking the output
+•	Controlling complex sequences of steps
+
+"""

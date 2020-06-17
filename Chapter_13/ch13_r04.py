@@ -4,12 +4,13 @@ Chapter 13, recipe 4, Using class-as-namespace for configuration values.
 """
 from pathlib import Path
 import platform
-from typing import Dict, Any
+from typing import Dict, Any, Type
 
+ConfigClass = Type[object]
 
 def load_config_file(
         config_path: Path, classname: str = "Configuration"
-    ) -> Dict[str, Any]:
+    ) -> ConfigClass:
     code = compile(
         config_path.read_text(),
         config_path.name,
@@ -18,9 +19,10 @@ def load_config_file(
         "__builtins__": __builtins__,
         "Path": Path,
         "platform": platform}
-    locals: Dict[str, Any] = {}
+    locals: Dict[str, ConfigClass] = {}
     exec(code, globals, locals)
-    return locals[classname]
+    result: ConfigClass = locals[classname]
+    return result
 
 def main_1():
     config: Dict[str, Any] = load_config_file("settings.py", "Chesapeake")
@@ -31,11 +33,11 @@ def main_1():
 import importlib
 
 
-def load_config_module(name: str) -> Dict[str, Any]:
+def load_config_module(name: str) -> ConfigClass:
     module_name, _, class_name = name.rpartition(".")
     settings_module = importlib.import_module(module_name)
-    return vars(settings_module)[class_name]
-
+    result: ConfigClass = vars(settings_module)[class_name]
+    return result
 
 class ConfigMetaclass(type):
     """Displays a subclass with superclass values injected"""

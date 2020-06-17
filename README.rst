@@ -37,21 +37,13 @@ Installation and Setup
 
         tox
 
-    Some of the tests require special setup.
+5.  No Internet.
 
-    The Chapter_01 tests make an internet connection and download a
-    file. In case you have connectivity problems, you might want to
-    either delete the test examples, or include ``#doctest: +SKIP`` at the end of each ``>>>`` line.
+    - ``tox`` (or ``tox -e py38,network``) will run all tests.
 
-    Change::
+    - ``tox -e py38`` will run the tests that do not need an internet connection.
 
-        >>> import urllib.request
-
-    To::
-
-        >>> import urllib.request  # doctest: +SKIP
-
-    On each of the six of lines with ``>>>`` found between the "may need to be skipped" comments.
+6.  Windows.
 
     The Chapter_05 examples make OS requests that work for Darwin and Linux,
     but are not designed to work for Windows. In this chapter's examples, also,

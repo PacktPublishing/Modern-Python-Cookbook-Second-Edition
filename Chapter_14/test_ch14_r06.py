@@ -1,15 +1,13 @@
 """Python Cookbook
 
-Chapter 13, recipe 12, Controlling complex sequences of steps.
+Chapter 14, recipe 6, Controlling complex sequences of steps.
 """
 import argparse
-import collections
-from pathlib import Path
 import subprocess
-from unittest.mock import Mock, call, sentinel
+from unittest.mock import Mock, call
 from pytest import *  # type: ignore
 
-import Chapter_13.ch13_r12
+import Chapter_14.ch14_r06
 
 @fixture  # type: ignore
 def mock_subprocess_run():
@@ -20,10 +18,10 @@ def mock_subprocess_run():
     )
 
 def test_command(mock_subprocess_run, monkeypatch):
-    monkeypatch.setattr(Chapter_13.ch13_r12.subprocess, 'run', mock_subprocess_run)
+    monkeypatch.setattr(Chapter_14.ch14_r06.subprocess, 'run', mock_subprocess_run)
     options = argparse.Namespace(name="mock_options")
 
-    cmd = Chapter_13.ch13_r12.Command()
+    cmd = Chapter_14.ch14_r06.Command()
     output = cmd.execute(options)
 
     assert output == "sample output\n"
@@ -34,10 +32,10 @@ def test_command(mock_subprocess_run, monkeypatch):
 
 
 def test_simulate(mock_subprocess_run, monkeypatch):
-    monkeypatch.setattr(Chapter_13.ch13_r12.subprocess, 'run', mock_subprocess_run)
+    monkeypatch.setattr(Chapter_14.ch14_r06.subprocess, 'run', mock_subprocess_run)
     options = argparse.Namespace(name="mock_options", samples=42, game_file="game_file.yaml")
 
-    cmd = Chapter_13.ch13_r12.Simulate()
+    cmd = Chapter_14.ch14_r06.Simulate()
     output = cmd.execute(options)
 
     assert output == "sample output\n"
@@ -51,10 +49,10 @@ def test_simulate(mock_subprocess_run, monkeypatch):
 
 
 def test_summarize(mock_subprocess_run, monkeypatch):
-    monkeypatch.setattr(Chapter_13.ch13_r12.subprocess, 'run', mock_subprocess_run)
+    monkeypatch.setattr(Chapter_14.ch14_r06.subprocess, 'run', mock_subprocess_run)
     options = argparse.Namespace(name="mock_options", samples=42, game_files=["game_file.yaml"], summary_file="summary_file.yaml")
 
-    cmd = Chapter_13.ch13_r12.Summarize()
+    cmd = Chapter_14.ch14_r06.Summarize()
     output = cmd.execute(options)
 
     assert output == "sample output\n"
@@ -89,11 +87,11 @@ def mock_summarize():
 
 
 def test_iterative_sim(mock_simulate, mock_summarize, monkeypatch):
-    monkeypatch.setattr(Chapter_13.ch13_r12, 'Simulate', mock_simulate)
-    monkeypatch.setattr(Chapter_13.ch13_r12, 'Summarize', mock_summarize)
+    monkeypatch.setattr(Chapter_14.ch14_r06, 'Simulate', mock_simulate)
+    monkeypatch.setattr(Chapter_14.ch14_r06, 'Summarize', mock_summarize)
 
     options_i = argparse.Namespace(simulations=2, samples=100, summary_file="data/y12.yaml")
-    iteration = Chapter_13.ch13_r12.IterativeSimulate()
+    iteration = Chapter_14.ch14_r06.IterativeSimulate()
     iteration.execute(options_i)
 
     mock_simulate.assert_called_once_with()
@@ -107,11 +105,11 @@ def test_iterative_sim(mock_simulate, mock_summarize, monkeypatch):
 
 
 def test_condition_sum(mock_simulate, mock_summarize, monkeypatch):
-    monkeypatch.setattr(Chapter_13.ch13_r12, 'Simulate', mock_simulate)
-    monkeypatch.setattr(Chapter_13.ch13_r12, 'Summarize', mock_summarize)
+    monkeypatch.setattr(Chapter_14.ch14_r06, 'Simulate', mock_simulate)
+    monkeypatch.setattr(Chapter_14.ch14_r06, 'Summarize', mock_summarize)
 
     options_c = argparse.Namespace(simulations=2, samples=100, game_file="data/x.yaml")
-    conditional = Chapter_13.ch13_r12.ConditionalSummarize()
+    conditional = Chapter_14.ch14_r06.ConditionalSummarize()
     conditional.execute(options_c)
 
     mock_simulate.assert_called_once_with()

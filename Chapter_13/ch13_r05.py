@@ -43,7 +43,7 @@ def craps_game() -> Game_Summary:
         sequence.append(next.faces)
         return sequence
     else:
-        raise Exception("Horrifying Logic Bug")
+        raise Exception(f"Horrifying Logic Bug in {come_out}")
 
 
 def roll_iter(
@@ -75,8 +75,8 @@ def summarize(
         configuration: argparse.Namespace,
         counts: Counter[int]
     ) -> None:
-    print(configuration)
-    print(counts)
+    print(configuration, file=sys.stderr)
+    print(counts, file=sys.stderr)
 
 
 def get_options(

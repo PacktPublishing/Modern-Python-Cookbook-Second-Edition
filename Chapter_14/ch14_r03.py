@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 13, recipe 9, Managing arguments and configuration in composite applications
+Chapter 14, recipe 3, Managing arguments and configuration in composite applications
 """
 import argparse
 from pathlib import Path
@@ -13,7 +13,7 @@ class Command:
     @classmethod
     def arguments(
             cls,
-            simulate_parser: argparse.ArgumentParser
+            sub_parser: argparse.ArgumentParser
     ) -> None:
         pass
 
@@ -39,7 +39,7 @@ class Simulate(Command):
             "-o", "--output", dest="game_file", required=True)
         simulate_parser.add_argument(
             "--seed",
-            default=os.environ.get("CH13_R09_SEED", None)
+            default=os.environ.get("CH14_R03_SEED", None)
         )
         simulate_parser.set_defaults(command=cls)
 
@@ -76,9 +76,6 @@ class Summarize(Command):
             ch13_r06.process_all_files(result_file, options.game_files)
 
 
-import Chapter_13.ch13_r07 as ch13_r07
-
-
 class SimSum(Command):
 
     @classmethod
@@ -92,7 +89,7 @@ class SimSum(Command):
             "-o", "--output", dest="summary_file")
         simsum_parser.add_argument(
             "--seed",
-            default=os.environ.get("CH13_R09_SEED", None)
+            default=os.environ.get("CH14_R03_SEED", None)
         )
         simsum_parser.set_defaults(command=cls)
 

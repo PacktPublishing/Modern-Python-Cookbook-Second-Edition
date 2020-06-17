@@ -1,18 +1,18 @@
 """Python Cookbook
 
-Chapter 13, recipe 8, Combining many applications using the Command design pattern
+Chapter 14, recipe 3, Combining many applications using the Command design pattern
 """
 import argparse
 from pathlib import Path
 from unittest.mock import Mock, call, sentinel
 from pytest import *  # type: ignore
 
-import Chapter_13.ch13_r08
+import Chapter_14.ch14_r02
 
 
 def test_command():
     options = argparse.Namespace()
-    cmd = Chapter_13.ch13_r08.Command()
+    cmd = Chapter_14.ch14_r02.Command()
     cmd.execute(options)
 
 
@@ -26,14 +26,14 @@ def mock_ch13_r05():
 
 def test_simulate(mock_ch13_r05, monkeypatch, capsys, tmpdir):
     target = tmpdir / "game_file.yaml"
-    monkeypatch.setattr(Chapter_13.ch13_r08, 'ch13_r05', mock_ch13_r05)
+    monkeypatch.setattr(Chapter_14.ch14_r02, 'ch13_r05', mock_ch13_r05)
     options = argparse.Namespace(
         game_file=target,
         games=sentinel.GAMES,
         seed=sentinel.SEED,
     )
 
-    cmd = Chapter_13.ch13_r08.Simulate()
+    cmd = Chapter_14.ch14_r02.Simulate()
     cmd.execute(options)
 
     assert mock_ch13_r05.roll_iter.mock_calls == [call(sentinel.GAMES, sentinel.SEED)]
@@ -55,13 +55,13 @@ def test_summarize(mock_ch13_r06, monkeypatch, capsys, tmpdir):
     target = tmpdir / "summary_file.yaml"
     game_file_1 = tmpdir / "game_file_1.yaml"
     game_file_2 = tmpdir / "game_file_2.yaml"
-    monkeypatch.setattr(Chapter_13.ch13_r08, 'ch13_r06', mock_ch13_r06)
+    monkeypatch.setattr(Chapter_14.ch14_r02, 'ch13_r06', mock_ch13_r06)
     options = argparse.Namespace(
         summary_file=target,
         game_files=[game_file_1, game_file_2]
     )
 
-    cmd = Chapter_13.ch13_r08.Summarize()
+    cmd = Chapter_14.ch14_r02.Summarize()
     cmd.execute(options)
 
     assert len(mock_ch13_r06.process_all_files.mock_calls) == 1
@@ -70,15 +70,15 @@ def test_summarize(mock_ch13_r06, monkeypatch, capsys, tmpdir):
 
 
 def test_simsum(mock_ch13_r05, mock_ch13_r06, monkeypatch, capsys, tmpdir):
-    monkeypatch.setattr(Chapter_13.ch13_r08, 'ch13_r06', mock_ch13_r06)
-    monkeypatch.setattr(Chapter_13.ch13_r08, 'ch13_r05', mock_ch13_r05)
+    monkeypatch.setattr(Chapter_14.ch14_r02, 'ch13_r06', mock_ch13_r06)
+    monkeypatch.setattr(Chapter_14.ch14_r02, 'ch13_r05', mock_ch13_r05)
     options = argparse.Namespace(
         games=sentinel.GAMES,
         summary_file=tmpdir/"summary.yaml",
         seed=sentinel.SEED
     )
 
-    cmd = Chapter_13.ch13_r08.SimSum()
+    cmd = Chapter_14.ch14_r02.SimSum()
     cmd.execute(options)
 
     assert mock_ch13_r05.roll_iter.mock_calls == [call(sentinel.GAMES, sentinel.SEED)]

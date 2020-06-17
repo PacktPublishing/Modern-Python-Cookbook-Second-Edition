@@ -1,12 +1,12 @@
 """Python Cookbook
 
-Chapter 13, recipe 10, Wrapping and combining CLI applications
+Chapter 14, recipe 4, Wrapping and combining CLI applications
 """
 from pathlib import Path
 from subprocess import CalledProcessError
-from unittest.mock import Mock, patch, call
+from unittest.mock import Mock, call
 from pytest import *  # type: ignore
-import Chapter_13.ch13_r10
+import Chapter_14.ch14_r04
 
 
 @fixture  # type: ignore
@@ -37,12 +37,12 @@ def test_make_files_clean_good(
         monkeypatch,
         tmpdir):
     monkeypatch.setattr(
-        Chapter_13.ch13_r10.subprocess,
+        Chapter_14.ch14_r04.subprocess,
         'run',
         mock_subprocess_run_good)
 
     directory = Path(tmpdir)
-    Chapter_13.ch13_r10.make_files_clean(directory, files=3)
+    Chapter_14.ch14_r04.make_files_clean(directory, files=3)
 
     expected = [
         call(
@@ -88,13 +88,13 @@ def test_make_files_clean_fail(
         monkeypatch,
         tmpdir):
     monkeypatch.setattr(
-        Chapter_13.ch13_r10.subprocess,
+        Chapter_14.ch14_r04.subprocess,
         'run',
         mock_subprocess_run_fail)
 
     directory = Path(tmpdir)
     with raises(CalledProcessError):
-        Chapter_13.ch13_r10.make_files_clean(directory, files=3)
+        Chapter_14.ch14_r04.make_files_clean(directory, files=3)
 
     expected = [
         call(

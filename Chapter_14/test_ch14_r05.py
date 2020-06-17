@@ -1,19 +1,18 @@
 """Python Cookbook
 
-Chapter 13, recipe 11, Wrapping a program and checking the output
+Chapter 14, recipe 5, Wrapping a program and checking the output
 """
 import collections
 from pathlib import Path
-import subprocess
 from unittest.mock import Mock, call, sentinel
 from pytest import *  # type: ignore
 
-import Chapter_13.ch13_r11
+import Chapter_14.ch14_r05
 
 
 def test_command_iter(tmpdir):
     results = list(
-        Chapter_13.ch13_r11.command_iter(tmpdir, files=2)
+        Chapter_14.ch14_r05.command_iter(tmpdir, files=2)
     )
     expected = [
         [
@@ -42,9 +41,9 @@ def mock_subprocess_run():
     )
 
 def test_command_output_iter(mock_subprocess_run, monkeypatch, tmpdir):
-    monkeypatch.setattr(Chapter_13.ch13_r11.subprocess, 'run', mock_subprocess_run)
+    monkeypatch.setattr(Chapter_14.ch14_r05.subprocess, 'run', mock_subprocess_run)
     results = list(
-        Chapter_13.ch13_r11.command_output_iter(Path(tmpdir), [sentinel.CMD_1, sentinel.CMD_2])
+        Chapter_14.ch14_r05.command_output_iter(Path(tmpdir), [sentinel.CMD_1, sentinel.CMD_2])
     )
     expected = [
         "line 0", "line 1", "line 0", "line 1"
@@ -72,7 +71,7 @@ def test_collect_batches():
         "text",
     ]
     results = list(
-        Chapter_13.ch13_r11.collect_batches(source)
+        Chapter_14.ch14_r05.collect_batches(source)
     )
     assert expected == results
 
@@ -106,12 +105,12 @@ def test_main(
         monkeypatch,
         capsys,
         tmpdir):
-    monkeypatch.setattr(Chapter_13.ch13_r11, 'command_iter', mock_command_iter)
-    monkeypatch.setattr(Chapter_13.ch13_r11, 'command_output_iter', mock_command_output_iter)
-    monkeypatch.setattr(Chapter_13.ch13_r11, 'collect_batches', mock_collect_batches_iter)
-    monkeypatch.setattr(Chapter_13.ch13_r11, 'Path', mock_path)
+    monkeypatch.setattr(Chapter_14.ch14_r05, 'command_iter', mock_command_iter)
+    monkeypatch.setattr(Chapter_14.ch14_r05, 'command_output_iter', mock_command_output_iter)
+    monkeypatch.setattr(Chapter_14.ch14_r05, 'collect_batches', mock_collect_batches_iter)
+    monkeypatch.setattr(Chapter_14.ch14_r05, 'Path', mock_path)
 
-    Chapter_13.ch13_r11.summarize(
+    Chapter_14.ch14_r05.summarize(
         directory=Path(tmpdir/"data"),
         games=2,
         temporary=Path(tmpdir/"tmp")

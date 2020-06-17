@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 13, recipe 8, Combining many applications using the Command design pattern
+Chapter 14, recipe 2, Combining many applications using the Command design pattern
 """
 import argparse
 from pathlib import Path
@@ -60,7 +60,7 @@ class SimSum(Sequence):
 
     def execute(self, options: argparse.Namespace) -> None:
         self.intermediate = (
-            Path("data") / "ch13_r08_temporary.yaml"
+            Path("data") / "ch13_r02_temporary.yaml"
         )
         new_namespace = Namespace(
             game_file=str(self.intermediate),

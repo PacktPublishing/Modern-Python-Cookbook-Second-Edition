@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 13, recipe 7, Combining two applications into one
+Chapter 14, recipe 1, Combining two applications into one
 """
 import argparse
 import collections

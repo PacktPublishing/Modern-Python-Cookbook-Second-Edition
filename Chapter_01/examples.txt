@@ -12,6 +12,7 @@ Chapter 1, Examples from the text.
 •	Using the Unicode characters that aren't on our keyboards
 •	Encoding strings – creating ASCII and UTF-8 bytes
 •	Decoding bytes – how to get proper characters from some bytes
+    Portions of this example are in ``examples_network.txt``
 •	Using tuples of items
 •	Using NamedTuples to simplify item access in tuples
 
@@ -390,29 +391,10 @@ UnicodeEncodeError: 'ascii' codec can't encode character '\U0001f000' in positio
 
 # Recipe 10
 # Decoding bytes – how to get proper characters from some bytes
+# Parts of this require network access, see examples_network.txt.
 
-###
-### The following tests may need to be skipped if you have no reliable internet connection
-###
-
->>> import urllib.request
->>> warnings_uri= 'https://forecast.weather.gov/product.php?site=CRH&issuedby=AKQ&product=SMW&format=TXT'
->>> with urllib.request.urlopen(warnings_uri) as source:
-...     warnings_text = source.read()
-
->>> warnings_text[:80]
-b'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/x'
-
->>> document = warnings_text.decode("UTF-8")
->>> document[:80]
-'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/x'
-
-###
-### The preceeding tests may need to be skipped if you have no reliable internet connection
-###
-
-# We've provided a sample page... Presumably, you're running this from the Code directory.
-# This provides a consistent result for testing purposes.
+# This uses a saved sample page.
+# It provides a consistent result for testing purposes.
 
 >>> from pathlib import Path
 >>> sample = Path.cwd()/"Chapter_01"/"National Weather Service Text Product Display.html"

@@ -8,12 +8,6 @@ Chapter 13, Examples from the text.
 •	Using class-as-namespace for configuration values
 •	Designing scripts for composition
 •	Using logging for control and audit output
-•	Combining two applications into one
-•	Combining many applications using the Command design pattern
-•	Managing arguments and configuration in composite applications
-•	Wrapping and combining CLI applications
-•	Wrapping a program and checking the output
-•	Controlling complex sequences of steps
 
 """
 
@@ -49,7 +43,7 @@ Chapter 13, Examples from the text.
 ... text: "Different Words."
 ... '''
 
->>> document_iterator = iter(yaml.load_all(yaml_text, Loader=yaml.SafeLoader))
+>>> document_iterator = yaml.load_all(yaml_text, Loader=yaml.SafeLoader)
 >>> document_1 = next(document_iterator)
 >>> document_1['id']
 1

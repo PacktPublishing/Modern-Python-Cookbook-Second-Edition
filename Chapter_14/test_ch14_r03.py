@@ -1,15 +1,15 @@
 """Python Cookbook
 
-Chapter 13, recipe 9, Managing arguments and configuration in composite applications
+Chapter 14, recipe 3, Managing arguments and configuration in composite applications
 """
 import yaml
-import Chapter_13.ch13_r09
+import Chapter_14.ch14_r03
 
 def test_simulate(monkeypatch, tmpdir):
-    options = Chapter_13.ch13_r09.get_options(
+    options = Chapter_14.ch14_r03.get_options(
         ["simulate", "-g", "5", "-o", str(tmpdir/"x.yaml"), "--seed", "42"]
     )
-    assert options.command == Chapter_13.ch13_r09.Simulate
+    assert options.command == Chapter_14.ch14_r03.Simulate
 
     cmd_instance = options.command()
     cmd_instance.execute(options)
@@ -28,10 +28,10 @@ def test_simulate(monkeypatch, tmpdir):
 
 
 def test_simulate_summarize(monkeypatch, tmpdir):
-    options_1 = Chapter_13.ch13_r09.get_options(
+    options_1 = Chapter_14.ch14_r03.get_options(
         ["simulate", "-g", "5", "-o", str(tmpdir/"x.yaml"), "--seed", "42"]
     )
-    assert options_1.command == Chapter_13.ch13_r09.Simulate
+    assert options_1.command == Chapter_14.ch14_r03.Simulate
 
     cmd_instance = options_1.command()
     cmd_instance.execute(options_1)
@@ -48,10 +48,10 @@ def test_simulate_summarize(monkeypatch, tmpdir):
     ]
     assert expected == sim_results
 
-    options_2 = Chapter_13.ch13_r09.get_options(
+    options_2 = Chapter_14.ch14_r03.get_options(
         ["summarize", "-o", str(tmpdir/"y.yaml"), str(tmpdir/"x.yaml")]
     )
-    assert options_2.command == Chapter_13.ch13_r09.Summarize
+    assert options_2.command == Chapter_14.ch14_r03.Summarize
 
     cmd_instance = options_2.command()
     cmd_instance.execute(options_2)
@@ -68,10 +68,10 @@ def test_simulate_summarize(monkeypatch, tmpdir):
 
 
 def test_simsumm(monkeypatch, tmpdir, capsys):
-    options_1 = Chapter_13.ch13_r09.get_options(
+    options_1 = Chapter_14.ch14_r03.get_options(
         ["simsum", "-g", "5", "-o", str(tmpdir/"y.yaml"), "--seed", "42"]
     )
-    assert options_1.command == Chapter_13.ch13_r09.SimSum
+    assert options_1.command == Chapter_14.ch14_r03.SimSum
 
     cmd_instance = options_1.command()
     cmd_instance.execute(options_1)

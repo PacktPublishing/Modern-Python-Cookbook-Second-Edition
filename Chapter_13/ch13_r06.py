@@ -72,7 +72,11 @@ def gather_stats(
             outcome = "win"
         else:
             detail_log.error("problem with %r", game)
-            raise Exception("Wait, What?")
+            raise Exception(
+                f"Wait, What? "
+                f"Inconsistent len {len(game)} and "
+                f"final {sum(game[-1])} roll"
+            )
         event = (outcome, len(game))
         detail_log.debug("game %r -> event %r", game, event)
         counts[event] += 1

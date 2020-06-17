@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter 13, recipe 11, Wrapping a program and checking the output
+Chapter 14, recipe 5, Wrapping a program and checking the output
 
 This uses an explicit `python` command
 so Chapter_13/ch13_r05.py does not have to be marked executable.
