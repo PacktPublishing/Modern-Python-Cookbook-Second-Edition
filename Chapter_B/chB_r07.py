@@ -6,11 +6,13 @@ Chapter B, Bonus, recipe 7, Are there outliers?
 from pathlib import Path
 import json
 import statistics
-from typing import Iterable, Iterator, Optional, List, Dict, TypedDict, Callable
+from typing import (
+    Iterable, Iterator, Optional, Sequence, Dict, TypedDict, Callable, List
+)
 
 
 def absdev(
-        data: List[float],
+        data: Sequence[float],
         median: Optional[float] = None) -> Iterator[float]:
     if median is None:
         median = statistics.median(data)
@@ -18,14 +20,14 @@ def absdev(
 
 
 def median_absdev(
-        data: List[float],
+        data: Sequence[float],
         median: Optional[float] = None) -> float:
     if median is None:
         median = statistics.median(data)
     return statistics.median(absdev(data, median=median))
 
 
-def z_mod(data: List[float]) -> Iterator[float]:
+def z_mod(data: Sequence[float]) -> Iterator[float]:
     median = statistics.median(data)
     mad = median_absdev(data, median)
     return (0.6745 * (x - median) / mad for x in data)
@@ -34,12 +36,14 @@ def z_mod(data: List[float]) -> Iterator[float]:
 import itertools
 
 
-def pass_outliers(data: List[float]) -> Iterator[float]:
+def pass_outliers(data: Sequence[float]
+                  ) -> Iterator[float]:
     return itertools.compress(
         data, (z >= 3.5 for z in z_mod(data)))
 
 
-def reject_outliers(data: List[float]) -> Iterator[float]:
+def reject_outliers(data: Sequence[float]
+                    ) -> Iterator[float]:
     return itertools.compress(
         data, (z < 3.5 for z in z_mod(data)))
 
@@ -51,7 +55,7 @@ class Series(TypedDict):
 
 
 def examine_all_series(source_path: Path) -> None:
-    raw_data: List[Series] = json.loads(source_path.read_text())
+    raw_data: Sequence[Series] = json.loads(source_path.read_text())
 
     series_map = {
         series["series"]: series["data"]
@@ -106,16 +110,14 @@ ZeroDivisionError: float division by zero
 
 outlier = lambda z: z >= 3.5
 
-def pass_outliers_2(data: List[float]) -> Iterator[float]:
+def pass_outliers_2(data: Sequence[float]) -> Iterator[float]:
     return itertools.compress(
         data, (outlier(z) for z in z_mod(data)))
 
 
-def reject_outliers_2(data: List[float]) -> Iterator[float]:
+def reject_outliers_2(data: Sequence[float]) -> Iterator[float]:
     return itertools.compress(
         data, (not outlier(z) for z in z_mod(data)))
-
-
 
 
 def filter_outlier(mad: float, median_x: float, x: float) -> bool:
@@ -126,7 +128,7 @@ from functools import partial
 
 
 def make_filter_outlier_partial(
-        data: List[float]) -> Callable[[float], bool]:
+        data: Sequence[float]) -> Callable[[float], bool]:
     population_median = statistics.median(data)
     mad = median_absdev(data, population_median)
     outlier_partial = partial(
@@ -134,12 +136,12 @@ def make_filter_outlier_partial(
     return outlier_partial
 
 
-def pass_outliers_3(data: List[float]) -> Iterator[float]:
+def pass_outliers_3(data: Sequence[float]) -> Iterator[float]:
     outlier_partial = make_filter_outlier_partial(data)
     return filter(outlier_partial, data)
 
 
-def reject_outliers_3(data: List[float]) -> Iterator[float]:
+def reject_outliers_3(data: Sequence[float]) -> Iterator[float]:
     outlier_partial = make_filter_outlier_partial(data)
     return itertools.filterfalse(outlier_partial, data)
 

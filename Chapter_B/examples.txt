@@ -26,6 +26,7 @@ Chapter B, Bonus -- Statistical Programming and Linear Regression
 >>> [len(item['data']) for item in data]
 [11, 11, 11, 11]
 
+# Alternative 1 -- for and if statements
 
 >>> def get_series(data, series_name):
 ...     for s in data:
@@ -39,6 +40,8 @@ Chapter B, Bonus -- Statistical Programming and Linear Regression
 >>> len(series_1['data'])
 11
 
+# Alternative 2 -- filter() function
+
 >>> def get_series(data, series_name):
 ...     name_match = lambda series: (
 ...         series['series'] == series_name)
@@ -50,6 +53,8 @@ Chapter B, Bonus -- Statistical Programming and Linear Regression
 'II'
 >>> len(series_2['data'])
 11
+
+# Alternative 3 -- first item from a generator
 
 >>> def get_series(data, series_name):
 ...     series = next(

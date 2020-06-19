@@ -23,12 +23,125 @@ from typing import (
 Point = Dict[str, float]
 Series = Dict[str, Union[str, float, List[Point]]]
 
+
+def get_series(data: List[Series], series_name: str) -> Series:
+    series = next(
+        s for s in data
+        if s['series'] == series_name
+    )
+    return series
+
+
 def data_iter(
         series: Series, variable_name: str) -> Iterable[Any]:
     return (
         item[variable_name]
         for item in cast(List[Point], series["data"])
     )
+
+def display_template(data: List[Series]) -> None:
+    for series in data:
+        for variable_name in 'x', 'y':
+            samples = list(
+                data_iter(series, variable_name))
+            # compute details here.
+            series_name = series['series']
+            print(
+                f"{series_name:>3s} {variable_name}: "
+                # display output here.
+            )
+
+import statistics
+import collections
+def display_center(data: List[Series]) -> None:
+    for series in data:
+        for variable_name in 'x', 'y':
+            samples = list(
+                data_iter(series, variable_name))
+            mean = statistics.mean(samples)
+            median = statistics.median(samples)
+            mode = collections.Counter(
+                samples
+            ).most_common(1)
+            series_name = series['series']
+            print(
+                f"{series_name:>3s} {variable_name}: "
+                f"mean={round(mean, 2)}, median={median}, "
+                f"mode={mode}")
+
+test_display_stats = """
+>>> from pprint import pprint
+>>> source_path = Path('data/anscombe.json')
+>>> data = json.loads(
+... source_path.read_text())
+>>> display_center(data)
+  I x: mean=9.0, median=9.0, mode=[(10.0, 1)]
+  I y: mean=7.5, median=7.58, mode=[(8.04, 1)]
+ II x: mean=9.0, median=9.0, mode=[(10.0, 1)]
+ II y: mean=7.5, median=8.14, mode=[(9.14, 1)]
+III x: mean=9.0, median=9.0, mode=[(10.0, 1)]
+III y: mean=7.5, median=7.11, mode=[(7.46, 1)]
+ IV x: mean=9.0, median=8.0, mode=[(8.0, 10)]
+ IV y: mean=7.5, median=7.04, mode=[(6.58, 1)]
+"""
+
+def display_extrema(data: List[Series]) -> None:
+    for series in data:
+        for variable_name in 'x', 'y':
+            samples = list(
+                data_iter(series, variable_name))
+            least = min(samples)
+            most = min(samples)
+            series_name = series['series']
+            print(
+                f"{series_name:>3s} {variable_name}: "
+                f"min={least}, max={most}")
+
+test_display_extrema = """
+>>> from pprint import pprint
+>>> source_path = Path('data/anscombe.json')
+>>> data = json.loads(
+... source_path.read_text())
+>>> display_extrema(data)
+  I x: min=4.0, max=4.0
+  I y: min=4.26, max=4.26
+ II x: min=4.0, max=4.0
+ II y: min=3.1, max=3.1
+III x: min=4.0, max=4.0
+III y: min=5.39, max=5.39
+ IV x: min=8.0, max=8.0
+ IV y: min=5.25, max=5.25
+"""
+
+def display_variance(data: List[Series]) -> None:
+    for series in data:
+        for variable_name in 'x', 'y':
+            samples = list(
+                data_iter(series, variable_name))
+            mean = statistics.mean(samples)
+            variance = statistics.variance(samples, mean)
+            stdev = statistics.stdev(samples, mean)
+            series_name = series['series']
+            print(
+                f"{series_name:>3s} {variable_name}: "
+                f"mean={mean:.2f}, var={variance:.2f}, "
+                f"stdev={stdev:.2f}")
+
+test_display_variance = """
+>>> from pprint import pprint
+>>> source_path = Path('data/anscombe.json')
+>>> data = json.loads(
+... source_path.read_text())
+>>> display_variance(data)
+  I x: mean=9.00, var=11.00, stdev=3.32
+  I y: mean=7.50, var=4.13, stdev=2.03
+ II x: mean=9.00, var=11.00, stdev=3.32
+ II y: mean=7.50, var=4.13, stdev=2.03
+III x: mean=9.00, var=11.00, stdev=3.32
+III y: mean=7.50, var=4.12, stdev=2.03
+ IV x: mean=9.00, var=11.00, stdev=3.32
+ IV y: mean=7.50, var=4.12, stdev=2.03
+"""
 
 
 import statistics

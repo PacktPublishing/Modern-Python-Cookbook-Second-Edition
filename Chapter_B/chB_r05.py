@@ -13,7 +13,7 @@ import json
 from typing import Iterable, Iterator, Dict, TextIO
 
 
-def non_comment_iter(source: TextIO) -> Iterator[str]:
+def non_comment_iter(source: Iterable[str]) -> Iterator[str]:
     for line in source:
         if line[0] == "#":
             continue
