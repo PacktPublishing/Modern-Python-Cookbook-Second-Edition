@@ -194,8 +194,26 @@ name='name_only' value=None
 >>> print(f"{name=} {value=}")
 name='name_only' value=None
 
-
 # Recipe 8
+# Leveraging the exception matching rules
+
+>>> from pathlib import Path
+>>> import shutil
+>>> source_dir = Path.cwd()/"data"
+>>> target_dir = Path.cwd()/"backup"
+
+>>> source_path = source_dir / "craps.csv"
+>>> target_path = target_dir / "craps.csv"
+>>> try:
+...     target = shutil.copy(source_path, target_path)
+... except FileNotFoundError:
+...     target_path.parent.mkdir(exist_ok=True, parents=True)
+...     target = shutil.copy(source_path, target_path)
+... except OSError as ex:
+...     print(f"Copy {source_path} to {target_path} error {ex}")
+
+
+# Recipe 10
 # Concealing exception root cause
 >>> class MyAppError(Exception):
 ...     pass
@@ -247,7 +265,7 @@ MyAppError: Some Known Problem
 None
 
 
-# Recipe 9
+# Recipe 11
 # Managing a context using the with statement
 
 >>> import csv
