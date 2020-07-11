@@ -40,7 +40,7 @@ def temperature_bad(
     elif f_temp is not None:
         f_temp = 32 + 9 * c_temp / 5
     else:
-        raise TypeError("One of f_temp or c_temp must ve provided")
+        raise TypeError("One of f_temp or c_temp must be provided")
     result = {"c_temp": c_temp, "f_temp": f_temp}
     return result  # type: ignore
 
@@ -79,6 +79,6 @@ def temperature_d(
     elif c_temp is not None:
         f_temp = 32 + 9 * c_temp / 5
     else:
-        raise TypeError("One of f_temp or c_temp must ve provided")
+        raise TypeError("One of f_temp or c_temp must be provided")
     result: TempDict = {"c_temp": c_temp, "f_temp": f_temp}
     return result

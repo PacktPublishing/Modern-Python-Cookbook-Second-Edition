@@ -10,6 +10,13 @@ def Twc(T: float, V: float) -> float:
     The wind-chill, :math:`T_{wc}`, is based on
     air temperature, T, and wind speed, V.
 
+    See https://en.wikipedia.org/wiki/Wind_chill
+
+    .. math::
+
+        T_{wc}(T_a, V) = 13.12 + 0.6215 T_a - 11.37 V^{0.16} + 0.3965
+        T_a V^{0.16}
+
     :param T: Temperature in °C
     :param V: Wind Speed in kph
     :returns: Wind-Chill temperature in °C
