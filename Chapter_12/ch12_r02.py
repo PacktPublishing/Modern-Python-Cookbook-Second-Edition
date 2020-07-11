@@ -184,15 +184,19 @@ if __name__ == "__main__":
     dealer.run(use_reloader=True, threaded=False)
 
 """
-Start the server this to force a particular seed to get a consistent result.
+In one terminal window,
+start the server this to force a particular seed to get a consistent result.
 ::
 
     DEAL_APP_SEED=42 PYTHONPATH=. python Chapter_12/ch12_r02.py
 
+In another terminal window, enter commands. These examples use ``curl``,
+but ``wget`` can also be used.
+
 Get the OpenAPI spec
 ::
 
-    curl http://127.0.0.1:5000/dealer/openapi.yaml --header accept:application/json
+    % curl http://127.0.0.1:5000/dealer/openapi.yaml --header accept:application/json
 
 Get a hard of cards
 ::

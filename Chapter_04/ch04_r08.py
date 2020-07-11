@@ -20,8 +20,8 @@ Running handlers complete
 Chef Client finished, 2/2 resources updated in 29.233811181 seconds
 """
 
-test_subtract = """
->>> pattern = re.compile(r"IP: \\d+\\.\\d+\\.\\d+\\.\\d+")
+test_subtract = r"""
+>>> pattern = re.compile(r"IP: \d+\.\d+\.\d+\.\d+")
 >>> matches = set(pattern.findall(log))
 >>> matches
 {'IP: 111.222.111.222'}
@@ -38,8 +38,8 @@ test_subtract = """
 {'IP: 111.222.111.222'}
 """
 
-test_difference = """
->>> pattern = re.compile(r"IP: \\d+\\.\\d+\\.\\d+\\.\\d+")
+test_difference = r"""
+>>> pattern = re.compile(r"IP: \d+\.\d+\.\d+\.\d+")
 >>> matches = set(pattern.findall(log))
 >>> to_be_ignored = {'IP: 0.0.0.0', 'IP: 1.2.3.4'}
 
@@ -48,8 +48,8 @@ test_difference = """
 {'IP: 111.222.111.222'}
 """
 
-test_remove = """
->>> pattern = re.compile(r"IP: \\d+\\.\\d+\\.\\d+\\.\\d+")
+test_remove = r"""
+>>> pattern = re.compile(r"IP: \d+\.\d+\.\d+\.\d+")
 >>> matches = set(pattern.findall(log))
 >>> to_be_ignored = {'IP: 0.0.0.0', 'IP: 1.2.3.4'}
 
