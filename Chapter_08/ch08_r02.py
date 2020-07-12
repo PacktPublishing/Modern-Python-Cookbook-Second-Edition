@@ -45,7 +45,6 @@ def make_card(rank: int, suit: str) -> Card:
 
 class PointedCard(Protocol):
     """Define properties required from the base class so we can mixin properly."""
-
     rank: int
 
 
