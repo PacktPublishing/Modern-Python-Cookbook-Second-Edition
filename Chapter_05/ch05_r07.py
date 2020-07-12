@@ -10,9 +10,13 @@ from typing import Counter, Optional, Callable, TypeVar, Iterable
 
 
 def gather_stats_bad(
-    n: int, samples: int = 1000, summary: Counter[int] = collections.Counter()
+        n: int,
+        samples: int = 1000,
+        summary: Counter[int] = collections.Counter()
 ) -> Counter:
-    summary.update(sum(randint(1, 6) for d in range(n)) for _ in range(samples))
+    summary.update(
+        sum(randint(1, 6)
+            for d in range(n)) for _ in range(samples))
     return summary
 
 

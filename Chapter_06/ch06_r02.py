@@ -47,7 +47,8 @@ def get_date3() -> date:
     while True:
         raw_date_str = input("date [yyyy-mm-dd]: ")
         try:
-            input_date = datetime.strptime(raw_date_str, "%Y-%m-%d").date()
+            input_date = datetime.strptime(
+                raw_date_str, "%Y-%m-%d").date()
             return input_date
         except ValueError as ex:
             print(f"invalid date, {ex}")
