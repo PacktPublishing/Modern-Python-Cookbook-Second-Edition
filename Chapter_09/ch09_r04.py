@@ -6,7 +6,7 @@ import datetime
 from pprint import pprint
 import re
 from typing import Iterable, Iterator, Optional
-from Chapter_09.ch09_r02 import DatedLog
+from Chapter_09.ch09_r01 import DatedLog
 
 
 def draft_module_iter(source: Iterable[DatedLog]) -> Iterator[DatedLog]:
