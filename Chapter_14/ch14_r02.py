@@ -41,7 +41,8 @@ class Summarize(Command):
     def execute(self, options: argparse.Namespace) -> None:
         self.summary_path = Path(options.summary_file)
         with self.summary_path.open("w") as result_file:
-            ch13_r06.process_all_files(result_file, options.game_files)
+            game_paths = [Path(f) for f in options.game_files]
+            ch13_r06.process_all_files(result_file, game_paths)
 
 
 class Sequence(Command):

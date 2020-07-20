@@ -105,7 +105,6 @@ def create_new_player(
             document = json.loads(response.read().decode("utf-8"))
 
         print(document)
-        assert document["status"] == "ok"
         return document
     except urllib.error.HTTPError as ex:
         print(ex.getcode())

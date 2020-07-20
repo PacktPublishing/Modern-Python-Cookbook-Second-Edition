@@ -75,7 +75,9 @@ def test_resample_2(monkeypatch):
         "choice",
         mock_choice)
 
-    resample_data = list(Chapter_11.ch11_r09.resample(sentinel.POPULATION, 8))
+    resample_data = list(Chapter_11.ch11_r09.resample(
+        sentinel.POPULATION, 8))
 
     assert resample_data == [sentinel.POPULATION]*8
-    mock_choice.assert_has_calls(8 * [call(sentinel.POPULATION)])
+    mock_choice.assert_has_calls(
+        8 * [call(sentinel.POPULATION)])

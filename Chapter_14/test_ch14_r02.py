@@ -89,4 +89,4 @@ def test_simsum(mock_ch13_r05, mock_ch13_r06, monkeypatch, capsys, tmpdir):
     ]
     assert len(mock_ch13_r06.process_all_files.mock_calls) == 1
     process_args = mock_ch13_r06.process_all_files.mock_calls[0].args
-    assert process_args[1] == [str(cmd.intermediate)]
+    assert process_args[1] == [Path(cmd.intermediate)]

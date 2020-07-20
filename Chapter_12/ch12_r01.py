@@ -65,6 +65,7 @@ def check_json() -> Optional[Response]:
         return None
     if "json" == request.args.get("$format", "html"):
         return None
+    print(f"Missing $format=json in {request.args}")
     return abort(HTTPStatus.BAD_REQUEST)
 
 
