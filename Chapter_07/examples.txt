@@ -67,12 +67,48 @@ AttributeError: 'Hand' object has no attribute 'some_other_attribute'
 
 
 >>> import random
->>> from Chapter_07.ch07_r10 import LazyCounterStatistics
+>>> from Chapter_07.ch07_r03 import CounterStatistics
 >>> random.seed(1)
 >>> data = raw_data()
->>> stats = LazyCounterStatistics(data)
+>>> stats = CounterStatistics(data)
 >>> print(f"Mean: {stats.mean:.2f}")
 Mean: 20.81
 >>> print(f"Standard Deviation: {stats.stddev:.3f}")
 Standard Deviation: 7.025
+
+# Optimizing small objects with __slots__
+
+>>> from Chapter_07.ch07_r07 import Card, Hand
+>>> h1 = Hand(2)
+>>> h1.deal(Card(rank=4, suit='♣ '))
+>>> h1.deal(Card(rank=8, suit='♡ '))
+>>> h1
+Hand(bet=2, hand=[Card(rank=4, suit='♣ '), Card(rank=8, suit='♡ ')])
+
+>>> h1.bet *= 2
+>>> h1
+Hand(bet=4, hand=[Card(rank=4, suit='♣ '), Card(rank=8, suit='♡ ')])
+
+>>> h1.some_other_attribute = True
+Traceback (most recent call last):
+  File "/Users/slott/miniconda3/envs/cookbook/lib/python3.8/doctest.py", line 1336, in __run
+    exec(compile(example.source, filename, "single",
+  File "<doctest examples.txt[34]>", line 1, in <module>
+    h1.some_other_attribute = True
+AttributeError: 'Hand' object has no attribute 'some_other_attribute'
+
+# Extending a built-in collection – a list that does statistics
+
+>>> from Chapter_07.ch07_r09 import StatsList
+>>> subset1 = StatsList([10, 8, 13, 9, 11])
+>>> data = StatsList([14, 6, 4, 12, 7, 5])
+>>> data.extend(subset1)
+
+>>> data
+[14, 6, 4, 12, 7, 5, 10, 8, 13, 9, 11]
+
+>>> data.mean()
+9.0
+>>> data.variance()
+11.0
 

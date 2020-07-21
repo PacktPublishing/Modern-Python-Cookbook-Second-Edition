@@ -285,3 +285,5 @@ Team Vestas Wind
 ['\n', <td>data</td>, '\n']
 
 >>> ranking_table = soup.find('table', class_="ranking-list")
+>>> list(tag.name for tag in ranking_table.parents)
+['section', 'div', 'div', 'div', 'div', 'body', 'html', '[document]']
