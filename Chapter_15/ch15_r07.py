@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter B, Bonus, recipe 7, Are there outliers?
+Chapter 15, recipe 7, Are there outliers?
 """
 
 from pathlib import Path
@@ -99,9 +99,9 @@ Traceback (most recent call last):
     exec(compile(example.source, filename, "single",
   File "<doctest ch10_r07.__test__.demo[13]>", line 1, in <module>
     list(pass_outliers([item['x'] for item in series]))
-  File "Chapter_B/ch10_r07.py", line 34, in <genexpr>
+  File "Chapter_15/ch10_r07.py", line 34, in <genexpr>
     return itertools.compress(data, (z >= 3.5 for z in z_mod(data)))
-  File "Chapter_B/ch10_r07.py", line 27, in <genexpr>
+  File "Chapter_15/ch10_r07.py", line 27, in <genexpr>
     0.6745*(x - median)/mad for x in data
 ZeroDivisionError: float division by zero
 >>> list(pass_outliers([item['y'] for item in series]))  # IV

@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter B, Bonus, recipe 5, Computing an autocorrelation
+Chapter 15, recipe 5, Computing an autocorrelation
 
 Raw data source: ftp://ftp.cmdl.noaa.gov/ccg/co2/trends/co2_mm_mlo.txt
 
@@ -80,8 +80,8 @@ test_get_data = """
 __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
 
 
-from Chapter_B.chB_r03 import correlation, Point
-from Chapter_B.chB_r04 import regression
+from Chapter_15.ch15_r03 import correlation, Point
+from Chapter_15.ch15_r04 import regression
 from statistics import mean, median
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter B, Bonus, recipe 3, Computing the coefficient of correlation
+Chapter 15, recipe 3, Computing the coefficient of correlation
 """
 
 from math import sqrt

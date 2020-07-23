@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter B, Bonus, recipe 1, Using the statistics library
+Chapter 15, recipe 1, Using the statistics library
 """
 from pathlib import Path
 from typing import (

@@ -61,7 +61,7 @@ class SimSum(Sequence):
 
     def execute(self, options: argparse.Namespace) -> None:
         self.intermediate = (
-            Path("data") / "ch13_r02_temporary.yaml"
+            Path("data") / "ch14_r02_temporary.yaml"
         )
         new_namespace = Namespace(
             game_file=str(self.intermediate),

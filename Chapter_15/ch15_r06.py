@@ -1,12 +1,12 @@
 """Python Cookbook 2nd ed.
 
-Chapter B, Bonus, recipe 6, Confirming that the data is random – the null hypothesis
+Chapter 15, recipe 6, Confirming that the data is random – the null hypothesis
 
 Raw data source: ftp://ftp.cmdl.noaa.gov/ccg/co2/trends/co2_mm_mlo.txt
 
 Output from the test() function
 ::
-    (cookbook) Code % PYTHONPATH=. python Chapter_B/chB_r06.py
+    (cookbook) Code % PYTHONPATH=. python Chapter_15/ch15_r06.py
     T_obs = 2.75-2.50 = -0.25
     below 18 25.7%, above 52 74.3%
     time 0.002608454000000003
@@ -53,7 +53,7 @@ from statistics import mean
 import time
 from typing import List, Counter, Callable, Optional
 
-from Chapter_B.chB_r05 import get_data
+from Chapter_15.ch15_r05 import get_data
 
 import itertools
 

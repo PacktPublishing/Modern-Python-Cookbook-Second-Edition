@@ -2,7 +2,7 @@
 
 Chapter 7, recipe 3, Designing classes with lots of processing
 """
-from Chapter_B.collector import samples, arrival1, coupon_collector
+from Chapter_15.collector import samples, arrival1, coupon_collector
 import collections
 import math
 import statistics
@@ -108,7 +108,7 @@ class UpdateableCounterStatistics:
 
 
 test_expected = """
->>> from Chapter_B.collector import expected
+>>> from Chapter_15.collector import expected
 >>> expected(8)
 Fraction(761, 35)
 """
@@ -150,7 +150,7 @@ __test__ = {n: v for n, v in locals().items() if n.startswith("test_")}
 if __name__ == "__main__":
 
     import random
-    from Chapter_B.collector import expected
+    from Chapter_15.collector import expected
 
     random.seed(1)
     data = raw_data(8)

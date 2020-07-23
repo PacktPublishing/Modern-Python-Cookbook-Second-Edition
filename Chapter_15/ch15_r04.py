@@ -1,11 +1,11 @@
 """Python Cookbook 2nd ed.
 
-Chapter B, Bonus, recipe 4, Computing regression parameters
+Chapter 15, recipe 4, Computing regression parameters
 """
 
 import statistics
 from typing import Iterable, TypedDict, List, NamedTuple
-from Chapter_B.chB_r03 import correlation, Point
+from Chapter_15.ch15_r03 import correlation, Point
 
 
 class Regression(NamedTuple):

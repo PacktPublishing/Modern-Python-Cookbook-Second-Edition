@@ -2,7 +2,7 @@
 
 Chapter 7, recipe 10, Using properties for lazy attributes
 """
-from Chapter_B.collector import arrival1, samples, coupon_collector, expected
+from Chapter_15.collector import arrival1, samples, coupon_collector, expected
 import collections
 import math
 import statistics

@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter B, Bonus, recipe 8, Many variables one pass
+Chapter 15, recipe 8, Many variables one pass
 """
 
 import collections
@@ -171,7 +171,7 @@ def analyze2(
             column_stats[column_name].add(row[column_name])
     return column_stats
 
-from Chapter_B.chB_r05 import non_comment_iter, raw_data_iter
+from Chapter_15.ch15_r05 import non_comment_iter, raw_data_iter
 
 def stats_summary_co2(source_path: Path) -> None:
     column_stats: Dict[str, StatsGather] = {

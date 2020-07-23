@@ -52,7 +52,8 @@ def parallel_composite(
     start = time.perf_counter()
     total_stats: Counter[Outcome] = collections.Counter()
     worker_list = []
-    with futures.ProcessPoolExecutor(max_workers=workers) as executor:
+    with futures.ProcessPoolExecutor(
+            max_workers=workers) as executor:
         for i in range(games):
             worker_list.append(executor.submit(summarize_games, rolls))
         for worker in worker_list:

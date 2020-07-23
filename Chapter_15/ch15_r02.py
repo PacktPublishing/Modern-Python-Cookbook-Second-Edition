@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Chapter B, Bonus, recipe 2, Average of values in a Counter
+Chapter 15, recipe 2, Average of values in a Counter
 """
 import collections
 import json

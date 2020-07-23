@@ -1,6 +1,6 @@
 """Python Cookbook
 
-Chapter B, Bonus -- Statistical Programming and Linear Regression
+Chapter 15, Statistical Programming and Linear Regression
 
 • Using the statistics library
 • Average of values in a Counter
@@ -237,7 +237,7 @@ Counter({8: 10, 19: 1})
 
 # Is the data random?
 
->>> from Chapter_B.chB_r05 import get_data
+>>> from Chapter_15.ch15_r05 import get_data
 >>> from pathlib import Path
 >>> source_path = Path('data/co2_mm_mlo.txt')
 >>> with source_path.open() as source_file:
