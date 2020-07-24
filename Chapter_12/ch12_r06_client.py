@@ -2,6 +2,9 @@
 
 Chapter 12, recipe 6, Implementing authentication for web services
 Client, using urllib.
+
+This requires ``ssl.cert`` and ``ssl.key`` in the local working directory.
+
 """
 
 import base64

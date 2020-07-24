@@ -1,6 +1,6 @@
 """Python Cookbook 2nd ed.
 
-Tests for ch12_r06_client
+Tests for ch12_r05_client
 """
 import json
 from unittest.mock import Mock

@@ -20,13 +20,14 @@ def ch12_r02_server():
     server = subprocess.Popen(["python", "Chapter_12/ch12_r02.py"], env=env)
     time.sleep(0.5)  # Pause to let the server start.
 
-    yield server
+    yield server  # allow the test to run
 
+    time.sleep(0.25)
     server.terminate()
     time.sleep(0.25)  # Pause while the server finishes.
-    server.kill()
-    assert server.wait() == 0
-    assert server.returncode == 0
+    server.wait()
+    # server.kill()
+    assert server.returncode == 0, f"Server Exit Status {server_process.returncode}"
 
 def test_get_spec(ch12_r02_server, capsys):
     spec = Chapter_12.ch12_r03.get_openapi_spec()
@@ -55,4 +56,3 @@ def test_query_build_2(ch12_r02_server, capsys):
     assert status == "200"
     assert all(header_pattern.match(h) for h in headers)
     assert body == "\n[{'cards': [{'__class__': 'Card', '__init__': {'rank': 3, 'suit': '♣'}}, {'__class__': 'Card', '__init__': {'rank': 10, 'suit': '♠'}}], 'hand': 0}, {'cards': [{'__class__': 'Card', '__init__': {'rank': 9, 'suit': '♠'}}], 'hand': 1}, {'cards': [{'__class__': 'Card', '__init__': {'rank': 13, 'suit': '♣'}}], 'hand': 2}, {'cards': [{'__class__': 'Card', '__init__': {'rank': 5, 'suit': '♣'}}], 'hand': 3}]\n"
-

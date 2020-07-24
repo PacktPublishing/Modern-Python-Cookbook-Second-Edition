@@ -2,6 +2,9 @@
 
 Chapter 12, recipe 6, Implementing authentication for web services
 Client, using requests.
+
+This requires ``ssl.cert`` and ``ssl.key`` in the local working directory.
+
 """
 from pprint import pprint
 from typing import Dict, List, Any, Union, Tuple

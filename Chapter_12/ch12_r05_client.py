@@ -171,7 +171,7 @@ def main():
     create_doc = create_new_player(spec, paths, input_form)
     id = create_doc["id"]
     get_one_player(spec, paths, id)
-    players = get_all_players(spec, paths, id)
+    players = get_all_players(spec, paths)
     print(players)
 
 

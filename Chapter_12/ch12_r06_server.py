@@ -2,6 +2,10 @@
 
 Chapter 12, recipe 6, Implementing authentication for web services
 Server.
+
+Important.
+
+This requires ``ssl.cert`` and ``ssl.key`` in the local working directory.
 """
 import logging
 import random

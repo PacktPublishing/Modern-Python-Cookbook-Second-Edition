@@ -41,7 +41,7 @@ Installation and Setup
 
     - ``tox`` (or ``tox -e py38,network``) will run all tests.
 
-    - ``tox -e py38`` will run the tests that do not need an internet connection.
+    - ``tox -e py38`` will run the subset of tests that do not need an internet connection.
 
 6.  Windows.
 
@@ -50,8 +50,20 @@ Installation and Setup
     you might need to use ``#doctest: +SKIP`` to skip over tests that are not relevant
     for your specific OS.
 
+7.  To run the Chapter 12 tests that require the proper SSL setup.
+
+    ::
+
+        tox -e ssl
+
 To run a specific example as a main program, be sure to set the ``PYTHONPATH`` environment variable.
 
 ::
 
     PYTHONPATH=. python Chapter_13/ch13_r06.py data/ch13*.yaml
+
+To run a number of main program demos, use the following tox environment
+
+::
+
+    tox -e main
