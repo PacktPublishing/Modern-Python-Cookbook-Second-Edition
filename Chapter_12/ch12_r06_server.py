@@ -5,7 +5,7 @@ Server.
 
 Important.
 
-This requires ``ssl.cert`` and ``ssl.key`` in the local working directory.
+This requires ``demo.cert`` and ``demo.key`` in the local working directory.
 """
 import logging
 import random
@@ -486,5 +486,5 @@ if __name__ == "__main__":
     import ssl
 
     ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    ctx.load_cert_chain("ssl.cert", "ssl.key")
+    ctx.load_cert_chain("demo.cert", "demo.key")
     dealer.run(use_reloader=True, threaded=False, ssl_context=ctx)

@@ -3,7 +3,7 @@
 Chapter 12, recipe 6, Implementing authentication for web services
 Client, using requests.
 
-This requires ``ssl.cert`` and ``ssl.key`` in the local working directory.
+This requires ``demo.cert`` and ``demo.key`` in the local working directory.
 
 """
 from pprint import pprint

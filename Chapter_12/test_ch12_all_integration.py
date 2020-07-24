@@ -2,7 +2,7 @@
 
 Tests for all ch12_r??_client and ch12_r??_server pairs
 
-This requires ``ssl.cert`` and ``ssl.key`` in the local working directory.
+This requires ``demo.cert`` and ``demo.key`` in the local working directory.
 
 """
 import os
