@@ -1,11 +1,24 @@
-###############################
-Modern Python Cookbook, 2nd ed
-###############################
+****************************************
+Modern Python Cookbook - Second Edition
+****************************************
 
-Modern-Python-Cookbook-Second-Edition, published by Packt
+This is the code repository for `Modern Python Cookbook - Second Edition <https://www.packtpub.com/programming/modern-python-cookbook-second-edition>`_, published by `Packt <https://www.packtpub.com/>`_. It contains all the supporting project files necessary to work through the book from start to finish.
+
+About the Book
+===============
+This book comes with over 120 recipes on the latest version of ``Python 3.8``, that will touch upon all necessary Python concepts related to data structures, OOP, functional, and statistical programming to get acquainted with nuances of Python syntax and how to effectively take advantage of it.
+By the end of this Python book, you will be equipped with the knowledge of testing, web services, configuration and application integration tips and tricks. You will be armed with the knowledge of creating applications with flexible logging, powerful configuration, and command-line options, automated unit tests, and good documentation.
+
+
+
+
+
+Instructions and Navigation
+=============================
+All of the code is organized into folders. Each folder is numbered chapterwise ``Chapter_03`` and further inside recipewise ``Ch03_r01.py``, some execution is also shown in the ``example.txt`` file.
 
 Installation and Setup
-======================
+***********************
 
 1.  Install either Miniconda or Anaconda.
 
@@ -67,3 +80,9 @@ To run a number of main program demos, use the following tox environment
 ::
 
     tox -e main
+
+Related Products
+=================
+- `Python Machine Learning - Third Edition <https://www.packtpub.com/data/python-machine-learning-third-edition>`_
+
+- `Python Automation Cookbook - Second Edition <https://www.packtpub.com/programming/python-automation-cookbook-second-edition>`_
