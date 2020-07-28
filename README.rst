@@ -6,7 +6,7 @@ This is the code repository for `Modern Python Cookbook - Second Edition <https:
 
 About the Book
 ===============
-This book comes with over 120 recipes on the latest version of ``Python 3.8``, that will touch upon all necessary Python concepts related to data structures, OOP, functional, and statistical programming to get acquainted with nuances of Python syntax and how to effectively take advantage of it.
+This book comes with over 133 recipes on the latest version of ``Python 3.8``, that will touch upon all necessary Python concepts related to data structures, OOP, functional, and statistical programming to get acquainted with nuances of Python syntax and how to effectively take advantage of it.
 By the end of this Python book, you will be equipped with the knowledge of testing, web services, configuration and application integration tips and tricks. You will be armed with the knowledge of creating applications with flexible logging, powerful configuration, and command-line options, automated unit tests, and good documentation.
 
 
