@@ -1,12 +1,13 @@
 ****************************************
 Modern Python Cookbook - Second Edition
+Modern Python Cookbook - Second Edition
 ****************************************
 
 This is the code repository for `Modern Python Cookbook - Second Edition <https://www.packtpub.com/programming/modern-python-cookbook-second-edition>`_, published by `Packt <https://www.packtpub.com/>`_. It contains all the supporting project files necessary to work through the book from start to finish.
 
 About the Book
 ===============
-This book comes with over 133 recipes on the latest version of ``Python 3.8``, that will touch upon all necessary Python concepts related to data structures, OOP, functional, and statistical programming to get acquainted with nuances of Python syntax and how to effectively take advantage of it.
+This book comes with over 133 recipes on the latest version of ``Python 3.9``, that will touch upon all necessary Python concepts related to data structures, OOP, functional, and statistical programming to get acquainted with nuances of Python syntax and how to effectively take advantage of it.
 By the end of this Python book, you will be equipped with the knowledge of testing, web services, configuration and application integration tips and tricks. You will be armed with the knowledge of creating applications with flexible logging, powerful configuration, and command-line options, automated unit tests, and good documentation.
 
 
@@ -26,10 +27,9 @@ Installation and Setup
 
     ::
 
-        conda create -n cookbook python=3.8
+        conda create -n cookbook python=3.9
 
-    Note that python 3.8 is required. A few of the examples will not
-    work with Python 3.7.
+    Note that python >= 3.9 is required for all of the examples.
 
 3.  Activate the environment.
 
@@ -52,9 +52,9 @@ Installation and Setup
 
 5.  No Internet.
 
-    - ``tox`` (or ``tox -e py38,network``) will run all tests.
+    - ``tox`` (or ``tox -e py39,network``) will run all tests.
 
-    - ``tox -e py38`` will run the subset of tests that do not need an internet connection.
+    - ``tox -e py39`` will run the subset of tests that do not need an internet connection.
 
 6.  Windows.
 

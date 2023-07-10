@@ -14,8 +14,8 @@ import yaml
 from Chapter_12.card_model import Card, Deck
 
 dealer = Flask("ch12_r05")
-dealer.DEBUG = True
-dealer.TESTING = True
+dealer.debug = True
+dealer.testing = True
 
 # Following https://www.oasis-open.org
 # http://docs.oasis-open.org/odata/odata/v4.0/odata-v4.0-part2-url-conventions.html

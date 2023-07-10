@@ -43,6 +43,7 @@ def rename(base: Path, old_name: str, new_name: str, dry_run: bool=True) -> None
 
 
 if __name__ == "__main__":
+    print("All done. Do not rerun.")
     # search(Path.cwd() / "Chapter_12", "ch12")
     # Refactoring Chapter 4...
     # rename(Path.cwd() / "Chapter_12", "ch12", "ch13", dry_run=False)

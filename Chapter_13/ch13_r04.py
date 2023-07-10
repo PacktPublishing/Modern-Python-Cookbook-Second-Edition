@@ -24,10 +24,10 @@ def load_config_file(
     result: ConfigClass = locals[classname]
     return result
 
-def main_1():
-    config: Dict[str, Any] = load_config_file("settings.py", "Chesapeake")
-    print(config.query)
-    print(config.url)
+def main_1() -> None:
+    config: ConfigClass = load_config_file(Path("settings.py"), "Chesapeake")
+    print(config.query)  # type: ignore[attr-defined]
+    print(config.url)  # type: ignore[attr-defined]
 
 
 import importlib

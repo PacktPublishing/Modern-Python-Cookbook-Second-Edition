@@ -36,8 +36,11 @@ This includes a few interactive examples
 >>> import math
 >>> math.sin(x=0.5)
 Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: sin() takes no keyword arguments
+  File "/Users/slott/miniconda3/envs/cookbook2/lib/python3.9/doctest.py", line 1334, in __run
+    exec(compile(example.source, filename, "single",
+  File "<doctest examples.txt[3]>", line 1, in <module>
+    math.sin(x=0.5)
+TypeError: math.sin() takes no keyword arguments
 
 
 # Recipe 9

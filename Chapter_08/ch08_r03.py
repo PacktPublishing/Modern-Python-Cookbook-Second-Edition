@@ -36,7 +36,7 @@ class Dice2:
 
 
 def roller(
-    dice_class: Type[Dice2], seed: int = None, *, samples: int = 10
+    dice_class: Type[Dice2], seed: Optional[int] = None, *, samples: int = 10
 ) -> Iterator[Tuple[int, ...]]:
     dice = dice_class(seed)
     for _ in range(samples):

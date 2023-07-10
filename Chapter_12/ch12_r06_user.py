@@ -111,7 +111,7 @@ class User:
     email: str
     twitter: str
     lucky_number: int
-    password: Optional[str] = field(default="md5$x$", repr=False)
+    password: str = field(default="md5$x$", repr=False)
 
     def set_password(self, password: str) -> None:
         # self.password = make_hash(password)
@@ -130,7 +130,7 @@ test_v_werkzeug = """
 'pbkdf2:sha384:100000$...
 >>> wp = generate_password_hash("OpenSesame")
 >>> wp  # doctest: +ELLIPSIS
-'pbkdf2:sha256:150000$...
+'pbkdf2:sha256:600000...
 >>> check_password_hash(mp, "nope")
 False
 >>> check_password_hash(mp, "OpenSesame")

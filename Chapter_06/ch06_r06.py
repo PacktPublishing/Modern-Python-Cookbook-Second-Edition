@@ -27,7 +27,7 @@ def get_options(argv: List[str] = sys.argv[1:]) -> argparse.Namespace:
     >>> os.environ['UNITS'] = 'NM'
     >>> os.environ['HOME_PORT'] = '36.842952,-76.300171'
     >>> get_options(['36.12,-86.67'])
-    Namespace(p1=(36.12, -86.67), p2=(36.842952, -76.300171), units='NM')
+    Namespace(units='NM', p1=(36.12, -86.67), p2=(36.842952, -76.300171))
 
     >>> os.environ['UNITS'] = 'XX'
     >>> os.environ['HOME_PORT'] = '36.842952,-76.300171'

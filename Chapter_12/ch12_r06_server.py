@@ -11,7 +11,7 @@ import logging
 import random
 import os
 import sys
-from typing import Dict, Optional, Any, Callable, Union
+from typing import Dict, Optional, Any, Callable, Union, cast
 
 from http import HTTPStatus
 from flask import Flask, jsonify, request, abort, url_for, Response
@@ -21,8 +21,8 @@ from Chapter_12.card_model import Card, Deck
 
 
 dealer = Flask("ch12_r07")
-dealer.DEBUG = True
-dealer.TESTING = True
+dealer.debug = True
+dealer.testing = True
 dealer.logger.setLevel(logging.INFO)
 
 # Following https://www.oasis-open.org
@@ -340,7 +340,7 @@ import hashlib
 @dealer.route("/dealer/players", methods=["POST"])
 def make_player() -> Response:
     try:
-        document = request.json
+        document = cast(dict[str, str], request.json)
     except Exception as ex:
         # Document wasn't even JSON.
         # We can fine-tune the error message here.
@@ -361,7 +361,7 @@ def make_player() -> Response:
         abort(HTTPStatus.FORBIDDEN, description="Duplicate player")
 
     password = document.pop('password')
-    new_user = User(**document)
+    new_user = User(**document)  # type: ignore[arg-type]
     new_user.set_password(password)
     user_database[id] = new_user
 
