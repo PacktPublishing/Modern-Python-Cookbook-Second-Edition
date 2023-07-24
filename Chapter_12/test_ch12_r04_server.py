@@ -82,4 +82,4 @@ def test_deal_bad_get_hands(dealer_client):
     assert response.status_code == 404
     assert response.get_json() is None
     assert b"Not Found" in response.data
-    assert b"deck &quot;definitely doesn't exist&quot; not found" in response.data
+    assert b"deck &#34;definitely doesn&#39;t exist&#34; not found" in response.data

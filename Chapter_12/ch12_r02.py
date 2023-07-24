@@ -85,8 +85,8 @@ import yaml
 from Chapter_12.card_model import Card, Deck
 
 dealer = Flask("dealer")
-dealer.DEBUG = True
-dealer.TESTING = True
+dealer.debug = True
+dealer.testing = True
 
 # Build a Python structure from the YAML source.
 specification = yaml.load(__doc__, Loader=yaml.SafeLoader)

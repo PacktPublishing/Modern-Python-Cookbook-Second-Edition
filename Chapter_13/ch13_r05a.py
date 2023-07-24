@@ -14,7 +14,7 @@ from typing import NamedTuple, List, Iterable, Tuple, Counter, Iterator, Optiona
 
 
 class CrapsSimulator:
-    def __init__(self, /, seed: int = None) -> None:
+    def __init__(self, /, seed: Optional[int] = None) -> None:
         self.rng = random.Random(seed)
         self.faces: List[int]
         self.total: int

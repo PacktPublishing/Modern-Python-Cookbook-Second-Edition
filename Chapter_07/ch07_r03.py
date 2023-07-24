@@ -77,7 +77,7 @@ class UpdateableCounterStatistics:
     11.0
     """
 
-    def __init__(self, counter: Counter = None) -> None:
+    def __init__(self, counter: Optional[Counter[int]] = None) -> None:
         if counter is not None:
             self.raw_counter = counter
             self.count = sum(self.raw_counter[k] for k in self.raw_counter)

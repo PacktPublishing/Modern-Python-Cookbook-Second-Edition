@@ -13,10 +13,10 @@ class Hand:
         self.cards.sort()
 
     def add(self, aCard: Card) -> None:
-        bisect.insort(self.cards, aCard)
+        bisect.insort(self.cards, aCard)  # type: ignore[type-var]
 
     def index(self, aCard: Card) -> int:
-        i = bisect.bisect_left(self.cards, aCard)
+        i = bisect.bisect_left(self.cards, aCard)  # type: ignore[type-var]
         if i != len(self.cards) and self.cards[i] == aCard:
             return i
         raise ValueError

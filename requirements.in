@@ -1,0 +1,15 @@
+beautifulsoup4
+flask
+jinja2
+jsonschema
+lxml
+openapi-spec-validator
+pyyaml
+types-PyYAML
+requests
+types-requests
+sqlalchemy
+werkzeug
+tox
+pytest
+mypy

@@ -7,7 +7,7 @@ import collections
 from typing import TextIO, Dict, Any, ChainMap
 
 
-def load_config_file(config_path: Path) -> Dict[str, Any]:
+def load_config_file(config_path: Path) -> Dict[str, Any]:  # type: ignore[empty-body]
     """Loads a configuration mapping object with contents
     of a given file.
 

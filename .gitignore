@@ -6,3 +6,4 @@
 backup/*
 *.cert
 *.key
+renamer.py

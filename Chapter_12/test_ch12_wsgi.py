@@ -53,11 +53,10 @@ def test_json_filter_good_1():
     dealer = Chapter_12.ch12_wsgi.DealCards(hand_size=6, seed=42)
     json_wrapper = Chapter_12.ch12_wsgi.JSON_Filter(dealer)
     client = Client(json_wrapper)
-    response, status, headers = client.get(headers={"Accept": "application/json"})
-    assert status == "200 OK"
-    assert dict(headers) == {"Content-Type": "application/json;charset=utf-8"}
-    response = b"".join(response)
-    assert json.loads(response) == [
+    response = client.get(headers={"Accept": "application/json"})
+    assert response.status == "200 OK"
+    assert dict(response.headers) == {"Content-Type": "application/json;charset=utf-8"}
+    assert json.loads(response.get_data()) == [
         {"__class__": "Card", "__init__": {"rank": 3, "suit": "♡"}},
         {"__class__": "Card", "__init__": {"rank": 6, "suit": "♣"}},
         {"__class__": "Card", "__init__": {"rank": 7, "suit": "♡"}},
@@ -71,12 +70,11 @@ def test_json_filter_reject():
     dealer = Chapter_12.ch12_wsgi.DealCards(hand_size=6, seed=42)
     json_wrapper = Chapter_12.ch12_wsgi.JSON_Filter(dealer)
     client = Client(json_wrapper)
-    response, status, headers = client.get(headers={"Accept": "*/*"})
-    assert status == "400 Bad Request"
-    assert dict(headers) == {"Content-Type": "text/plain;charset=utf-8"}
-    response = b"".join(response)
+    response = client.get(headers={"Accept": "*/*"})
+    assert response.status == "400 Bad Request"
+    assert dict(response.headers) == {"Content-Type": "text/plain;charset=utf-8"}
     assert (
-        response
+        response.get_data()
         == b"Request doesn't include ?$format=json or Accept:application/json header"
     )
 
@@ -85,11 +83,11 @@ def test_json_filter_good_2():
     dealer = Chapter_12.ch12_wsgi.DealCards(hand_size=6, seed=42)
     json_wrapper = Chapter_12.ch12_wsgi.JSON_Filter(dealer)
     client = Client(json_wrapper)
-    response, status, headers = client.get(query_string={"$format": "json"})
-    print(response)
-    assert status == "200 OK"
-    assert dict(headers) == {"Content-Type": "application/json;charset=utf-8"}
-    assert json.loads(b"".join(response)) == [
+    response = client.get(query_string={"$format": "json"})
+    # print(response)
+    assert response.status == "200 OK"
+    assert dict(response.headers) == {"Content-Type": "application/json;charset=utf-8"}
+    assert json.loads(response.get_data()) == [
         {"__class__": "Card", "__init__": {"rank": 3, "suit": "♡"}},
         {"__class__": "Card", "__init__": {"rank": 6, "suit": "♣"}},
         {"__class__": "Card", "__init__": {"rank": 7, "suit": "♡"}},

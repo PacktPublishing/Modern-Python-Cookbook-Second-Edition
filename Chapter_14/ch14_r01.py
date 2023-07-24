@@ -15,7 +15,7 @@ from Chapter_13.ch13_r06 import gather_stats, Outcome
 logger = logging.getLogger("ch13_r07")
 
 def summarize_games(
-        total_games: int, *, seed: int = None
+        total_games: int, *, seed: Optional[int] = None
     ) -> Counter[Outcome]:
     game_statistics = gather_stats(
         roll_iter(total_games, seed=seed))
