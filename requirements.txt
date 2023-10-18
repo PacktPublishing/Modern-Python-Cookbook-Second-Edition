@@ -26,8 +26,6 @@ colorama==0.4.6
     # via tox
 distlib==0.3.7
     # via virtualenv
-exceptiongroup==1.1.2
-    # via pytest
 filelock==3.12.2
     # via
     #   tox
@@ -38,8 +36,6 @@ greenlet==2.0.2
     # via sqlalchemy
 idna==3.4
     # via requests
-importlib-metadata==6.8.0
-    # via flask
 iniconfig==2.0.0
     # via pytest
 itsdangerous==2.1.2
@@ -119,12 +115,6 @@ soupsieve==2.4.1
     # via beautifulsoup4
 sqlalchemy==2.0.19
     # via -r requirements.in
-tomli==2.0.1
-    # via
-    #   mypy
-    #   pyproject-api
-    #   pytest
-    #   tox
 tox==4.6.4
     # via -r requirements.in
 types-pyyaml==6.0.12.11
@@ -137,7 +127,7 @@ typing-extensions==4.7.1
     # via
     #   mypy
     #   sqlalchemy
-urllib3==2.0.4
+urllib3==2.0.7
     # via requests
 virtualenv==20.24.2
     # via tox
@@ -145,5 +135,3 @@ werkzeug==2.3.6
     # via
     #   -r requirements.in
     #   flask
-zipp==3.16.2
-    # via importlib-metadata
